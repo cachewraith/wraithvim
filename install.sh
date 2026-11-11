@@ -205,7 +205,11 @@ clipboard provider|wl-copy xclip xsel|$(pkg_hint wl-clipboard wl-clipboard wl-cl
 EOF
 
   if command -v fc-list >/dev/null 2>&1; then
-    if fc-list : family 2>/dev/null | grep -qi 'nerd'; then
+    # Capture first: `fc-list | grep -q` fails under pipefail when grep exits
+    # early and fc-list is killed by SIGPIPE.
+    local families
+    families="$(fc-list : family 2>/dev/null || true)"
+    if grep -qi 'nerd' <<<"$families"; then
       NERD_FONT=true
       ok "Nerd Font installed"
     else

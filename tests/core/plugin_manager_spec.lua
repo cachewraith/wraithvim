@@ -86,6 +86,32 @@ describe("core.plugin_manager", function()
     assert.is_false(vim.tbl_contains(pm.disabled_plugins(cfg), "netrwPlugin"))
   end)
 
+  it("only runs :TSUpdate as a build step when parsers can be built", function()
+    local spec
+    for _, s in ipairs(pm.build_spec(cfg_with())) do
+      if pm.spec_name(s) == "nvim-treesitter" then
+        spec = s
+      end
+    end
+    local ts = require("wraithvim.integrations.treesitter")
+    local real_missing, real_cmd = ts.missing_requirements, vim.cmd
+    local ran = false
+    vim.cmd = function(c)
+      ran = ran or c == "TSUpdate"
+    end
+    ts.missing_requirements = function()
+      return { "tree-sitter CLI" }
+    end
+    spec.build()
+    assert.is_false(ran)
+    ts.missing_requirements = function()
+      return {}
+    end
+    spec.build()
+    assert.is_true(ran)
+    ts.missing_requirements, vim.cmd = real_missing, real_cmd
+  end)
+
   it("installs plugins outside the default lazy root", function()
     local bootstrap = require("wraithvim.core.bootstrap")
     assert.matches("/wraithvim/plugins$", bootstrap.plugin_root())

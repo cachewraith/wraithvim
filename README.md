@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.1.0`. `:WraithUpdate` follows the
+`git -C ~/.local/share/wraithvim checkout v0.1.1`. `:WraithUpdate` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:

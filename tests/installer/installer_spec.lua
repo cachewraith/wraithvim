@@ -104,6 +104,29 @@ describe("install.sh", function()
     end
   end)
 
+  --- Fake `fc-list` printing the given first line followed by many others.
+  local function fake_fc_list(first)
+    local bin = home .. "/fakebin"
+    env.write(
+      bin .. "/fc-list",
+      ('#!/usr/bin/env bash\necho %q\nfor i in $(seq 50000); do echo "Some Font $i"; done\n'):format(first)
+    )
+    vim.uv.fs_chmod(bin .. "/fc-list", 493)
+    return bin .. ":" .. vim.env.PATH
+  end
+
+  it("detects an installed Nerd Font even when fc-list output is large", function()
+    local r = sh(home, "install.sh", { "--repo", src }, { PATH = fake_fc_list("JetBrainsMono Nerd Font") })
+    assert.equals(0, r.code, r.stderr)
+    assert.matches("nerd_font = true", env.read(home .. "/.config/wraithvim/ui.lua"))
+  end)
+
+  it("configures ASCII icons when no Nerd Font is installed", function()
+    local r = sh(home, "install.sh", { "--repo", src }, { PATH = fake_fc_list("DejaVu Sans") })
+    assert.equals(0, r.code, r.stderr)
+    assert.matches("nerd_font = false", env.read(home .. "/.config/wraithvim/ui.lua"))
+  end)
+
   it("is idempotent and never overwrites user files", function()
     assert.equals(0, sh(home, "install.sh", { "--repo", src }).code)
     env.write(home .. "/.config/wraithvim/ui.lua", "return { preset = 'compact' }\n")

@@ -6,6 +6,21 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-11
+
+### Fixed
+
+- First start no longer shows `Error during "tree-sitter build"` when Treesitter
+  parsers from a previous configuration exist in `~/.local/share/nvim/site`
+  and the tree-sitter CLI is not installed. Installed parsers are rebuilt after
+  plugin updates only when the CLI is available.
+- `install.sh` detected installed Nerd Fonts as missing on most systems (a
+  `fc-list | grep -q` pipeline failed under `pipefail`) and wrote
+  `icons = { nerd_font = false }` to `~/.config/wraithvim/ui.lua`. Existing
+  installs: set `nerd_font = true` in that file if you use a Nerd Font.
+- `:WraithUpdate` reports "up to date" instead of always asking for a restart,
+  and explains when the checkout is pinned to a release tag.
+
 ## [0.1.0] - 2026-11-11
 
 First public release.
@@ -39,5 +54,6 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/cachewraith/wraithvim/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/cachewraith/wraithvim/releases/tag/v0.1.0
