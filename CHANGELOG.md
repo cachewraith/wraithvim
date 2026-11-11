@@ -6,6 +6,24 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-11
+
+### Added
+
+- VS Code keymap preset: `return { preset = "vscode" }` in
+  `~/.config/wraithvim/keymaps.lua` adds Ctrl+P, Ctrl+Shift+P/F1, Ctrl+Shift+F,
+  Ctrl+F, Ctrl+G, Ctrl+B, Ctrl+`, Ctrl+\, Ctrl+Tab/Ctrl+PgDn, Ctrl+W,
+  Ctrl+Z/Y, Ctrl+A, Ctrl+C/X/V, Ctrl+/, Alt+Up/Down, Shift+Alt+Up/Down, F2,
+  F12, Shift+F12, Ctrl+., F8, Shift+Alt+F and more, plus VS Code-style
+  selection (Shift+Arrows and mouse drags select; typing replaces). Keys work
+  in classic terminals and with the kitty keyboard protocol.
+- `<leader>?` lists the VS Code keys when the preset is enabled.
+
+### Changed
+
+- `:WraithUpdate` only syncs plugins (and opens the lazy.nvim window) when the
+  update changed `lazy-lock.json`.
+
 ## [0.1.1] - 2026-11-11
 
 ### Fixed
@@ -54,6 +72,7 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/cachewraith/wraithvim/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/cachewraith/wraithvim/releases/tag/v0.1.0

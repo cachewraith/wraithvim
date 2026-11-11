@@ -134,6 +134,9 @@ return {
 
   -- ~/.config/wraithvim/keymaps.lua contributes extra mappings; `disable` lists lhs to remove.
   keymaps = {
+    -- "default" keeps Neovim's own keys; "vscode" adds VS Code shortcuts and
+    -- VS Code-style selection (see docs/keymaps.md).
+    preset = "default",
     disable = {},
   },
 }

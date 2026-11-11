@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.1.1`. `:WraithUpdate` follows the
+`git -C ~/.local/share/wraithvim checkout v0.2.0`. `:WraithUpdate` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:
@@ -100,6 +100,11 @@ configuration from a backup if one exists, and never deletes
 a confirmation.
 
 ## Essential keymaps
+
+Coming from VS Code? Put `return { preset = "vscode" }` in
+`~/.config/wraithvim/keymaps.lua` for `Ctrl+P`, `Ctrl+Shift+F`, `Ctrl+B`,
+`` Ctrl+` ``, `Ctrl+/`, `Ctrl+C/X/V/Z`, `F2`, `F12`, `Alt+↑/↓`, Shift+Arrow
+selection and more ([full list](docs/keymaps.md#vs-code-keymap-preset)).
 
 Leader is <kbd>Space</kbd>. Press `<leader>?` for an in-editor cheatsheet. The
 full list is in [docs/keymaps.md](docs/keymaps.md).

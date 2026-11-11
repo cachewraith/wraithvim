@@ -102,6 +102,31 @@ describe(":WraithUpdate", function()
     assert.is_false(said("Fetching"))
   end)
 
+  it("syncs plugins only when the update changes lazy-lock.json", function()
+    local restored = 0
+    package.loaded["lazy"] = {
+      restore = function()
+        restored = restored + 1
+      end,
+    }
+    update.run() -- upstream changed init.lua only
+    assert.is_true(vim.wait(10000, function()
+      return said("Restart Neovim")
+    end, 20))
+    assert.equals(0, restored)
+
+    messages = {}
+    env.write(upstream .. "/lazy-lock.json", '{ "new": true }\n')
+    gh.commit_all(upstream, "bump plugins")
+    update.run()
+    assert.is_true(vim.wait(10000, function()
+      return said("Restart Neovim")
+    end, 20))
+    assert.equals(1, restored)
+    assert.is_true(said("Plugin versions changed"))
+    package.loaded["lazy"] = nil
+  end)
+
   it("reports an up-to-date checkout without asking for a restart", function()
     gh.git(checkout, "pull", "-q", "--ff-only")
     update.run()

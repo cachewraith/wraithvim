@@ -219,6 +219,63 @@ describe("TUI", function()
     assert.is_true(t:wait_for("not " .. find, 5000)) -- default timeout is 3 s
   end)
 
+  describe("VS Code preset", function()
+    local function vscode_tui()
+      local cfg = env.tmpdir("vscode-cfg")
+      env.write(cfg .. "/keymaps.lua", 'return { preset = "vscode" }')
+      t = tui.spawn({ cwd = dir, args = { "long.txt" }, env = { WRAITHVIM_CONFIG_DIR = cfg } })
+      assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+      t:sleep(300)
+      t:lua("vim.cmd('wincmd l')")
+      t:lua(
+        "vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'one', 'two', 'three' }); vim.api.nvim_win_set_cursor(0, { 1, 0 })"
+      )
+      t:lua("vim.bo.commentstring = '-- %s'") -- plain text has no comment syntax
+    end
+    local function text()
+      return table.concat(t:lua("return vim.api.nvim_buf_get_lines(0, 0, -1, false)"), "|")
+    end
+
+    it("edits with VS Code keys sent as real terminal sequences", function()
+      vscode_tui()
+      t:send("\27[1;3B") -- Alt+Down
+      assert.is_true(t:wait_for("vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] == 'two'", 2000), text())
+      t:send("\26") -- Ctrl+Z
+      assert.is_true(t:wait_for("vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] == 'one'", 2000))
+      t:send("\31") -- Ctrl+/ (classic encoding)
+      assert.is_true(t:wait_for("vim.api.nvim_get_current_line() == '-- one'", 2000), text())
+      t:send("\27[47;5u") -- Ctrl+/ (kitty keyboard protocol)
+      assert.is_true(t:wait_for("vim.api.nvim_get_current_line() == 'one'", 2000))
+      t:send("\27[1;2C\27[1;2C") -- Shift+Right twice
+      assert.is_true(t:wait_for("vim.fn.mode() == 's'", 2000))
+      t:send("X") -- typing replaces the selection
+      assert.is_true(t:wait_for("vim.api.nvim_get_current_line() == 'Xe'", 2000), text())
+      t:keys("<Esc>")
+    end)
+
+    it("opens panels with VS Code keys", function()
+      vscode_tui()
+      t:send("\2") -- Ctrl+B hides the explorer
+      assert.is_true(
+        t:wait_for(
+          "vim.iter(vim.api.nvim_tabpage_list_wins(0)):all(function(w) return vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= 'neo-tree' end)",
+          3000
+        )
+      )
+      t:send("\0") -- Ctrl+` in classic terminals (NUL)
+      assert.is_true(t:wait_for("vim.bo.buftype == 'terminal'", 3000))
+      t:send("\0")
+      assert.is_true(t:wait_for("vim.bo.buftype == ''", 3000))
+      t:send("\16") -- Ctrl+P
+      assert.is_true(t:wait_for("vim.bo.filetype == 'TelescopePrompt'", 5000))
+      t:keys("<Esc>")
+      t:keys("<Esc>")
+      assert.is_true(t:wait_for("vim.bo.filetype ~= 'TelescopePrompt'", 3000))
+      t:send("\27[102;6u") -- Ctrl+Shift+F (kitty keyboard protocol)
+      assert.is_true(t:wait_for("vim.bo.filetype == 'TelescopePrompt'", 5000))
+    end)
+  end)
+
   it("uses no CPU while idle", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded.lualine ~= nil and package.loaded['neo-tree'] ~= nil", 8000))

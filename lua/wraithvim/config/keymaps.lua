@@ -17,6 +17,7 @@ M.groups = {
   { "<leader>w", "Windows" },
 }
 
+--- Mapping rhs that calls `require(mod)[fn](...)` on use (keeps plugins lazy).
 ---@param mod string
 ---@param fn string
 ---@param ... any
@@ -41,6 +42,8 @@ end
 local function gs(fn, ...)
   return call("gitsigns", fn, ...)
 end
+
+M.call, M.pick = call, pick
 
 local function visual_range()
   local a, b = vim.fn.line("."), vim.fn.line("v")
@@ -282,10 +285,22 @@ function M.apply_lsp(buf)
 end
 
 --- Apply defaults, then the user's keymaps.lua (disable list and extra entries).
+M.presets = { "default", "vscode" }
+
 function M.setup()
   apply(M.defaults())
   local config = require("wraithvim.core.config")
   local user = config.load_keymaps()
+  if user.preset == "vscode" then
+    local vscode = require("wraithvim.config.vscode")
+    vscode.apply_options()
+    apply(vscode.mappings())
+  elseif user.preset ~= "default" then
+    require("wraithvim.core.logger").notify(
+      vim.log.levels.WARN,
+      ("keymaps.preset: unknown preset %q (use %s)"):format(tostring(user.preset), table.concat(M.presets, " or "))
+    )
+  end
   for _, d in ipairs(user.disable) do
     local modes, lhs = { "n", "x", "o", "i", "t" }, d
     if type(d) == "table" then
@@ -322,6 +337,17 @@ function M.cheatsheet()
       if vim.startswith(e[2], group[1]) and plugin_available(e) then
         local modes = type(e[1]) == "table" and table.concat(e[1], "") or e[1]
         lines[#lines + 1] = ("  %-14s %-4s %s"):format(e[2], modes, e.desc or "")
+      end
+    end
+    lines[#lines + 1] = ""
+  end
+  if require("wraithvim.core.config").get().keymaps.preset == "vscode" then
+    lines[#lines + 1] = "VS Code keys"
+    local seen = {}
+    for _, e in ipairs(require("wraithvim.config.vscode").mappings()) do
+      if not seen[e[2]] and plugin_available(e) and not e.desc:find("classic terminals", 1, true) then
+        seen[e[2]] = true
+        lines[#lines + 1] = ("  %-14s %s"):format(e[2], e.desc)
       end
     end
     lines[#lines + 1] = ""

@@ -89,8 +89,11 @@ function M.run()
       end
       local log = utils.run({ "git", "-C", root, "log", "--oneline", "--no-decorate", before .. ".." .. after })
       notify(("Updated %s..%s:\n%s"):format(before:sub(1, 7), after:sub(1, 7), utils.trim(log.stdout)))
-      if package.loaded["lazy"] then
-        -- Install/checkout plugins exactly as pinned in lazy-lock.json.
+      -- Sync plugins only when the update changed their pinned versions.
+      local lock_changed = utils.run({ "git", "-C", root, "diff", "--quiet", before, after, "--", "lazy-lock.json" }).code
+        ~= 0
+      if lock_changed and package.loaded["lazy"] then
+        notify("Plugin versions changed; installing the pinned versions...")
         require("lazy").restore({ wait = false })
       end
       notify("Restart Neovim to apply the update.")

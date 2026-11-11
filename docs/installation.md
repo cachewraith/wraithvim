@@ -137,7 +137,7 @@ Linux on first use. If that is impossible, it silently uses its Lua matcher.
 ```
 
 Updates follow the `main` branch. To stay on a release instead, check out its
-tag (`git -C ~/.local/share/wraithvim checkout v0.1.1`). `:WraithUpdate` then
+tag (`git -C ~/.local/share/wraithvim checkout v0.2.0`). `:WraithUpdate` then
 refuses to pull (a detached tag has no branch to fast-forward); switch back
 with `git -C ~/.local/share/wraithvim checkout main`.
 

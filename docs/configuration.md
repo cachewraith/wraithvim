@@ -195,6 +195,7 @@ netrw is re-enabled.
 
 ```lua
 return {
+  preset = "default",                              -- or "vscode": VS Code shortcuts and selection
   disable = { "s", "S", { "n", "<leader>wv" } },   -- lhs (all modes) or { mode(s), lhs }
   { "n", "<leader>qq", "<cmd>qa<cr>", desc = "Quit all" },
   { { "n", "x" }, "<leader>y", '"+y', desc = "Yank to clipboard" },

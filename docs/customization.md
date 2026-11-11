@@ -4,6 +4,18 @@ All examples go in `~/.config/wraithvim/`. Open it with `:WraithConfig`.
 Restart Neovim after changes. The full key reference is in
 [configuration.md](configuration.md).
 
+## Use VS Code shortcuts
+
+```lua
+-- keymaps.lua
+return { preset = "vscode" }
+```
+
+`Ctrl+P` opens files, `Ctrl+Shift+F` searches the project, `Ctrl+B` toggles the
+explorer, `` Ctrl+` `` the terminal, `Ctrl+/` comments, `Ctrl+C/X/V/Z/Y`
+copy, cut, paste, undo and redo, Shift+Arrows select, and typing replaces the
+selection. See [keymaps](keymaps.md#vs-code-keymap-preset).
+
 ## Use relative numbers and wrap long lines
 
 ```lua

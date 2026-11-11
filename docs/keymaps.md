@@ -198,6 +198,103 @@ as `cl`) and `S` (same as `cc`). Disable them with
 `disable = { "s", "S" }` in `keymaps.lua`. Native `f`/`t`/`F`/`T` and `/` are
 unchanged.
 
+## VS Code keymap preset
+
+For VS Code muscle memory, turn on the VS Code preset:
+
+```lua
+-- ~/.config/wraithvim/keymaps.lua
+return { preset = "vscode" }
+```
+
+It adds the shortcuts below on top of everything above and makes selection
+work like VS Code:
+
+- **Shift+Arrows / Shift+Home/End** and **mouse drags** select text.
+- **Typing replaces the selection**, and Backspace deletes it (Neovim's
+  Select mode). Plain arrows cancel the selection.
+- Arrow keys move across line ends.
+- Copy, cut and paste use the system clipboard.
+
+Keys with *classic terminals* in their description are the bytes that
+terminals without the kitty keyboard protocol send for the same key, so the
+shortcut works in every terminal. `Ctrl+Shift+…`, `Ctrl+.` and `Ctrl+Tab` need
+a terminal with that protocol (kitty, foot, WezTerm, Ghostty, Alacritty);
+every action also has a key that works everywhere (for example `F1`,
+`Ctrl+PgDn`, `<leader>ca`, `<leader>fg`).
+
+| Keys | Action | Modes |
+|---|---|---|
+| `<C-p>` | Quick open file | normal |
+| `<F1>` | Command palette | normal, insert |
+| `<C-S-p>` | Command palette | normal, insert |
+| `<C-S-f>` | Search in project | normal, insert |
+| `<C-f>` | Find in file | normal |
+| `<C-g>` | Go to line | normal |
+| `<C-n>` | New file | normal |
+| `<C-b>` | Toggle explorer | normal |
+| `<C-S-e>` | Show file in explorer | normal |
+| `<C-`>` | Toggle terminal | normal, terminal |
+| `<C-Space>` | Toggle terminal (Ctrl+` in classic terminals) | normal, terminal |
+| `<C-\>` | Split editor right | normal |
+| `<C-S-g>` | Source control | normal |
+| `<C-Tab>` | Next tab | normal |
+| `<C-S-Tab>` | Previous tab | normal |
+| `<C-PageDown>` | Next tab | normal |
+| `<C-PageUp>` | Previous tab | normal |
+| `<C-w>` | Close tab | normal |
+| `<C-z>` | Undo | normal, insert |
+| `<C-y>` | Redo | normal, insert |
+| `<C-S-z>` | Redo | normal, insert |
+| `<C-a>` | Select all | normal, insert |
+| `<C-c>` | Copy line | normal |
+| `<C-x>` | Cut line | normal |
+| `<C-v>` | Paste | normal, insert, cmdline |
+| `<C-/>` | Toggle line comment | normal, insert |
+| `<C-_>` | Toggle line comment (Ctrl+/ in classic terminals) | normal, insert |
+| `<A-Down>` | Move line down | normal, insert |
+| `<A-Up>` | Move line up | normal, insert |
+| `<S-A-Down>` | Duplicate line down | normal, insert |
+| `<S-A-Up>` | Duplicate line up | normal, insert |
+| `<C-S-k>` | Delete line | normal, insert |
+| `<F2>` | Rename symbol | normal |
+| `<F12>` | Go to definition | normal |
+| `<S-F12>` | Find references | normal |
+| `<F24>` | Find references (Shift+F12) | normal |
+| `<C-.>` | Quick fix / code action | normal, insert, visual |
+| `<F8>` | Next problem | normal |
+| `<S-F8>` | Previous problem | normal |
+| `<F20>` | Previous problem (Shift+F8) | normal |
+| `<C-S-o>` | Go to symbol in file | normal |
+| `<C-t>` | Go to symbol in workspace | normal |
+| `<S-A-f>` | Format document | normal, insert |
+| `<M-F>` | Format document (Shift+Alt+F in classic terminals) | normal, insert |
+| `<C-c>` | Copy | visual, select |
+| `<C-x>` | Cut | visual, select |
+| `<C-v>` | Paste over selection | visual, select |
+| `<Tab>` | Indent | visual, select |
+| `<S-Tab>` | Outdent | visual, select |
+| `<C-/>` | Toggle comment | visual, select |
+| `<C-_>` | Toggle comment (Ctrl+/ in classic terminals) | visual, select |
+| `<A-Down>` | Move lines down | visual, select |
+| `<A-Up>` | Move lines up | visual, select |
+
+What the preset changes from Neovim's defaults:
+
+| Key | Neovim default | Still available as |
+|---|---|---|
+| `Ctrl+W` | window commands prefix | `<leader>w…` (`<leader>wh/wj/wk/wl/wv/ws/wc/wo`) |
+| `Ctrl+V` (normal) | block selection | `Ctrl+Q` |
+| `Ctrl+A` / `Ctrl+X` (normal) | increment / decrement a number | `Ctrl+A` on a visual selection still increments; for decrement, add `"<C-x>"` to `disable` |
+| `Ctrl+F` / `Ctrl+B` | page down / up | `PageDown` / `PageUp` |
+| `Ctrl+Z` | suspend Neovim | `:suspend` |
+| `Ctrl+P` / `Ctrl+N` | line up / down | `k` / `j`, arrows |
+| `Ctrl+G` / `Ctrl+T` | file info / tag jump back | `:file` / `:pop` |
+| `Ctrl+Y` | scroll line up | mouse wheel |
+| `Ctrl+Space` (in terminals) | sent to the shell | — (used for Ctrl+\` in classic terminals) |
+
+Remove any of them with `disable`, e.g. `return { preset = "vscode", disable = { "<C-w>" } }`.
+
 ## Mouse
 
 `mouse=a` is enabled. These interactions are implemented and covered by
@@ -232,6 +329,8 @@ after dragging a separator never opens an explorer item.
 ```lua
 -- ~/.config/wraithvim/keymaps.lua
 return {
+  preset = "vscode",   -- optional: VS Code shortcuts (see above); default is "default"
+
   -- remove defaults: an lhs (all modes) or { mode(s), lhs }
   disable = { "s", "S", { "n", "<leader>wv" } },
 

@@ -446,6 +446,7 @@ EOF
       cat <<'EOF'
 -- Extra keymaps and default mappings to remove. See docs/keymaps.md.
 return {
+  -- preset = "vscode",   -- VS Code shortcuts: Ctrl+P, Ctrl+B, Ctrl+/, Ctrl+C/V, F12, ...
   -- disable = { "s", "S" },
   -- { "n", "<leader>qq", "<cmd>qa<cr>", desc = "Quit all" },
 }
