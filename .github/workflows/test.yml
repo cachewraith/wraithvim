@@ -49,6 +49,10 @@ jobs:
         run: |
           nvim --version | head -n1
           for t in git gcc make rg fd fdfind clangd clang-format; do printf '%-13s %s\n' "$t" "$(command -v "$t" || echo missing)"; done
+          if command -v clang-format >/dev/null; then
+            clang-format --version
+            printf 'int main(void){return 0;}\n' | clang-format --assume-filename=main.c || true
+          fi
 
       - name: Unit and installer tests
         run: make test-unit

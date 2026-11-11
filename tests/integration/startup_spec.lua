@@ -250,15 +250,20 @@ describe("language tooling", function()
   local it_fmt = has_clang_format and it or pending
   it_fmt("formats a C buffer with clang-format through conform", function()
     local dir = c_project()
-    local res = run(
+    local res, messages = run(
       [[
       vim.cmd.edit("main.c")
       require("wraithvim.integrations.formatter").format()
-      return vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      local conform = require("conform")
+      local info = conform.get_formatter_info("clang-format", 0)
+      return { lines = vim.api.nvim_buf_get_lines(0, 0, -1, false), info = info,
+               formatters = vim.tbl_map(function(f) return f.name end, conform.list_formatters_to_run(0)) }
     ]],
       { cwd = dir, timeout = 60000 }
     )
-    assert.is_true(#res > 2, vim.inspect(res)) -- the one-line body was expanded
+    local diag = vim.inspect(res) .. "\nmessages:\n" .. tostring(messages)
+    res = res.lines
+    assert.is_true(#res > 2, diag) -- the one-line body was expanded
     assert.matches('printf%("hi\\n"%);', table.concat(res, "\n"))
     vim.fn.delete(dir, "rf")
   end)
