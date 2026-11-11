@@ -70,6 +70,10 @@ function M.run()
     )
     return
   end
+  local function head()
+    return utils.trim(utils.run({ "git", "-C", root, "rev-parse", "HEAD" }).stdout)
+  end
+  local before = head()
   notify("Fetching updates...")
   vim.system({ "git", "-C", root, "pull", "--ff-only" }, { text = true }, function(r)
     vim.schedule(function()
@@ -77,7 +81,14 @@ function M.run()
         notify("git pull failed (network or diverged history):\n" .. utils.trim(r.stderr), vim.log.levels.ERROR)
         return
       end
-      notify(utils.trim(r.stdout) ~= "" and utils.trim(r.stdout) or "Already up to date.")
+      -- Compare commits rather than parsing git's (localised) output.
+      local after = head()
+      if after == before then
+        notify("WraithVim is up to date (" .. after:sub(1, 7) .. ").")
+        return
+      end
+      local log = utils.run({ "git", "-C", root, "log", "--oneline", "--no-decorate", before .. ".." .. after })
+      notify(("Updated %s..%s:\n%s"):format(before:sub(1, 7), after:sub(1, 7), utils.trim(log.stdout)))
       if package.loaded["lazy"] then
         -- Install/checkout plugins exactly as pinned in lazy-lock.json.
         require("lazy").restore({ wait = false })
