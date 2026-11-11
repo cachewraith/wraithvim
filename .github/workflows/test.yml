@@ -1,0 +1,47 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  NVIM_VERSION: v0.12.6
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep fd-find build-essential clangd clang-format
+
+      - name: Install Neovim ${{ env.NVIM_VERSION }}
+        run: |
+          arch=$(uname -m | sed 's/aarch64/arm64/')
+          curl -fsSL "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-${arch}.tar.gz" | tar -xz -C "$HOME"
+          echo "$HOME/nvim-linux-${arch}/bin" >> "$GITHUB_PATH"
+
+      - name: Cache plugins
+        uses: actions/cache@v4
+        with:
+          path: .tests/data/nvim/wraithvim
+          key: plugins-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lazy-lock.json') }}
+
+      - name: Install pinned plugins
+        run: make deps
+
+      - name: Unit and installer tests
+        run: make test-unit
+
+      - name: Integration tests (headless and real TUI)
+        run: make test-integration

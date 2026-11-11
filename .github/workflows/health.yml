@@ -1,0 +1,77 @@
+name: health
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 5 * * 1" # weekly: catches upstream breakage of unpinned tools
+
+permissions:
+  contents: read
+
+env:
+  NVIM_VERSION: v0.12.6
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Neovim ${{ env.NVIM_VERSION }}
+        run: |
+          curl -fsSL "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" | tar -xz -C "$HOME"
+          echo "$HOME/nvim-linux-x86_64/bin" >> "$GITHUB_PATH"
+      - name: Install pinned plugins
+        run: make deps
+      - name: Headless startup without errors
+        env:
+          XDG_CONFIG_HOME: ${{ github.workspace }}/.tests/config
+          XDG_DATA_HOME: ${{ github.workspace }}/.tests/data
+          XDG_STATE_HOME: ${{ github.workspace }}/.tests/state
+          XDG_CACHE_HOME: ${{ github.workspace }}/.tests/cache
+          WRAITHVIM_CONFIG_DIR: ${{ github.workspace }}/.tests/empty-user-config
+        run: |
+          out=$(nvim --headless -u init.lua \
+            "+lua io.stdout:write(vim.api.nvim_exec2('messages', { output = true }).output)" +qa 2>&1)
+          echo "$out"
+          if echo "$out" | grep -E 'E[0-9]+:|Error'; then exit 1; fi
+      - name: Health check
+        run: scripts/health-check.sh --dev
+      - name: Startup benchmark
+        run: scripts/benchmark.sh --dev --startup-only --runs 10
+
+  installer:
+    # The installer's distribution detection and a full install on each supported family.
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - archlinux:latest
+          - debian:stable
+          - ubuntu:latest
+          - fedora:latest
+          - kalilinux/kali-rolling
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    steps:
+      - name: Install git, curl and tar
+        run: |
+          if command -v pacman >/dev/null; then pacman -Syu --noconfirm git curl tar gzip
+          elif command -v apt-get >/dev/null; then apt-get update && apt-get install -y git curl tar gzip ca-certificates
+          elif command -v dnf >/dev/null; then dnf install -y git curl tar gzip
+          fi
+      - uses: actions/checkout@v4
+      - name: Install Neovim ${{ env.NVIM_VERSION }}
+        run: |
+          curl -fsSL "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" | tar -xz -C /opt
+          ln -s /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+      - name: Run installer as an unprivileged user
+        run: |
+          useradd -m tester
+          cp -r "$GITHUB_WORKSPACE" /home/tester/wraithvim-src
+          chown -R tester: /home/tester/wraithvim-src
+          su tester -c 'cd ~/wraithvim-src && git config --global --add safe.directory "*" \
+            && ./install.sh --check && ./install.sh --dry-run && ./install.sh --sync \
+            && ./install.sh | grep -q "already installed" \
+            && nvim --headless "+lua assert(vim.g.wraithvim_root)" +qa \
+            && ./uninstall.sh --yes'

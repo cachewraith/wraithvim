@@ -1,0 +1,10 @@
+local env = require("tests.helpers.env")
+
+describe("version", function()
+  it("matches the newest release in CHANGELOG.md", function()
+    local changelog = env.read(env.root .. "/CHANGELOG.md")
+    local latest = changelog:match("\n## %[(%d+%.%d+%.%d+)%]")
+    assert.is_string(latest)
+    assert.equals(latest, require("wraithvim").version)
+  end)
+end)

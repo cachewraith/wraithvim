@@ -1,0 +1,26 @@
+name: lint
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LuaJIT
+        run: sudo apt-get update && sudo apt-get install -y luajit
+      - name: Install pinned StyLua, Luacheck, ShellCheck
+        run: make tools
+      - name: Lua and shell syntax
+        run: make syntax
+      - name: Luacheck
+        run: make luacheck
+      - name: StyLua
+        run: make format-check
+      - name: ShellCheck
+        run: make shellcheck

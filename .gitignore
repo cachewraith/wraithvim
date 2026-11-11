@@ -1,0 +1,5 @@
+# Test/benchmark sandbox (plugins, state, downloaded dev tools)
+/.tests/
+# Editor and OS clutter
+*.swp
+.DS_Store
