@@ -57,7 +57,7 @@ function M.format(opts)
   local has_lsp = s.lsp_fallback and #vim.lsp.get_clients({ bufnr = buf, method = "textDocument/formatting" }) > 0
   if #formatters == 0 and not has_lsp then
     vim.notify(
-      ("No formatter available for filetype %q. Install one listed in :WraithHealth, or check :ConformInfo."):format(
+      ("No formatter available for filetype %q. Install one listed in :Health, or check :ConformInfo."):format(
         vim.bo[buf].filetype
       ),
       vim.log.levels.WARN,

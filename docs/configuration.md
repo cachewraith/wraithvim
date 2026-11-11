@@ -25,7 +25,7 @@ Before use, WraithVim checks each file against the defaults:
 - unknown keys (typos) are reported but kept;
 - a file that returns something other than a table is reported and ignored.
 
-Problems appear as a notification at startup and in `:WraithHealth`. WraithVim
+Problems appear as a notification at startup and in `:Health`. WraithVim
 always finishes starting.
 
 ## options.lua

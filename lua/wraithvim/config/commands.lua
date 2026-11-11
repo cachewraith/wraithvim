@@ -1,4 +1,6 @@
--- :Wraith* user commands. Implementations are required lazily.
+-- User commands (:Update, :Health, :Terminal, ...). Implementations are
+-- required lazily. Names are short and free of a prefix; they must not clash
+-- with Neovim or bundled plugin commands (tested).
 
 local M = {}
 
@@ -19,22 +21,22 @@ function M.definitions()
   local c = "wraithvim.features.conflicts"
   local t = "wraithvim.features.terminal"
   return {
-    WraithHealth = {
+    Health = {
       function()
         vim.cmd("checkhealth wraithvim")
       end,
       { desc = "Run WraithVim health checks" },
     },
-    WraithUpdate = { call("wraithvim.core.update", "run"), { desc = "Update WraithVim and sync pinned plugins" } },
-    WraithLog = { call("wraithvim.core.logger", "open"), { desc = "Open the WraithVim log" } },
-    WraithProfile = { call("wraithvim.core.performance", "profile"), { desc = "Show plugin load profile" } },
-    WraithBenchmark = {
+    Update = { call("wraithvim.core.update", "run"), { desc = "Update WraithVim and sync pinned plugins" } },
+    Log = { call("wraithvim.core.logger", "open"), { desc = "Open the WraithVim log" } },
+    Profile = { call("wraithvim.core.performance", "profile"), { desc = "Show plugin load profile" } },
+    Benchmark = {
       function(o)
         require("wraithvim.core.performance").benchmark(o.fargs)
       end,
       { nargs = "*", desc = "Run the startup benchmark" },
     },
-    WraithConfig = {
+    Config = {
       function()
         local dir = require("wraithvim.core.config").dir()
         vim.fn.mkdir(dir, "p")
@@ -42,18 +44,18 @@ function M.definitions()
       end,
       { desc = "Open the user configuration directory" },
     },
-    WraithNotifications = {
+    Notifications = {
       call("wraithvim.ui.notifications", "show_history"),
       { desc = "Show notification history" },
     },
-    WraithKeys = { call("wraithvim.config.keymaps", "cheatsheet"), { desc = "Keymap cheatsheet" } },
-    WraithBufferCleanup = {
+    Keys = { call("wraithvim.config.keymaps", "cheatsheet"), { desc = "Keymap cheatsheet" } },
+    BufferCleanup = {
       call("wraithvim.features.buffers", "cleanup"),
       { desc = "Delete hidden, unmodified buffers" },
     },
 
     -- Terminal
-    WraithTerminal = {
+    Terminal = {
       function(o)
         if o.args ~= "" then
           require(t).open(o.args)
@@ -69,7 +71,7 @@ function M.definitions()
         desc = "Toggle the terminal panel",
       },
     },
-    WraithTerminalSplit = {
+    TerminalSplit = {
       function(o)
         require(t).split(o.args == "vertical" and "vertical" or "horizontal")
       end,
@@ -81,31 +83,31 @@ function M.definitions()
         desc = "Open a terminal in a new split",
       },
     },
-    WraithTerminalClose = { call(t, "close"), { desc = "Stop and close the terminal panel" } },
+    TerminalClose = { call(t, "close"), { desc = "Stop and close the terminal panel" } },
 
     -- Git
-    WraithGitStatus = { call(g, "status"), { desc = "Git status (fugitive)" } },
-    WraithGitDiff = { call(g, "diff"), { desc = "Diff working tree (diffview)" } },
-    WraithGitDiffClose = { call(g, "diff_close"), { desc = "Close diffview" } },
-    WraithGitCommit = { call(g, "commit"), { desc = "Git commit" } },
-    WraithGitAmend = { call(g, "commit", true), { desc = "Git commit --amend" } },
-    WraithGitPush = { call(g, "push"), { desc = "Git push" } },
-    WraithGitPull = { call(g, "pull"), { desc = "Git pull" } },
-    WraithGitBranches = { call(g, "branches"), { desc = "Switch Git branch" } },
-    WraithGitLog = { call(g, "history"), { desc = "Repository history" } },
-    WraithGitFileHistory = { call(g, "file_history"), { desc = "Current file history" } },
-    WraithGitStage = { call(g, "stage_file"), { desc = "Stage current file" } },
-    WraithGitUnstage = { call(g, "unstage_file"), { desc = "Unstage current file" } },
+    GitStatus = { call(g, "status"), { desc = "Git status (fugitive)" } },
+    GitDiff = { call(g, "diff"), { desc = "Diff working tree (diffview)" } },
+    GitDiffClose = { call(g, "diff_close"), { desc = "Close diffview" } },
+    GitCommit = { call(g, "commit"), { desc = "Git commit" } },
+    GitAmend = { call(g, "commit", true), { desc = "Git commit --amend" } },
+    GitPush = { call(g, "push"), { desc = "Git push" } },
+    GitPull = { call(g, "pull"), { desc = "Git pull" } },
+    GitBranches = { call(g, "branches"), { desc = "Switch Git branch" } },
+    GitLog = { call(g, "history"), { desc = "Repository history" } },
+    GitFileHistory = { call(g, "file_history"), { desc = "Current file history" } },
+    GitStage = { call(g, "stage_file"), { desc = "Stage current file" } },
+    GitUnstage = { call(g, "unstage_file"), { desc = "Unstage current file" } },
 
     -- Conflicts
-    WraithConflict = {
+    Conflict = {
       function(o)
         require(c).open(o.args ~= "" and o.args or nil)
       end,
       { nargs = "?", complete = "file", desc = "Open the three-way conflict view" },
     },
-    WraithConflicts = { call(c, "quickfix"), { desc = "List conflicted files in quickfix" } },
-    WraithConflictChoose = {
+    Conflicts = { call(c, "quickfix"), { desc = "List conflicted files in quickfix" } },
+    ConflictChoose = {
       function(o)
         local choice, scope = o.fargs[1], o.fargs[2]
         if o.bang then
@@ -126,35 +128,35 @@ function M.definitions()
         desc = "Take ours/theirs/both/base/none for a conflict (! = whole file)",
       },
     },
-    WraithConflictResolve = {
+    ConflictResolve = {
       function(o)
         require(c).resolve(o.args ~= "" and o.args or nil)
       end,
       { nargs = "?", complete = "file", desc = "Mark conflict resolved and stage the file" },
     },
-    WraithConflictClose = { call(c, "close"), { desc = "Close the conflict view" } },
+    ConflictClose = { call(c, "close"), { desc = "Close the conflict view" } },
 
     -- Formatting, syntax, tools
-    WraithFormat = {
+    Format = {
       function(o)
         local range = o.range > 0 and { start = { o.line1, 0 }, ["end"] = { o.line2, 0 } } or nil
         require("wraithvim.integrations.formatter").format({ range = range })
       end,
       { range = true, desc = "Format buffer or range" },
     },
-    WraithFormatToggle = {
+    FormatToggle = {
       function(o)
         require("wraithvim.integrations.formatter").toggle(o.bang)
       end,
       { bang = true, desc = "Toggle format on save (! = buffer only)" },
     },
-    WraithTSInstall = {
+    InstallParsers = {
       function(o)
         require("wraithvim.integrations.treesitter").install(o.fargs)
       end,
       { nargs = "*", desc = "Install Treesitter parsers for enabled languages" },
     },
-    WraithInstallTools = {
+    InstallTools = {
       call("wraithvim.integrations.mason", "install_missing"),
       { desc = "Install missing language tools with Mason (asks first)" },
     },

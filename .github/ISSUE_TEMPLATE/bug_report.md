@@ -19,12 +19,12 @@ labels: bug
 - Distribution and terminal emulator:
 - WraithVim commit (`git -C ~/.local/share/wraithvim rev-parse --short HEAD`):
 
-**`:WraithHealth` output**
+**`:Health` output**
 
 ```text
 ```
 
-**Relevant `:WraithLog` lines**
+**Relevant `:Log` lines**
 
 ```text
 ```

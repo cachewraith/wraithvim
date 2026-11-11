@@ -6,6 +6,32 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-11
+
+### Changed (breaking)
+
+- Commands no longer carry a `Wraith` prefix. Old → new:
+  `WraithUpdate` → `Update`, `WraithHealth` → `Health`, `WraithLog` → `Log`,
+  `WraithProfile` → `Profile`, `WraithBenchmark` → `Benchmark`,
+  `WraithConfig` → `Config`, `WraithKeys` → `Keys`,
+  `WraithNotifications` → `Notifications`, `WraithBufferCleanup` → `BufferCleanup`,
+  `WraithTerminal[Split|Close]` → `Terminal[Split|Close]`,
+  `WraithGit*` → `Git*` (`GitStatus`, `GitDiff`, `GitCommit`, `GitPush`, …),
+  `WraithConflict*` → `Conflict*`, `WraithFormat[Toggle]` → `Format[Toggle]`,
+  `WraithTSInstall` → `InstallParsers`, `WraithInstallTools` → `InstallTools`.
+  A test guarantees none of them clashes with Neovim or bundled plugin commands.
+
+### Added
+
+- `` Ctrl+Shift+` `` opens (or focuses) the terminal at the bottom, in normal,
+  insert and terminal mode, for every keymap preset.
+
+### Fixed
+
+- Opening a terminal (or switching windows) right after startup could be
+  undone when the explorer finished its startup render and returned focus to
+  the editor.
+
 ## [0.2.0] - 2026-11-11
 
 ### Added
@@ -72,7 +98,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/cachewraith/wraithvim/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/cachewraith/wraithvim/releases/tag/v0.1.0

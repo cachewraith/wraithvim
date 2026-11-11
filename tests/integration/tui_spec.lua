@@ -189,7 +189,8 @@ describe("TUI", function()
     t:keys(" tt")
     assert.is_true(t:wait_for("vim.bo.buftype == 'terminal'", 3000))
     t:keys("<Esc><Esc>")
-    assert.is_true(t:wait_for("vim.fn.mode() == 'n'", 2000))
+    -- Normal mode inside the terminal buffer (focus must stay in the terminal).
+    assert.is_true(t:wait_for("vim.api.nvim_get_mode().mode == 'nt'", 2000))
     local editor = t:lua([[
       for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
         if vim.fn.bufname(vim.api.nvim_win_get_buf(w)):find("alpha.lua") then return w end
@@ -200,6 +201,32 @@ describe("TUI", function()
     assert.is_true(t:wait_for("vim.fn.expand('%:t') == 'alpha.lua'", 2000))
     t:keys(" tt")
     assert.is_true(t:wait_for("vim.fn.bufwinid(require('wraithvim.features.terminal').panel.buf) == -1", 2000))
+  end)
+
+  it("opens the terminal at the bottom with Ctrl+Shift+`", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    t:send("\27[96;6u") -- Ctrl+Shift+` (kitty keyboard protocol), right after startup
+    assert.is_true(t:wait_for("vim.bo.buftype == 'terminal' and vim.fn.mode() == 't'", 3000))
+    -- The explorer finishing its startup render must not pull focus back to the editor.
+    t:sleep(800)
+    assert.equals("terminal", t:lua("return vim.bo.buftype"))
+    assert.equals("t", t:lua("return vim.fn.mode()"))
+    -- Full-width panel below the editor and the explorer.
+    local pos = t:lua("return vim.api.nvim_win_get_position(0)")
+    local width = t:lua("return vim.api.nvim_win_get_width(0)")
+    assert.is_true(pos[1] > 1, "terminal is not at the bottom")
+    assert.equals(0, pos[2])
+    assert.equals(t:lua("return vim.o.columns"), width)
+    -- Pressing it again (from inside the terminal) keeps the same terminal.
+    local buf = t:lua("return vim.api.nvim_get_current_buf()")
+    t:send("\27[96;6u")
+    t:sleep(200)
+    assert.equals(buf, t:lua("return vim.api.nvim_get_current_buf()"))
+    assert.equals(
+      1,
+      t:lua("return #vim.tbl_filter(function(b) return vim.bo[b].buftype == 'terminal' end, vim.api.nvim_list_bufs())")
+    )
   end)
 
   it("shows notifications as floating windows that close themselves", function()

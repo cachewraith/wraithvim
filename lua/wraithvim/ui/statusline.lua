@@ -114,7 +114,7 @@ function M.opts()
       end
       return ic.git.branch ~= "" and (ic.git.branch .. " " .. head) or head
     end,
-    on_click = cmd("WraithGitBranches"),
+    on_click = cmd("GitBranches"),
   }
 
   local diff = {
@@ -126,7 +126,7 @@ function M.opts()
         return { added = s.added, modified = s.changed, removed = s.removed }
       end
     end,
-    on_click = cmd("WraithGitStatus"),
+    on_click = cmd("GitStatus"),
   }
 
   local diagnostics = {

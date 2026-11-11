@@ -422,7 +422,7 @@ function M.open_entry(root, entry)
 
   if not exists then
     notify(
-      ("%s: %s. The working tree file is gone; resolve with :WraithConflictChoose! <side> or `git rm`."):format(
+      ("%s: %s. The working tree file is gone; resolve with :ConflictChoose! <side> or `git rm`."):format(
         rel,
         entry.kind
       ),
@@ -457,8 +457,7 @@ function M.open_entry(root, entry)
       if lines then
         diffable = true
       elseif read_err == "binary" then
-        lines =
-          { ("(%s is a binary file; choose a whole side with :WraithConflictChoose!)"):format(STAGE_NAMES[stage]) }
+        lines = { ("(%s is a binary file; choose a whole side with :ConflictChoose!)"):format(STAGE_NAMES[stage]) }
       else
         lines = { ("(could not read %s: %s)"):format(STAGE_NAMES[stage], read_err) }
       end
@@ -548,7 +547,7 @@ end
 local function report_remaining(root)
   local entries = M.list(root) or {}
   if #entries == 0 then
-    notify("All conflicts resolved. Review with :WraithGitStatus, then commit (or continue the rebase).")
+    notify("All conflicts resolved. Review with :GitStatus, then commit (or continue the rebase).")
     return
   end
   notify(("%d conflicted file(s) remaining: %s"):format(#entries, entries[1].path))
@@ -580,10 +579,7 @@ function M.resolve(path)
   end
 
   if not vim.uv.fs_stat(abs) then
-    notify(
-      rel .. " does not exist in the working tree. Use :WraithConflictChoose! to pick a side.",
-      vim.log.levels.WARN
-    )
+    notify(rel .. " does not exist in the working tree. Use :ConflictChoose! to pick a side.", vim.log.levels.WARN)
     return false
   end
 
@@ -697,7 +693,7 @@ function M.choose_file(side, path)
         return false
       end
       vim.cmd.checktime()
-      notify(("Checked out %s version of %s. Run :WraithConflictResolve to stage it."):format(side, rel))
+      notify(("Checked out %s version of %s. Run :ConflictResolve to stage it."):format(side, rel))
       return true
     end
     notify("Could not read stage: " .. tostring(err), vim.log.levels.ERROR)
@@ -719,7 +715,7 @@ function M.choose_file(side, path)
     return false
   end
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  notify(("RESULT now contains %s. Save, then :WraithConflictResolve."):format(side:upper()))
+  notify(("RESULT now contains %s. Save, then :ConflictResolve."):format(side:upper()))
   return true
 end
 

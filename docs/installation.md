@@ -50,7 +50,7 @@ nvim --version   # must report 0.12 or newer; otherwise use the release tarball 
 
 ### tree-sitter CLI (optional)
 
-Needed only to install additional Treesitter parsers (`:WraithTSInstall`).
+Needed only to install additional Treesitter parsers (`:InstallParsers`).
 nvim-treesitter requires version 0.26.1 or newer and recommends **not** using
 the npm package. On Arch use `pacman -S tree-sitter-cli`; elsewhere download the
 binary from <https://github.com/tree-sitter/tree-sitter/releases> or run
@@ -68,7 +68,7 @@ cd ~/.local/share/wraithvim
 
 If you run `install.sh` from a clone somewhere else (e.g. `~/src/wraithvim`),
 it clones that checkout to `~/.local/share/wraithvim` and points its `origin`
-at the same upstream URL, so `:WraithUpdate` keeps working.
+at the same upstream URL, so `:Update` keeps working.
 
 What `install.sh` does, in order:
 
@@ -121,9 +121,9 @@ nvim
 ```
 
 lazy.nvim clones itself, then installs the plugin versions pinned in
-`lazy-lock.json`. Run `:WraithHealth` afterwards. If the network is unavailable,
+`lazy-lock.json`. Run `:Health` afterwards. If the network is unavailable,
 WraithVim still starts with its options, keymaps, commands and terminal (and
-the built-in `habamax` colorscheme), logs the Git error to `:WraithLog`, and
+the built-in `habamax` colorscheme), logs the Git error to `:Log`, and
 asks you to restart once you are online. If lazy.nvim itself installed but some
 plugins failed, run `:Lazy restore`.
 
@@ -133,11 +133,11 @@ Linux on first use. If that is impossible, it silently uses its Lua matcher.
 ## Updating
 
 ```vim
-:WraithUpdate
+:Update
 ```
 
 Updates follow the `main` branch. To stay on a release instead, check out its
-tag (`git -C ~/.local/share/wraithvim checkout v0.2.0`). `:WraithUpdate` then
+tag (`git -C ~/.local/share/wraithvim checkout v0.3.0`). `:Update` then
 refuses to pull (a detached tag has no branch to fast-forward); switch back
 with `git -C ~/.local/share/wraithvim checkout main`.
 
@@ -145,7 +145,7 @@ This runs `git pull --ff-only` in the distribution directory, then
 `:Lazy restore` to check out exactly the plugin versions pinned by the new
 `lazy-lock.json`. Your `~/.config/wraithvim/` is outside the checkout, so it is
 never affected. If `:Lazy update` changed the lockfile locally,
-`:WraithUpdate` offers to reset it. Any other local modification stops the
+`:Update` offers to reset it. Any other local modification stops the
 update with an explanation.
 
 From a shell: `git -C ~/.local/share/wraithvim pull --ff-only && nvim --headless "+Lazy! restore" +qa`.

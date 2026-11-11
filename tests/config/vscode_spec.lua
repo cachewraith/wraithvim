@@ -86,7 +86,8 @@ describe("VS Code keymap preset", function()
   it("is documented in docs/keymaps.md", function()
     local doc = env.read(env.root .. "/docs/keymaps.md")
     for _, e in ipairs(vscode.mappings()) do
-      assert.is_truthy(doc:find("`" .. e[2] .. "`", 1, true), e[2] .. " not documented")
+      local documented = doc:find("`" .. e[2] .. "`", 1, true) or doc:find("`` " .. e[2] .. " ``", 1, true)
+      assert.is_truthy(documented, e[2] .. " not documented")
     end
   end)
 end)

@@ -92,6 +92,10 @@ function M.open(position)
   position = position or t.position
   local p = M.panel
   if p.win and vim.api.nvim_win_is_valid(p.win) then
+    -- The panel window may have been switched to another buffer meanwhile.
+    if p.buf and vim.api.nvim_buf_is_valid(p.buf) and vim.api.nvim_win_get_buf(p.win) ~= p.buf then
+      vim.api.nvim_win_set_buf(p.win, p.buf)
+    end
     vim.api.nvim_set_current_win(p.win)
   else
     local fresh = not (p.buf and vim.api.nvim_buf_is_valid(p.buf))

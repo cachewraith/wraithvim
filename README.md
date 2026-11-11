@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.2.0`. `:WraithUpdate` follows the
+`git -C ~/.local/share/wraithvim checkout v0.3.0`. `:Update` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:
@@ -86,7 +86,7 @@ Full details: [docs/installation.md](docs/installation.md).
 ## Update and uninstall
 
 ```vim
-:WraithUpdate      " git pull --ff-only, then sync plugins to lazy-lock.json
+:Update      " git pull --ff-only, then sync plugins to lazy-lock.json
 ```
 
 ```bash
@@ -117,6 +117,7 @@ full list is in [docs/keymaps.md](docs/keymaps.md).
 | `<leader>fb` | Find buffers | `<leader>gc` | Commit |
 | `<leader>fr` | Recent files | `<leader>gm` | Resolve merge conflict |
 | `<leader>tt` | Toggle terminal | `]h` / `[h` | Next / previous hunk |
+| `` Ctrl+Shift+` `` | Open terminal at the bottom | `<leader>?` | All keymaps |
 | `<leader>bd` | Delete buffer | `<leader>gh` | Stage hunk |
 | `gd` / `K` | Definition / hover | `<leader>rn` | Rename symbol |
 | `<leader>ca` | Code action | `<leader>fd` | Format document |
@@ -126,34 +127,34 @@ full list is in [docs/keymaps.md](docs/keymaps.md).
 
 | Command | Purpose |
 |---|---|
-| `:WraithHealth` | Health checks (`:checkhealth wraithvim`) |
-| `:WraithUpdate` | Update the distribution and plugins |
-| `:WraithLog` | Open the WraithVim log |
-| `:WraithProfile` | Plugin load profile (`:Lazy profile`) |
-| `:WraithBenchmark` | Run `scripts/benchmark.sh` in a terminal split |
-| `:WraithConfig` | Open `~/.config/wraithvim/` |
-| `:WraithKeys` | Keymap cheatsheet |
-| `:WraithNotifications` | Notification history |
-| `:WraithBufferCleanup` | Delete hidden, unmodified buffers |
-| `:WraithTerminal [pos]` | Toggle the terminal panel (`bottom`, `top`, `left`, `right`, `float`) |
-| `:WraithTerminalSplit [vertical]` | Independent terminal in a new split |
-| `:WraithTerminalClose` | Stop the panel shell and remove its buffer |
-| `:WraithGitStatus` | fugitive status |
-| `:WraithGitDiff` / `:WraithGitDiffClose` | diffview of all changes / close it |
-| `:WraithGitCommit` / `:WraithGitAmend` | Commit / amend |
-| `:WraithGitPush` / `:WraithGitPull` | Push / pull |
-| `:WraithGitBranches` | Branch picker (checkout on <kbd>Enter</kbd>) |
-| `:WraithGitLog` / `:WraithGitFileHistory` | Repository / file history |
-| `:WraithGitStage` / `:WraithGitUnstage` | Stage / unstage the current file |
-| `:WraithConflict [file]` | Three-way conflict view |
-| `:WraithConflicts` | Conflicted files in the quickfix list |
-| `:WraithConflictChoose[!] {side} [all]` | Take `ours`/`theirs`/`both`/`base`/`none` (`!` = whole file) |
-| `:WraithConflictResolve [file]` | Check, `git add`, report remaining conflicts |
-| `:WraithConflictClose` | Close the conflict view |
-| `:WraithFormat` | Format buffer or range |
-| `:WraithFormatToggle[!]` | Toggle format-on-save (`!` = this buffer only) |
-| `:WraithTSInstall [parsers]` | Install Treesitter parsers for enabled languages |
-| `:WraithInstallTools` | Install missing tools with Mason (only when enabled; asks first) |
+| `:Health` | Health checks (`:checkhealth wraithvim`) |
+| `:Update` | Update the distribution and plugins |
+| `:Log` | Open the WraithVim log |
+| `:Profile` | Plugin load profile (`:Lazy profile`) |
+| `:Benchmark` | Run `scripts/benchmark.sh` in a terminal split |
+| `:Config` | Open `~/.config/wraithvim/` |
+| `:Keys` | Keymap cheatsheet |
+| `:Notifications` | Notification history |
+| `:BufferCleanup` | Delete hidden, unmodified buffers |
+| `:Terminal [pos]` | Toggle the terminal panel (`bottom`, `top`, `left`, `right`, `float`) |
+| `:TerminalSplit [vertical]` | Independent terminal in a new split |
+| `:TerminalClose` | Stop the panel shell and remove its buffer |
+| `:GitStatus` | fugitive status |
+| `:GitDiff` / `:GitDiffClose` | diffview of all changes / close it |
+| `:GitCommit` / `:GitAmend` | Commit / amend |
+| `:GitPush` / `:GitPull` | Push / pull |
+| `:GitBranches` | Branch picker (checkout on <kbd>Enter</kbd>) |
+| `:GitLog` / `:GitFileHistory` | Repository / file history |
+| `:GitStage` / `:GitUnstage` | Stage / unstage the current file |
+| `:Conflict [file]` | Three-way conflict view |
+| `:Conflicts` | Conflicted files in the quickfix list |
+| `:ConflictChoose[!] {side} [all]` | Take `ours`/`theirs`/`both`/`base`/`none` (`!` = whole file) |
+| `:ConflictResolve [file]` | Check, `git add`, report remaining conflicts |
+| `:ConflictClose` | Close the conflict view |
+| `:Format` | Format buffer or range |
+| `:FormatToggle[!]` | Toggle format-on-save (`!` = this buffer only) |
+| `:InstallParsers [parsers]` | Install Treesitter parsers for enabled languages |
+| `:InstallTools` | Install missing tools with Mason (only when enabled; asks first) |
 
 ## Languages
 
@@ -208,7 +209,7 @@ Missing files are fine; mistakes are reported, not fatal. See
 init.lua                     entry point (also sourced by the generated bootstrap)
 lua/wraithvim/
 ├── core/          config loading, lazy.nvim bootstrap, logger, update, performance
-├── config/        defaults, options, keymaps, autocmds, :Wraith commands
+├── config/        defaults, options, keymaps, autocmds, user commands
 ├── ui/            presets, statusline/tabline/explorer settings, dashboard, notifications
 ├── features/      explorer, search, buffers, terminal, git, conflicts, diagnostics
 ├── languages/     language registry and profiles
@@ -234,7 +235,7 @@ See [docs/performance.md](docs/performance.md) for methodology and results.
 
 ## Troubleshooting
 
-Start with `:WraithHealth`, then `:WraithLog`. Common problems and fixes are in
+Start with `:Health`, then `:Log`. Common problems and fixes are in
 [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ## Contributing

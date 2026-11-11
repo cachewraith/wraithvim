@@ -52,7 +52,7 @@ function M.wrap(msg, width)
   end
   if #out > MAX_LINES then
     out = vim.list_slice(out, 1, MAX_LINES)
-    out[#out + 1] = "... (:WraithNotifications for full text)"
+    out[#out + 1] = "... (:Notifications for full text)"
   end
   return out
 end

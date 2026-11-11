@@ -28,7 +28,7 @@ describe("startup", function()
     assert.is_nil(messages:find("E%d+:"), messages)
   end)
 
-  it("defines every :Wraith command and the core keymaps", function()
+  it("defines every WraithVim command and the core keymaps", function()
     local res = run([[
       local names = vim.tbl_keys(require("wraithvim.config.commands").definitions())
       local missing = {}
@@ -44,6 +44,32 @@ describe("startup", function()
     assert.same({}, res.missing)
     for lhs, present in pairs(res.maps) do
       assert.is_true(present, lhs)
+    end
+  end)
+
+  it("command names do not clash with Neovim or bundled plugin commands", function()
+    -- Plain Neovim with every bundled plugin sourced, but without WraithVim.
+    local plugins = env.sandbox .. "/data/nvim/wraithvim/plugins"
+    local script = vim.fn.tempname() .. ".lua"
+    env.write(
+      script,
+      ([[
+      for _, dir in ipairs(vim.fn.glob(%q .. "/*", false, true)) do
+        vim.opt.rtp:append(dir)
+      end
+      vim.cmd("runtime! plugin/**/*.vim plugin/**/*.lua")
+      io.stdout:write(table.concat(vim.tbl_keys(vim.api.nvim_get_commands({})), "\n"))
+      vim.cmd("qa!")
+    ]]):format(plugins)
+    )
+    local r = vim.system({ "nvim", "--clean", "--headless", "-l", script }, { text = true }):wait(60000)
+    local existing = {}
+    for name in (r.stdout or ""):gmatch("[^\n]+") do
+      existing[name] = true
+    end
+    assert.is_true(existing["Git"] and existing["Telescope"] and existing["Neotree"], "plugins were not sourced")
+    for name in pairs(require("wraithvim.config.commands").definitions()) do
+      assert.is_nil(existing[name], name .. " clashes with an existing command")
     end
   end)
 

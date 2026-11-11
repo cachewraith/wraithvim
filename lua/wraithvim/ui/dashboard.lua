@@ -32,9 +32,9 @@ function M.items()
       label = "Explorer",
       action = "lua require('wraithvim.features.explorer').toggle()",
     },
-    { key = "c", icon = ic.config, label = "Configuration", action = "WraithConfig" },
+    { key = "c", icon = ic.config, label = "Configuration", action = "Config" },
     { key = "p", icon = ic.plugins, label = "Plugins", action = "Lazy" },
-    { key = "h", icon = ic.health, label = "Health check", action = "WraithHealth" },
+    { key = "h", icon = ic.health, label = "Health check", action = "Health" },
     { key = "q", icon = ic.quit, label = "Quit", action = "qa" },
   }
 end

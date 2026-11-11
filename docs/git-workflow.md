@@ -17,19 +17,19 @@ argument, so names with spaces, quotes or `$()` are safe.
 
 | Step | Keys | Command |
 |---|---|---|
-| See what changed | `<leader>gs` | `:WraithGitStatus` (fugitive) |
-| Review all changes side by side | `<leader>gd`, close with `<leader>gD` | `:WraithGitDiff` |
+| See what changed | `<leader>gs` | `:GitStatus` (fugitive) |
+| Review all changes side by side | `<leader>gd`, close with `<leader>gD` | `:GitDiff` |
 | Jump between hunks | `]h` / `[h` | |
 | Preview a hunk | `<leader>gv` | |
 | Stage / unstage a hunk | `<leader>gh` (normal or visual for selected lines) | |
 | Reset a hunk | `<leader>gr` | |
 | Stage / reset the whole buffer | `<leader>gS` / `<leader>gR` | |
-| Stage / unstage the file | `<leader>ga` / `<leader>gu` | `:WraithGitStage` / `:WraithGitUnstage` |
-| Commit | `<leader>gc` | `:WraithGitCommit` |
-| Amend | `<leader>gC` | `:WraithGitAmend` |
-| Push / pull | `<leader>gp` / `<leader>gP` | `:WraithGitPush` / `:WraithGitPull` |
-| Switch branch | `<leader>gb`, or click the branch in the statusline | `:WraithGitBranches` |
-| History | `<leader>gl` (repository), `<leader>gf` (current file) | `:WraithGitLog`, `:WraithGitFileHistory` |
+| Stage / unstage the file | `<leader>ga` / `<leader>gu` | `:GitStage` / `:GitUnstage` |
+| Commit | `<leader>gc` | `:GitCommit` |
+| Amend | `<leader>gC` | `:GitAmend` |
+| Push / pull | `<leader>gp` / `<leader>gP` | `:GitPush` / `:GitPull` |
+| Switch branch | `<leader>gb`, or click the branch in the statusline | `:GitBranches` |
+| History | `<leader>gl` (repository), `<leader>gf` (current file) | `:GitLog`, `:GitFileHistory` |
 | Who changed this line | `<leader>gB` | |
 | Changed files in the explorer | `<leader>eg` | |
 
@@ -60,9 +60,9 @@ During a **rebase**, Git's "ours" is the branch you are rebasing *onto* and
 
 ### Step by step
 
-1. **Find conflicts.** `<leader>gx` / `:WraithConflicts` fills the quickfix list
+1. **Find conflicts.** `<leader>gx` / `:Conflicts` fills the quickfix list
    with every conflicted file and its kind (both modified, deleted by them, …).
-2. **Open the resolver.** `<leader>gm` / `:WraithConflict [file]` opens a new tab:
+2. **Open the resolver.** `<leader>gm` / `:Conflict [file]` opens a new tab:
 
    ```text
    ┌──────────────┬──────────────┬──────────────┐
@@ -86,17 +86,17 @@ During a **rebase**, Git's "ours" is the branch you are rebasing *onto* and
    | `<leader>cn` | none (delete the block) |
    | `]x` / `[x` | jump to next / previous conflict |
 
-   `:WraithConflictChoose theirs all` applies a choice to every conflict in the
+   `:ConflictChoose theirs all` applies a choice to every conflict in the
    file. You can also edit RESULT freely, or press `dp` in a stage pane to put a
    diff hunk into RESULT. Every change is an ordinary buffer edit: `u` undoes
    it and nothing is written until you save.
-4. **Whole-file choices.** `:WraithConflictChoose! ours` (or `theirs`/`base`)
+4. **Whole-file choices.** `:ConflictChoose! ours` (or `theirs`/`base`)
    replaces RESULT with that complete version after a confirmation. If the
    chosen side **deleted** the file, WraithVim asks whether to delete it and
    stage the deletion (`git rm`). For binary files it offers
    `git checkout --ours/--theirs`.
 5. **Save** with `:w` (or `<C-s>`).
-6. **Mark resolved.** `<leader>cr` / `:WraithConflictResolve`:
+6. **Mark resolved.** `<leader>cr` / `:ConflictResolve`:
    - asks to save if the buffer is modified;
    - reads the file from disk and, if conflict markers remain, asks before
      staging (the default answer is **No**);
@@ -112,15 +112,15 @@ During a **rebase**, Git's "ours" is the branch you are rebasing *onto* and
 | Situation | What you see | How to resolve |
 |---|---|---|
 | Added on both sides (no stage 1) | BASE pane explains there is no common ancestor | edit RESULT as usual |
-| Modified by us, deleted by them | THEIRS pane says the file was deleted | keep: edit and resolve; delete: `:WraithConflictChoose! theirs` |
-| Deleted by us, modified by them | OURS pane says the file was deleted | `:WraithConflictChoose! ours` deletes; otherwise resolve RESULT |
-| Deleted on both sides / file missing | a notification explains it | `:WraithConflictChoose!` with the side to keep, or `git rm` |
-| Binary file | stage panes say "binary" | `:WraithConflictChoose! ours` / `theirs` |
+| Modified by us, deleted by them | THEIRS pane says the file was deleted | keep: edit and resolve; delete: `:ConflictChoose! theirs` |
+| Deleted by us, modified by them | OURS pane says the file was deleted | `:ConflictChoose! ours` deletes; otherwise resolve RESULT |
+| Deleted on both sides / file missing | a notification explains it | `:ConflictChoose!` with the side to keep, or `git rm` |
+| Binary file | stage panes say "binary" | `:ConflictChoose! ours` / `theirs` |
 | Unterminated or partial markers | not treated as a conflict region | edit by hand; staging still checks for markers |
 
 WraithVim never overwrites the working-tree file without an explicit action:
 whole-file replacement and deletion are always confirmed, and staging a file
 that still contains markers is refused unless you confirm it.
 
-`:WraithConflictClose` (`<leader>cq` in RESULT) closes the resolver tab without
+`:ConflictClose` (`<leader>cq` in RESULT) closes the resolver tab without
 staging anything.

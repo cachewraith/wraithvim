@@ -7,7 +7,7 @@ return function(_)
     branch = "main",
     -- Rebuild installed parsers after plugin updates, but only when the
     -- tree-sitter CLI can do it; otherwise parsers left by another config
-    -- would produce build errors on every install (see :WraithHealth).
+    -- would produce build errors on every install (see :Health).
     build = function()
       if #require("wraithvim.integrations.treesitter").missing_requirements() == 0 then
         vim.cmd("TSUpdate")

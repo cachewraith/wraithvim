@@ -65,11 +65,17 @@ end
 ---@param keys string e.g. "<leader>ee"
 function M:keys(keys)
   local bytes = vim.api.nvim_replace_termcodes(keys, true, false, true)
-  self:send(bytes)
-  if bytes:sub(-1) == "\27" then
-    -- A lone Esc is only recognised after 'ttimeoutlen'; otherwise the next
-    -- input (e.g. a mouse event) would be read as Alt+<input>.
-    vim.wait(150)
+  -- A terminal only reads Esc as a key of its own once 'ttimeoutlen' passes;
+  -- Esc followed immediately by more input is read as Alt+<input>. Send each
+  -- Esc as a separate key press, like a person typing.
+  for chunk, esc in bytes:gmatch("([^\27]*)(\27?)") do
+    if chunk ~= "" then
+      self:send(chunk)
+    end
+    if esc ~= "" then
+      self:send(esc)
+      vim.wait(150)
+    end
   end
 end
 

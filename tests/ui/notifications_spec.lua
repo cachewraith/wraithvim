@@ -11,7 +11,7 @@ describe("ui.notifications", function()
     assert.same({ "xxxxxxxxxx", "xxxxxxxxxx", "xxxxx" }, lines)
     local many = notifications.wrap(string.rep("line\n", 20), 60)
     assert.equals(11, #many)
-    assert.matches("WraithNotifications", many[11])
+    assert.matches("Notifications", many[11])
   end)
 
   it("records history and falls back to the original notify without a UI", function()

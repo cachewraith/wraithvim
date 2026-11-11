@@ -23,7 +23,7 @@ local function hint_missing(server)
   end
   hinted[server.name] = true
   vim.notify(
-    ("%s (%s) is not installed, so LSP features are off for this file.\nInstall: %s\nSee :WraithHealth."):format(
+    ("%s (%s) is not installed, so LSP features are off for this file.\nInstall: %s\nSee :Health."):format(
       server.cmd,
       server.language,
       server.install or "see docs/languages.md"

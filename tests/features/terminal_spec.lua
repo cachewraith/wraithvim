@@ -38,6 +38,17 @@ describe("features.terminal", function()
     assert.is_not.equal(-1, vim.fn.bufwinid(buf))
   end)
 
+  it("open() puts the terminal back when its window shows another buffer", function()
+    terminal.open()
+    local buf, win = terminal.panel.buf, terminal.panel.win
+    vim.cmd("stopinsert")
+    vim.api.nvim_win_set_buf(win, vim.api.nvim_create_buf(true, false))
+    terminal.open("bottom")
+    assert.equals(win, terminal.panel.win)
+    assert.equals(buf, vim.api.nvim_win_get_buf(win))
+    assert.equals(win, vim.api.nvim_get_current_win())
+  end)
+
   it("starts in the current working directory", function()
     local dir = vim.fn.tempname()
     vim.fn.mkdir(dir, "p")

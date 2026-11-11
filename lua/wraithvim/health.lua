@@ -1,4 +1,4 @@
--- :checkhealth wraithvim  (also :WraithHealth)
+-- :checkhealth wraithvim  (also :Health)
 
 local M = {}
 
@@ -54,7 +54,7 @@ local function check_core()
       })
     end
     if vim.uv.fs_stat(vim.fs.joinpath(root, ".git")) then
-      h.ok("Git checkout: :WraithUpdate is available")
+      h.ok("Git checkout: :Update is available")
     else
       h.info("Not a Git checkout: update by re-running install.sh")
     end
@@ -71,7 +71,7 @@ local function check_core()
     end
     h.ok(("User configuration: %s (%s)"):format(dir, #present > 0 and table.concat(present, ", ") or "no files"))
   else
-    h.info("No user configuration directory (" .. dir .. "); defaults are used. :WraithConfig creates it.")
+    h.info("No user configuration directory (" .. dir .. "); defaults are used. :Config creates it.")
   end
   if #config.problems == 0 then
     h.ok("User configuration is valid")
@@ -102,7 +102,7 @@ local function check_tools()
     {
       { "tree-sitter" },
       "tree-sitter CLI",
-      "installing Treesitter parsers (:WraithTSInstall)",
+      "installing Treesitter parsers (:InstallParsers)",
       "tree-sitter-cli (>= 0.26.1)",
     },
     { { "curl" }, "curl", "Treesitter parser downloads, blink.cmp binary", "curl" },
@@ -135,7 +135,7 @@ local function check_plugins()
   h.start("WraithVim: plugins")
   local ok_lazy, lazy_config = pcall(require, "lazy.core.config")
   if not ok_lazy or not package.loaded["lazy"] then
-    h.error("lazy.nvim is not loaded", { "Check network access and :WraithLog, then restart Neovim" })
+    h.error("lazy.nvim is not loaded", { "Check network access and :Log, then restart Neovim" })
     return
   end
   local installed, missing = 0, {}
@@ -204,7 +204,7 @@ local function check_languages()
     ", "
   ))
   h.info(
-    mason and "Mason enabled: missing tools can be installed with :WraithInstallTools"
+    mason and "Mason enabled: missing tools can be installed with :InstallTools"
       or "Mason disabled: install tools with your package manager (see docs/languages.md)"
   )
   for _, s in ipairs(languages.servers(profiles)) do
@@ -246,7 +246,7 @@ local function check_treesitter()
     h.ok("Parsers available: " .. table.concat(have, ", "))
   end
   if #missing > 0 then
-    h.warn("Parsers not installed (optional): " .. table.concat(missing, ", "), { "Run :WraithTSInstall" })
+    h.warn("Parsers not installed (optional): " .. table.concat(missing, ", "), { "Run :InstallParsers" })
   end
   local req = ts.missing_requirements()
   if #req == 0 then

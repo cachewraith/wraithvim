@@ -44,6 +44,34 @@ function M.resize(delta)
   end
 end
 
+--- Show the explorer without taking focus.
+---
+--- neo-tree's "show" scans the directory asynchronously, then hops back to
+--- the window that was current when it *started*. If the user moved meanwhile
+--- (e.g. opened the terminal right after startup), that hop would pull them
+--- out. neo-tree fires "after_render" just before the hop, while focus is
+--- still where the user put it: remember that window and restore it after.
+function M.show_keeping_focus()
+  require("neo-tree.events").subscribe({
+    event = "after_render",
+    id = "wraithvim_keep_focus",
+    once = true,
+    handler = function()
+      local win = vim.api.nvim_get_current_win()
+      local terminal_mode = vim.api.nvim_get_mode().mode == "t"
+      vim.schedule(function()
+        if vim.api.nvim_win_is_valid(win) and vim.api.nvim_get_current_win() ~= win then
+          vim.api.nvim_set_current_win(win)
+        end
+        if terminal_mode and vim.bo.buftype == "terminal" then
+          vim.cmd.startinsert()
+        end
+      end)
+    end,
+  })
+  execute({ action = "show", source = "filesystem" })
+end
+
 --- Show the explorer (without focusing it) after startup when files or a
 --- directory were given on the command line.
 function M.setup_auto_open()
@@ -63,7 +91,7 @@ function M.setup_auto_open()
       if vim.o.columns < 100 then
         return
       end
-      execute({ action = "show", source = "filesystem" })
+      M.show_keeping_focus()
     end,
   })
 end

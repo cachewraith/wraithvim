@@ -1,6 +1,6 @@
 -- Optional Mason support. System executables always win: Mason's bin
 -- directory is appended to PATH, and tools are only installed after the user
--- runs :WraithInstallTools and confirms the list.
+-- runs :InstallTools and confirms the list.
 
 local utils = require("wraithvim.core.utils")
 
@@ -49,7 +49,7 @@ function M.install_missing()
   local cfg = require("wraithvim.core.config").get()
   if not cfg.options.mason.enabled then
     vim.notify(
-      "Mason is disabled. Enable it in ~/.config/wraithvim/options.lua with `mason = { enabled = true }`,\nor install tools with your package manager (see :WraithHealth).",
+      "Mason is disabled. Enable it in ~/.config/wraithvim/options.lua with `mason = { enabled = true }`,\nor install tools with your package manager (see :Health).",
       vim.log.levels.WARN,
       { title = "WraithVim" }
     )

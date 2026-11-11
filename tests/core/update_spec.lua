@@ -23,7 +23,7 @@ local function head(dir)
   return vim.trim(gh.git(dir, "rev-parse", "HEAD").stdout)
 end
 
-describe(":WraithUpdate", function()
+describe(":Update", function()
   local upstream, checkout
 
   before_each(function()

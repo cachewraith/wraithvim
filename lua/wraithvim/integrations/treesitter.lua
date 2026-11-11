@@ -2,7 +2,7 @@
 --
 -- Highlighting starts only for filetypes of enabled languages (plus
 -- `options.treesitter.extra_filetypes`) and only when a parser is installed.
--- Parsers are installed explicitly with :WraithTSInstall, which delegates to
+-- Parsers are installed explicitly with :InstallParsers, which delegates to
 -- nvim-treesitter (requires the tree-sitter CLI and a C compiler).
 
 local utils = require("wraithvim.core.utils")

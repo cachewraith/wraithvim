@@ -68,10 +68,11 @@ installer chooses this automatically when `fc-list` finds no Nerd Font.
 
 ## Terminal panel
 
-`<leader>tt` / `:WraithTerminal` toggles one panel terminal. Hiding it keeps
+`<leader>tt` / `:Terminal` toggles one panel terminal; `` Ctrl+Shift+` ``
+always opens (or focuses) it at the bottom. Hiding it keeps
 the shell running; showing it again reuses the same buffer and process. The
 shell is `&shell` (your login shell, e.g. fish or bash), started in the current
-working directory. `:WraithTerminal float` opens the panel as a floating
+working directory. `:Terminal float` opens the panel as a floating
 window. `<leader>th` / `<leader>tv` open additional, independent terminals in
 splits. Terminal buffers are unlisted (they never appear as tabs) and are
-wiped when their shell exits. `:WraithTerminalClose` stops the panel shell.
+wiped when their shell exits. `:TerminalClose` stops the panel shell.

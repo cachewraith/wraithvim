@@ -142,6 +142,9 @@ function M.defaults()
     { "n", "<leader>tv", call(t, "split", "vertical"), desc = "Terminal in vertical split" },
     { "n", "<leader>tf", call(t, "open", "float"), desc = "Floating terminal" },
     { "n", "<leader>tc", call(t, "close"), desc = "Close terminal" },
+    -- Ctrl+Shift+` as sent by kitty-protocol / modifyOtherKeys terminals; some report it as Ctrl+~.
+    { { "n", "i", "t" }, "<C-S-`>", call(t, "open", "bottom"), desc = "Open terminal at the bottom" },
+    { { "n", "i", "t" }, "<C-~>", call(t, "open", "bottom"), desc = "Open terminal at the bottom (Ctrl+Shift+`)" },
 
     -- Diagnostics
     { "n", "<leader>dd", vim.diagnostic.open_float, desc = "Line diagnostics" },
@@ -352,7 +355,8 @@ function M.cheatsheet()
     end
     lines[#lines + 1] = ""
   end
-  lines[#lines + 1] = "Other: s/S flash, ]h/[h hunks, ]x/[x conflicts, <C-s> save. Full list: :Telescope keymaps"
+  lines[#lines + 1] = "Other: Ctrl+Shift+` terminal at the bottom, s/S flash, ]h/[h hunks, ]x/[x conflicts, <C-s> save."
+  lines[#lines + 1] = "Full list: :Telescope keymaps"
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false

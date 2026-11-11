@@ -3,9 +3,9 @@
 Always start with:
 
 ```vim
-:WraithHealth     " everything WraithVim checks, with advice
-:WraithLog        " warnings and errors (secrets in messages are redacted)
-:WraithNotifications
+:Health     " everything WraithVim checks, with advice
+:Log        " warnings and errors (secrets in messages are redacted)
+:Notifications
 :Lazy             " plugin state; :Lazy log for recent changes
 ```
 
@@ -19,7 +19,7 @@ tarball. Check which binary runs with `which -a nvim`.
 proxy or firewall blocks GitHub). WraithVim still works without plugins.
 Restart once you are online. Behind a proxy, set `https_proxy` for Git.
 
-**Some plugins are missing** (`:WraithHealth` lists them): run `:Lazy restore`.
+**Some plugins are missing** (`:Health` lists them): run `:Lazy restore`.
 
 **"WraithVim not found at …"**: the bootstrap points to a directory that no
 longer exists. Re-run `install.sh`, or set `WRAITHVIM_DIR`.
@@ -29,7 +29,7 @@ file and key, e.g. `ui.explorer.width: expected number, got string (using
 default)`. Fix the file in `~/.config/wraithvim/`. WraithVim keeps running with
 defaults for the broken parts.
 
-**Slow startup**: run `:WraithProfile` (lazy.nvim's profiler) or
+**Slow startup**: run `:Profile` (lazy.nvim's profiler) or
 `nvim --startuptime /tmp/wraithvim-startup.log +qa` and read
 [performance](performance.md#reading---startuptime). Plugins you add in
 `plugins.lua` with `lazy = false` load during startup; prefer `event`, `cmd`
@@ -72,7 +72,7 @@ telescope-fzf-native.nvim`.
 
 ## LSP, completion, formatting
 
-**No LSP features**: `:WraithHealth` lists each server as installed or not.
+**No LSP features**: `:Health` lists each server as installed or not.
 The server must be on `PATH` *for Neovim*: GUI launchers and some shells do
 not load your interactive shell's `PATH`. Check with `:echo exepath("gopls")`.
 Then `:checkhealth vim.lsp` (or `<leader>lI`) shows attached clients and
@@ -87,10 +87,10 @@ fuzzy matcher (offline install or an unsupported architecture) and uses the
 Lua implementation. Run `:BlinkCmp status` to check.
 
 **"No formatter available"**: install the formatter listed for the language
-in `:WraithHealth`, or check `:ConformInfo`. Format-on-save is **off** by
+in `:Health`, or check `:ConformInfo`. Format-on-save is **off** by
 default; see [configuration](configuration.md#optionslua).
 
-**`:WraithTSInstall` fails**: install the tree-sitter CLI (≥ 0.26.1, not from
+**`:InstallParsers` fails**: install the tree-sitter CLI (≥ 0.26.1, not from
 npm), a C compiler, `curl` and `tar`. The error message lists what is missing.
 `:TSLog` shows nvim-treesitter's log.
 
@@ -99,12 +99,12 @@ npm), a C compiler, `curl` and `tar`. The error message lists what is missing.
 **No signs in the gutter**: the file must be inside a Git repository and
 tracked or untracked (not ignored). Files longer than 40 000 lines are skipped.
 
-**`:WraithUpdate` refuses to update**: the distribution checkout has local
+**`:Update` refuses to update**: the distribution checkout has local
 changes. Move personal changes to `~/.config/wraithvim/`, then
 `git -C ~/.local/share/wraithvim stash` (or `checkout .`).
 
 **Conflict view shows "could not read BASE"**: the index no longer has that
-stage, for example after `git add`. Run `:WraithConflicts` to see what is still
+stage, for example after `git add`. Run `:Conflicts` to see what is still
 unmerged.
 
 ## Resetting
@@ -118,6 +118,6 @@ Your settings in `~/.config/wraithvim` are unaffected.
 
 ## Reporting bugs
 
-Include the output of `:WraithHealth`, `nvim --version`, your distribution,
-the relevant part of `:WraithLog`, and the smallest `~/.config/wraithvim`
+Include the output of `:Health`, `nvim --version`, your distribution,
+the relevant part of `:Log`, and the smallest `~/.config/wraithvim`
 that reproduces the problem.

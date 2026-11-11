@@ -1,4 +1,4 @@
--- :WraithUpdate - fast-forward the distribution checkout, then sync plugins
+-- :Update - fast-forward the distribution checkout, then sync plugins
 -- to the pinned lazy-lock.json. User files in ~/.config/wraithvim are never
 -- touched because they live outside the distribution directory.
 
@@ -7,7 +7,7 @@ local utils = require("wraithvim.core.utils")
 local M = {}
 
 local function notify(msg, level)
-  vim.notify(msg, level or vim.log.levels.INFO, { title = "WraithUpdate" })
+  vim.notify(msg, level or vim.log.levels.INFO, { title = "Update" })
 end
 
 ---@param root string

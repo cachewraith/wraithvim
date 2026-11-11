@@ -18,7 +18,7 @@ distribution on the runtimepath and calls `require("wraithvim").setup()`:
    and registers the plugin specs. Every plugin is lazy. Background update
    checks and config-file watching are disabled.
 5. **Native setup**: diagnostics, the Treesitter `FileType` hook, autocommands,
-   `:Wraith*` commands, keymaps (then the user's `keymaps.lua`).
+   user commands (`:Update`, `:Health`, …), keymaps (then the user's `keymaps.lua`).
 6. **UI** (`ui/init.lua`): colorscheme (loads TokyoNight on demand),
    notifications, dashboard, explorer auto-open scheduled for `VeryLazy`.
 
@@ -38,16 +38,16 @@ lua/wraithvim/
     bootstrap.lua              version check, lazy.nvim clone, plugin directory
     config.lua                 user file loading, merging, validation
     plugin_manager.lua         lazy.nvim options, spec assembly, plugin disable
-    logger.lua                 file log with redaction, :WraithLog
-    performance.lua            stats, :WraithProfile, :WraithBenchmark
-    update.lua                 :WraithUpdate
+    logger.lua                 file log with redaction, :Log
+    performance.lua            stats, :Profile, :Benchmark
+    update.lua                 :Update
     utils.lua                  merge, cached executable lookup, shell-free process runner
   config/
     defaults.lua               every default setting (documented in configuration.md)
     options.lua                vim options
     keymaps.lua                single keymap registry + user keymaps
     autocmds.lua               core autocommands (all in named augroups)
-    commands.lua               :Wraith* commands
+    commands.lua               user commands (:Update, :Health, :Terminal, …)
   ui/
     init.lua                   theme, colors, panels, dashboard, notifications
     presets/{default,compact,minimal}.lua
@@ -79,7 +79,7 @@ Deviations from the original proposal, and why:
   `ui/explorer.lua` rather than `ui/components/`. Terminal behaviour is a
   feature (`features/terminal.lua`). A separate `layout.lua` was not needed:
   presets are plain configuration tables merged by `core/config.lua`.
-- `:Wraith` commands live only in `config/commands.lua`, so there is no
+- User commands live only in `config/commands.lua`, so there is no
   duplicate `features/commands.lua`.
 - `integrations/` holds one file per integration; subdirectories would add
   nothing.
@@ -122,7 +122,7 @@ Deviations from the original proposal, and why:
 | gitsigns.nvim | signs, hunks, blame | first file opened |
 | vim-fugitive | Git porcelain | `:Git` and Git keys |
 | diffview.nvim | diffs, history | `:Diffview*` and Git keys |
-| nvim-treesitter (`main`) | parser installation | `:TSInstall`, `:WraithTSInstall` |
+| nvim-treesitter (`main`) | parser installation | `:TSInstall`, `:InstallParsers` |
 | conform.nvim | formatting | first save, format keys |
 
 LuaSnip was not added: blink.cmp expands snippets with Neovim's built-in

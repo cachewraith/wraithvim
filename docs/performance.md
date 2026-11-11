@@ -45,7 +45,7 @@ scripts/benchmark.sh --dev           # this checkout in the .tests sandbox (make
 scripts/benchmark.sh --startup-only --runs 30
 ```
 
-`:WraithBenchmark` runs the same script in a terminal split. `:WraithProfile`
+`:Benchmark` runs the same script in a terminal split. `:Profile`
 opens lazy.nvim's profiler.
 
 The script reports:

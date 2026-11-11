@@ -275,7 +275,7 @@ install_distribution() {
   fi
 
   if [[ -e "$TARGET" ]] && is_wraithvim_tree "$TARGET"; then
-    ok "WraithVim already installed (update with :WraithUpdate or git -C \"$TARGET\" pull --ff-only)"
+    ok "WraithVim already installed (update with :Update or git -C \"$TARGET\" pull --ff-only)"
     return
   fi
 
@@ -314,7 +314,7 @@ install_distribution() {
     fi
     ok "cloned $repo"
   else
-    warn "this copy is not a Git checkout; copying files (:WraithUpdate will be unavailable)"
+    warn "this copy is not a Git checkout; copying files (:Update will be unavailable)"
     run mkdir -p -- "$TARGET"
     if ((DRY_RUN)); then
       printf '  [dry-run] copy %s -> %s (excluding .tests)\n' "$SCRIPT_DIR" "$TARGET"
@@ -493,7 +493,7 @@ main() {
   else
     printf '  Start WraithVim with: NVIM_APPNAME=%s nvim\n' "$APPNAME"
   fi
-  printf '  Then run :WraithHealth. Personal settings live in %s/wraithvim/\n' "$CONFIG_HOME"
+  printf '  Then run :Health. Personal settings live in %s/wraithvim/\n' "$CONFIG_HOME"
 }
 
 main "$@"

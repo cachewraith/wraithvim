@@ -48,7 +48,8 @@ describe("config.keymaps", function()
     assert.is_string(doc)
     for _, list in ipairs({ keymaps.defaults(), keymaps.lsp() }) do
       for _, e in ipairs(list) do
-        assert.is_truthy(doc:find("`" .. e[2] .. "`", 1, true), e[2] .. " not documented")
+        local documented = doc:find("`" .. e[2] .. "`", 1, true) or doc:find("`` " .. e[2] .. " ``", 1, true)
+        assert.is_truthy(documented, e[2] .. " not documented")
       end
     end
   end)

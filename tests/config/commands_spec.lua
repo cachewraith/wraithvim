@@ -3,12 +3,12 @@ local env = require("tests.helpers.env")
 describe("config.commands", function()
   local commands = require("wraithvim.config.commands")
 
-  it("creates every :Wraith command", function()
+  it("creates every WraithVim command", function()
     commands.setup()
     local existing = vim.api.nvim_get_commands({})
     for name in pairs(commands.definitions()) do
       assert.is_truthy(existing[name], name .. " was not created")
-      assert.matches("^Wraith", name)
+      assert.matches("^%u%w*$", name) -- user commands must start with an uppercase letter
     end
   end)
 

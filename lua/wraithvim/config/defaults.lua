@@ -35,7 +35,7 @@ return {
       highlight = true,
       indent = false, -- nvim-treesitter indentation is experimental upstream
       folds = false,
-      -- Parsers installed by :WraithTSInstall in addition to those of enabled languages.
+      -- Parsers installed by :InstallParsers in addition to those of enabled languages.
       extra_parsers = { "markdown", "markdown_inline", "vim", "vimdoc", "query", "json", "toml", "diff", "gitcommit" },
       -- Filetypes highlighted when a parser is present, in addition to enabled languages.
       extra_filetypes = { "markdown", "vim", "help", "query", "json", "jsonc", "toml", "diff", "gitcommit" },
@@ -43,7 +43,7 @@ return {
     mason = {
       -- Optional. When enabled, Mason's bin directory is appended to PATH so
       -- system-installed tools keep priority. Nothing is installed without
-      -- running :WraithInstallTools and confirming.
+      -- running :InstallTools and confirming.
       enabled = false,
     },
     -- Extra Neovim options applied after WraithVim's defaults, e.g. { relativenumber = true }.

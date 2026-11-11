@@ -1,6 +1,6 @@
 # Customization recipes
 
-All examples go in `~/.config/wraithvim/`. Open it with `:WraithConfig`.
+All examples go in `~/.config/wraithvim/`. Open it with `:Config`.
 Restart Neovim after changes. The full key reference is in
 [configuration.md](configuration.md).
 
@@ -30,8 +30,8 @@ return { opt = { relativenumber = true, wrap = true } }
 return { format = { on_save = true, timeout_ms = 2000 } }
 ```
 
-Toggle at runtime with `<leader>cF` / `:WraithFormatToggle`, or only for the
-current buffer with `:WraithFormatToggle!`.
+Toggle at runtime with `<leader>cF` / `:FormatToggle`, or only for the
+current buffer with `:FormatToggle!`.
 
 ## A quieter, smaller UI
 
@@ -137,7 +137,7 @@ return {
 return { mason = { enabled = true } }
 ```
 
-Then run `:WraithInstallTools`. It lists the missing servers and formatters
+Then run `:InstallTools`. It lists the missing servers and formatters
 for your enabled languages and installs them only after you confirm. Tools
 already on your `PATH` are always preferred.
 

@@ -9,7 +9,7 @@ Treesitter parsers, language servers (nvim-lspconfig names) and formatters
 1. A profile is **enabled** unless `languages.lua` disables it.
 2. When the first file is opened, WraithVim checks each enabled server's
    executable on `PATH`. Present → `vim.lsp.enable(server)`. Missing → recorded
-   for `:WraithHealth`, and a one-time hint appears when you open a matching
+   for `:Health`, and a one-time hint appears when you open a matching
    file.
 3. Neovim starts a server only when a buffer of one of its filetypes opens,
    with the project root found by nvim-lspconfig's root markers.
@@ -106,7 +106,7 @@ return { mason = { enabled = true } }
 With Mason enabled:
 
 - Mason's `bin` directory is **appended** to `PATH`, so system installs still win.
-- `:WraithInstallTools` lists the missing servers and formatters of your
+- `:InstallTools` lists the missing servers and formatters of your
   enabled languages and installs them **after you confirm**. Restart Neovim
   afterwards.
 - `:Mason` opens Mason's own UI.
@@ -124,13 +124,13 @@ Neovim's regex syntax highlighting applies.
 Install parsers explicitly:
 
 ```vim
-:WraithTSInstall              " parsers of enabled languages + extra_parsers that are missing
-:WraithTSInstall rust toml    " specific parsers
+:InstallParsers              " parsers of enabled languages + extra_parsers that are missing
+:InstallParsers rust toml    " specific parsers
 :TSUpdate                     " update installed parsers (also runs after plugin updates)
 ```
 
 This uses nvim-treesitter's `main` branch and requires the **tree-sitter CLI
-≥ 0.26.1**, a C compiler, `curl` and `tar`. `:WraithTSInstall` reports exactly
+≥ 0.26.1**, a C compiler, `curl` and `tar`. `:InstallParsers` reports exactly
 what is missing. Parsers go to `~/.local/share/nvim/site/parser`.
 
 Treesitter folding (`treesitter.folds`) and indentation

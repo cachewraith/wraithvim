@@ -1,7 +1,7 @@
 # Keymaps
 
 Leader is <kbd>Space</kbd>, local leader is `\`. Press `<leader>?` (or run
-`:WraithKeys`) for an in-editor cheatsheet, or `<leader>fk` to fuzzy-search
+`:Keys`) for an in-editor cheatsheet, or `<leader>fk` to fuzzy-search
 every mapping.
 
 All mappings live in one registry, `lua/wraithvim/config/keymaps.lua`; a test
@@ -97,6 +97,8 @@ Neovim's own defaults remain available, for example `K` (hover), `grn`
 | `<leader>tv` | n | Terminal in vertical split | |
 | `<leader>tf` | n | Floating terminal | |
 | `<leader>tc` | n | Close terminal | |
+| `` <C-S-`> `` | n, i, t | Open terminal at the bottom (`` Ctrl+Shift+` ``) | |
+| `<C-~>` | n, i, t | Same key as reported by some terminals | |
 
 ### Diagnostics
 
@@ -223,6 +225,9 @@ a terminal with that protocol (kitty, foot, WezTerm, Ghostty, Alacritty);
 every action also has a key that works everywhere (for example `F1`,
 `Ctrl+PgDn`, `<leader>ca`, `<leader>fg`).
 
+`` Ctrl+Shift+` `` (open the terminal at the bottom) works in every preset;
+see the Terminal table above.
+
 | Keys | Action | Modes |
 |---|---|---|
 | `<C-p>` | Quick open file | normal |
@@ -234,7 +239,7 @@ every action also has a key that works everywhere (for example `F1`,
 | `<C-n>` | New file | normal |
 | `<C-b>` | Toggle explorer | normal |
 | `<C-S-e>` | Show file in explorer | normal |
-| `<C-`>` | Toggle terminal | normal, terminal |
+| `` <C-`> `` | Toggle terminal | normal, terminal |
 | `<C-Space>` | Toggle terminal (Ctrl+` in classic terminals) | normal, terminal |
 | `<C-\>` | Split editor right | normal |
 | `<C-S-g>` | Source control | normal |
