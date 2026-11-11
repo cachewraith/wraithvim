@@ -10,13 +10,12 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Install LuaJIT
-        run: sudo apt-get update && sudo apt-get install -y luajit
       - name: Install pinned StyLua, Luacheck, ShellCheck
         run: make tools
-      - name: Lua and shell syntax
+      - name: Shell syntax
         run: make syntax
       - name: Luacheck
         run: make luacheck

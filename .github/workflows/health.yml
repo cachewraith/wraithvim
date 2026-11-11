@@ -15,6 +15,7 @@ env:
 jobs:
   health:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Install Neovim ${{ env.NVIM_VERSION }}
@@ -52,13 +53,15 @@ jobs:
           - fedora:latest
           - kalilinux/kali-rolling
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container: ${{ matrix.image }}
     steps:
-      - name: Install git, curl and tar
+      - name: Install git, curl, tar and user tools
         run: |
           if command -v pacman >/dev/null; then pacman -Syu --noconfirm git curl tar gzip
-          elif command -v apt-get >/dev/null; then apt-get update && apt-get install -y git curl tar gzip ca-certificates
-          elif command -v dnf >/dev/null; then dnf install -y git curl tar gzip
+          elif command -v apt-get >/dev/null; then
+            apt-get -o Acquire::Retries=5 update && apt-get -o Acquire::Retries=5 install -y git curl tar gzip ca-certificates
+          elif command -v dnf >/dev/null; then dnf install -y git curl tar gzip util-linux shadow-utils
           fi
       - uses: actions/checkout@v4
       - name: Install Neovim ${{ env.NVIM_VERSION }}

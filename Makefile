@@ -74,9 +74,8 @@ format-check:
 shellcheck:
 	shellcheck $(SHELL_SOURCES)
 
-## syntax: byte-compile every Lua file and parse every shell script
+## syntax: parse every shell script (Lua syntax errors are reported by luacheck)
 syntax:
-	@find init.lua lua tests scripts -name '*.lua' -print0 | xargs -0 -n1 luajit -bl >/dev/null
 	@for f in $(SHELL_SOURCES); do bash -n "$$f"; done
 	@echo "syntax ok"
 
