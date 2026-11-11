@@ -31,7 +31,7 @@ end
 local function source_repo()
   local dir = gh.repo()
   local r = vim
-    .system({ "bash", "-c", 'tar -C "$1" --exclude=./.tests -cf - . | tar -C "$2" -xf -', "_", env.root, dir })
+    .system({ "bash", "-c", 'tar -C "$1" --exclude=./.tests --exclude=./.git -cf - . | tar -C "$2" -xf -', "_", env.root, dir })
     :wait()
   assert(r.code == 0, r.stderr)
   gh.commit_all(dir, "snapshot")
