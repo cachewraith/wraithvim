@@ -6,6 +6,24 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-12
+
+### Added
+
+- Easier file creation. The explorer header has **File** and **Folder**
+  buttons (plus Refresh and Collapse All), right-clicking an explorer item
+  opens a file menu (New File, New Folder, Open to the Side, Rename, Delete,
+  Copy Path), and `Space n` / `Space Shift+N` (`:NewFile` / `:NewFolder`)
+  create a file or folder next to the current file from anywhere.
+- The prompt starts with the target folder, so you only type the name.
+  Nested names such as `api/v2/routes.lua` create the missing folders.
+- Option `explorer = { header = true }`.
+
+### Changed
+
+- `a` / `A` in the explorer use the same prompt, and the new file opens right
+  away. Existing files are opened, never overwritten.
+
 ## [0.7.0] - 2026-11-12
 
 ### Added
@@ -200,7 +218,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...v0.6.0

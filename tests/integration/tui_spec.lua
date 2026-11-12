@@ -27,7 +27,8 @@ local function line_pos(t, win, lnum)
     local win, lnum = ...
     local pos = vim.api.nvim_win_get_position(win)
     local top = vim.fn.line("w0", win)
-    return { pos[1] + (lnum - top), pos[2] }
+    local winbar = vim.wo[win].winbar ~= "" and 1 or 0
+    return { pos[1] + winbar + (lnum - top), pos[2] }
   ]],
     win,
     lnum
@@ -129,6 +130,46 @@ describe("TUI", function()
       t:wait_for(("vim.api.nvim_buf_line_count(vim.api.nvim_win_get_buf(%d)) > %d"):format(win, before), 2000)
     )
     assert.is_truthy(tree_line(t, "gamma.lua"))
+  end)
+
+  it("creates files from the explorer header, the right-click menu and the a key", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    t:sleep(500)
+    local win = tree_win(t)
+    local header =
+      t:lua("return vim.api.nvim_eval_statusline(vim.wo[...].winbar, { winid = ..., use_winbar = true }).str", win)
+    assert.matches("File", header)
+    assert.matches("Folder", header)
+
+    -- Header button: creates in the project root, nested folders included.
+    local pos = t:lua("return vim.api.nvim_win_get_position(...)", win)
+    t:click(pos[1], pos[2] + 3)
+    assert.is_true(t:wait_for("vim.fn.mode() == 'c'", 2000))
+    t:keys("made/new.lua<CR>")
+    assert.is_true(t:wait_for("vim.fn.expand('%:.') == 'made/new.lua'", 3000))
+    assert.equals(1, t:lua("return vim.fn.filereadable('made/new.lua')"))
+
+    -- Right click on a folder, first menu item (New File): prompt starts in it.
+    local lnum = tree_line(t, "sub")
+    local p = line_pos(t, win, lnum)
+    t:click(p[1], p[2] + 6, "right")
+    t:sleep(300)
+    t:send("\27[B") -- Down as one escape sequence (keys() would split off the Esc)
+    t:sleep(100)
+    t:send("\r")
+    assert.is_true(t:wait_for("vim.fn.mode() == 'c' and vim.fn.getcmdline() == 'sub/'", 2000))
+    t:keys("menu.lua<CR>")
+    assert.is_true(t:wait_for("vim.fn.expand('%:.') == 'sub/menu.lua'", 3000))
+
+    -- a on a tree item.
+    t:lua("vim.api.nvim_set_current_win(...)", win)
+    t:wait_for(("vim.api.nvim_get_current_win() == %d"):format(win), 1000)
+    t:lua("vim.api.nvim_win_set_cursor(0, { ..., 0 })", tree_line(t, "sub"))
+    t:keys("a")
+    assert.is_true(t:wait_for("vim.fn.mode() == 'c' and vim.fn.getcmdline() == 'sub/'", 2000))
+    t:keys("key.lua<CR>")
+    assert.is_true(t:wait_for("vim.fn.expand('%:.') == 'sub/key.lua'", 3000))
   end)
 
   it("resizes the explorer by dragging its separator without opening files", function()

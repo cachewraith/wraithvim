@@ -75,7 +75,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.7.0`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.8.0`. `:Update` follows the
 `main` branch.
 
 Prefer a download? Every release has
@@ -128,6 +128,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `Space e` | Explorer | `Space g d` | Diff all changes |
 | `Space t` | Terminal | `Space g c` | Commit |
 | `Space x` | Close tab | `Space g b` | Switch branch |
+| `Space n` | **New file** | `Space Shift+N` | New folder |
 | `Space ,` | Switch tab | `Space u u` | Update WraithVim |
 | `Space q` | Quit | `Space u h` | Health check |
 | `Space p` | **Search actions by name** | `Space ?` | All keys |
@@ -148,6 +149,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `:Actions` | Search and run any action by name (also `Space p`, `F1`) |
 | `:Explorer` / `:FindFile` / `:Search` | Toggle explorer / find a file / search text in the project |
 | `:CloseTab` | Close the current tab |
+| `:NewFile` / `:NewFolder` | New file / folder next to the current file (asks for the name) |
 | `:Keys` | Keymap cheatsheet |
 | `:Notifications` | Notification history |
 | `:BufferCleanup` | Delete hidden, unmodified buffers |

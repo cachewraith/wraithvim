@@ -47,6 +47,21 @@ function M.opts()
     ["h"] = "close_node",
     -- Keep <Space> free for the leader key inside the tree.
     ["<space>"] = "none",
+    -- New file / folder in the folder under the cursor; the prompt shows it.
+    ["a"] = {
+      function(state)
+        local files = require("wraithvim.features.files")
+        files.new_file(files.folder_at(state))
+      end,
+      desc = "New file",
+    },
+    ["A"] = {
+      function(state)
+        local files = require("wraithvim.features.files")
+        files.new_folder(files.folder_at(state))
+      end,
+      desc = "New folder",
+    },
     ["}"] = {
       function(state)
         M.jump_folder(state, 1)
@@ -99,6 +114,22 @@ function M.opts()
       modified = { symbol = nerd and "●" or "[+]" },
       git_status = git_symbols and { symbols = git_symbols } or nil,
     },
+    event_handlers = {
+      {
+        event = "neo_tree_window_after_open",
+        handler = function(args)
+          local win = args and args.winid
+          if
+            ex.header
+            and win
+            and vim.api.nvim_win_is_valid(win)
+            and vim.api.nvim_win_get_config(win).relative == ""
+          then
+            vim.wo[win].winbar = "%{%v:lua.require'wraithvim.features.files'.header()%}"
+          end
+        end,
+      },
+    },
     window = {
       position = ex.position,
       width = ex.width,
@@ -112,7 +143,7 @@ function M.opts()
         hide_by_name = ex.hide,
       },
       follow_current_file = { enabled = true },
-      -- No filesystem watchers: the tree refreshes on writes and focus.
+      -- inotify watches on the folders shown (no polling).
       use_libuv_file_watcher = ex.watch,
       hijack_netrw_behavior = "open_current",
     },

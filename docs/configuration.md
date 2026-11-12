@@ -112,6 +112,7 @@ return {
     git_status = true,
     diagnostics = false,
     watch = true,                    -- update the tree when files change outside Neovim
+    header = true,                   -- New File / New Folder / Refresh / Collapse buttons above the tree
     hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
   },
   tabline = {

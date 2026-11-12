@@ -18,6 +18,8 @@ function M.define_highlights()
     WraithTermTitle = "Title",
     WraithTermInfo = "Comment",
     WraithTermButton = "Special",
+    WraithTreeButton = "Special",
+    WraithTreeIcon = "Comment",
   }
   for group, target in pairs(links) do
     vim.api.nvim_set_hl(0, group, { link = target, default = true })

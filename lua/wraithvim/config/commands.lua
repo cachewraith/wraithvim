@@ -92,6 +92,8 @@ function M.definitions()
     FindFile = { call("wraithvim.features.search", "find_files"), { desc = "Find a file by name" } },
     Search = { call("wraithvim.features.search", "live_grep"), { desc = "Search text in the project" } },
     DiffDisk = { call("wraithvim.features.autoreload", "diff_disk"), { desc = "Compare buffer with file on disk" } },
+    NewFile = { call("wraithvim.features.files", "new_file"), { desc = "New file next to the current one" } },
+    NewFolder = { call("wraithvim.features.files", "new_folder"), { desc = "New folder next to the current file" } },
     CloseTab = { call("wraithvim.features.buffers", "delete"), { desc = "Close the current tab (buffer)" } },
     GitGraph = { call(g, "graph"), { desc = "Commit graph of the current branch" } },
     GitGraphAll = { call(g, "graph", true), { desc = "Commit graph of all branches" } },

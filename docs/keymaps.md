@@ -42,6 +42,8 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Space , | Switch tab | `<leader>,` | n |
 | Space e | Explorer | `<leader>e` | n |
 | Space Shift+E | Show file in explorer | `<leader>E` | n |
+| Space n | New file (here) | `<leader>n` | n |
+| Space Shift+N | New folder (here) | `<leader>N` | n |
 | Space t | Terminal | `<leader>t` | n |
 | Space x | Close tab | `<leader>x` | n |
 | Space q | Quit (asks to save) | `<leader>q` | n |
@@ -227,7 +229,8 @@ with `scroll = { wheel = 10 }` in `options.lua`.
 | Explorer | `h` | Collapse directory |
 | Explorer | `}` / `{` | Next / previous folder |
 | Explorer | `z` | Collapse all folders |
-| Explorer | `a` / `A` | Add file (end with `/` for a directory) / add directory |
+| Explorer | `a` / `A` | New file / new folder in the folder under the cursor (nested paths like `api/v2/x.lua` work) |
+| Explorer | right click | Menu: New File, New Folder, Open to the Side, Rename, Delete, Copy Path, Refresh, Collapse All |
 | Explorer | `r`, `d`, `c`, `m` | Rename, delete, copy, move |
 | Explorer | `y`, `x`, `p` | Copy, cut, paste via the explorer clipboard |
 | Explorer | `H`, `R`, `?` | Toggle hidden files, refresh, help |
@@ -365,6 +368,8 @@ tests that send real terminal mouse sequences (`tests/integration/tui_spec.lua`)
 | Buffer tabs | Middle click, or click the close icon | Close the buffer (asks to save if modified) |
 | Explorer | Single click on a file | Open it |
 | Explorer | Single click on a directory | Expand / collapse it |
+| Explorer header | Click **File** / **Folder** | New file / folder in the selected folder |
+| Explorer | Right click | File menu (New File, New Folder, Rename, Delete, …) |
 | Window separators, explorer edge | Drag | Resize splits and panels |
 | Any window | Wheel | Scroll 6 lines per notch (`options.scroll`) |
 | Text | Drag | Visual selection |

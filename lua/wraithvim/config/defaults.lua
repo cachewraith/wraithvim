@@ -89,6 +89,8 @@ return {
       diagnostics = false,
       -- Update the tree when files are created or deleted outside Neovim.
       watch = true,
+      -- Buttons above the tree: New File, New Folder, Refresh, Collapse All.
+      header = true,
       hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
     },
     tabline = {

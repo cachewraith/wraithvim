@@ -18,6 +18,12 @@ function M.focus()
   execute({ action = "focus", source = "filesystem" })
 end
 
+--- Focus the tree with `path` (file or folder) selected.
+---@param path string
+function M.show_path(path)
+  execute({ action = "focus", source = "filesystem", reveal_file = path })
+end
+
 --- Reveal the current file in the tree.
 function M.reveal()
   execute({ action = "focus", source = "filesystem", reveal = true })

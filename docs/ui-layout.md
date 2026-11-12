@@ -57,6 +57,21 @@ Set `icons = { nerd_font = false }`. WraithVim then uses ASCII markers (`E`,
 tabline, statusline and Telescope, and drops powerline separators. The
 installer chooses this automatically when `fc-list` finds no Nerd Font.
 
+## Creating files and folders
+
+Any of these opens a prompt that already contains the target folder, for
+example `src/components/`. Type the name and press <kbd>Enter</kbd>:
+
+- click **File** or **Folder** in the explorer header (creates in the selected folder)
+- right click a folder or file in the explorer, then **New File** / **New Folder**
+- press `a` (file) or `A` (folder) on an explorer item
+- press `Space n` / `Space Shift+N` anywhere (creates next to the current file)
+
+A name with slashes such as `api/v2/routes.lua` creates the missing folders,
+and a name ending in `/` creates a folder. The new file opens straight away.
+If the file already exists it is opened, never overwritten. Press
+<kbd>Esc</kbd> to cancel.
+
 ## Resizing panels
 
 - Drag any window separator with the mouse, including the explorer edge.

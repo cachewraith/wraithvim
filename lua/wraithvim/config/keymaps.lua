@@ -126,6 +126,8 @@ function M.defaults()
     { "n", "<leader>,", pick("buffers"), desc = "Switch tab", plugin = "telescope.nvim" },
     { "n", "<leader>e", call(x, "toggle"), desc = "Explorer", plugin = "neo-tree.nvim" },
     { "n", "<leader>E", call(x, "reveal"), desc = "Show file in explorer", plugin = "neo-tree.nvim" },
+    { "n", "<leader>n", call("wraithvim.features.files", "new_file"), desc = "New file (here)" },
+    { "n", "<leader>N", call("wraithvim.features.files", "new_folder"), desc = "New folder (here)" },
     { "n", "<leader>t", call(t, "toggle"), desc = "Terminal" },
     { "n", "<leader>x", call(b, "delete"), desc = "Close tab" },
     { "n", "<leader>q", cmd("confirm qall"), desc = "Quit (asks to save)" },
