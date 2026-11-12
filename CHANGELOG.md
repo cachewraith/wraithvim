@@ -6,6 +6,8 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-11-12
+
 ### Added
 
 - Side panel: a column beside the editor (right by default, or left) that
@@ -19,6 +21,40 @@ All notable changes to WraithVim are documented here. The format follows
   explorer. The VS Code preset adds `Ctrl+1`, `Ctrl+0` and `Ctrl+Alt+B`.
 - `:Terminal right` (or any other place) moves a visible terminal there with
   the same shell; hidden, it comes back where it was.
+
+### Fixed
+
+- `uninstall.sh --dir path/` with a trailing slash could delete the contents
+  of a checkout installed with `--link`; it now removes only the link.
+- Git actions on files with `[`, `*` or `?` in their name (e.g. Next.js
+  `[id].tsx`) could also stage, unstage or delete files with similar names.
+  Resolving a "deleted by them" conflict could remove unrelated files.
+- `install.sh --dir ~/.config/nvim` is refused instead of producing a broken
+  install; a failed clone puts back what it moved aside, and archives
+  extracted inside another Git folder install again.
+- Merge conflicts in Windows (CRLF) files are found, so they are no longer
+  staged with conflict markers; a `========` Markdown underline is no longer
+  mistaken for a conflict separator.
+- Syntax colors for `.tsx`, `.jsx`, shell scripts, C#, `tsconfig.json` and
+  other files whose filetype differs from their parser name.
+- Hiding the terminal from another tab no longer empties the file in that tab;
+  "New terminal" works when the terminal is floating.
+- The VS Code preset no longer replaces keys you map yourself in
+  `keymaps.lua`; `mapleader`, clipboard and other options set directly in
+  `options.lua` are no longer overwritten.
+- `:'<,'>Format` includes the last selected line with language servers.
+- `:Update` reinstalls the pinned plugins after resetting `lazy-lock.json`.
+- Staging a new, unsaved file in another repository than the current folder.
+- Text search after changing folder without ripgrep installed.
+- Custom language profiles without a `description` no longer break the
+  install prompt, and their servers attach only to their own filetypes.
+- Notifications from mappings no longer error; wide (CJK) text wraps to the
+  window; `%` in folder or branch names no longer breaks the tabline.
+- The statusline updates after `:set ff=…`, `:file` and `cd` in the terminal.
+- Command completion narrows to what you typed; `keymaps.disable` matches
+  keys however they are written; a misspelled language name turned off in
+  `languages.lua` is reported; older Neovim versions show the "requires
+  0.12" message instead of an error.
 
 ## [0.12.0] - 2026-11-12
 
@@ -303,7 +339,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...v0.10.1
