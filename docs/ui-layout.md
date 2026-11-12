@@ -50,6 +50,22 @@
 - Dashboard content is centred and recomputed on resize.
 - Splits are rebalanced when the terminal is resized.
 
+## Icons
+
+The explorer uses the look of VS Code's Material Icon Theme. Folders get an
+icon and color by name: `src` green, `docs` blue, `tests` teal, `scripts`
+amber, `.github`, `.git`, `node_modules`, `config`, `assets`, `dist`, `lib`,
+`utils`, `types`, `components`, `api`, `db`, `styles` and more each have their
+own. Other folders are blue-grey. Files use nvim-web-devicons' colored icons,
+and `README`, `CHANGELOG`, `LICENSE`, `CONTRIBUTING`, `CODE_OF_CONDUCT` and
+`SECURITY` get their Material icons.
+
+Change a color with `ui.colors` in `ui.lua`, for example
+`colors = { WraithIconGreen = { fg = "#a6e3a1" } }`. The groups are
+`WraithIconFolder` (other folders) and `WraithIconGreen`, `Lime`, `Teal`,
+`Cyan`, `Blue`, `Indigo`, `Purple`, `Pink`, `Red`, `Orange`, `Amber`, `Brown`,
+`Slate`.
+
 ## Without a Nerd Font
 
 Set `icons = { nerd_font = false }`. WraithVim then uses ASCII markers (`E`,

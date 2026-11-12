@@ -110,6 +110,8 @@ function M.opts()
         folder_empty = ic.folder.empty,
         folder_empty_open = ic.folder.empty_open,
         default = ic.file,
+        -- Material Icon Theme style: folder icons and colors by name.
+        provider = nerd and require("wraithvim.ui.material").provider or nil,
       },
       modified = { symbol = nerd and "●" or "[+]" },
       git_status = git_symbols and { symbols = git_symbols } or nil,

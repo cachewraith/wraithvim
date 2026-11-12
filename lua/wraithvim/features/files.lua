@@ -258,7 +258,9 @@ function M.header()
   local function button(fn, label)
     return ("%%@v:lua.require'wraithvim.features.files'.%s@%s%%X"):format(fn, label)
   end
-  local l = nerd and { file = " 󰝒 File ", folder = " 󰉗 Folder ", refresh = " 󰑓 ", collapse = " 󰘕 " }
+  -- md-file_plus, md-folder_plus, md-reload, md-arrow_collapse
+  local l = nerd
+      and { file = " \u{f0752} File ", folder = " \u{f0257} Folder ", refresh = " \u{f0453} ", collapse = " \u{f0615} " }
     or { file = " +File ", folder = " +Folder ", refresh = " R ", collapse = " - " }
   return table.concat({
     "%#WraithTreeButton#",

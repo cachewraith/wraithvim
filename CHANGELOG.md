@@ -6,6 +6,24 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-12
+
+### Added
+
+- Material Icon Theme look in the explorer: folders get an icon and color by
+  name (`src`, `docs`, `tests`, `scripts`, `.github`, `.git`, `node_modules`,
+  `config`, `assets`, `dist`, `lib`, `utils`, `types`, `api`, `styles`, …), and
+  `README`, `CHANGELOG`, `LICENSE`, `CONTRIBUTING` get their Material icons.
+  Colors can be changed through `WraithIcon*` highlight groups.
+
+### Fixed
+
+- Nerd Font icons that were blank: folder icons in the explorer, the default
+  file icon, diagnostic and Git status signs, terminal header and dashboard
+  icons, and the rounded statusline separators. Glyphs are now stored as
+  `\u{...}` escapes so they cannot be stripped again, and a test fails if any
+  icon is empty.
+
 ## [0.8.0] - 2026-11-12
 
 ### Added
@@ -218,7 +236,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...v0.6.1

@@ -3,44 +3,57 @@
 
 local M = {}
 
+-- Nerd Font glyphs are written as \u{...} escapes so the source stays ASCII:
+-- private-use characters are easily lost by editors and tools. Names are
+-- from https://www.nerdfonts.com/cheat-sheet.
 M.nerd = {
-  diagnostics = { Error = " ", Warn = " ", Info = " ", Hint = "󰌵 " },
-  git = {
-    added = " ",
-    modified = " ",
-    removed = " ",
-    renamed = "󰁕",
-    untracked = "",
-    ignored = "◌",
-    unstaged = "󰄱",
-    staged = "",
-    conflict = "",
-    branch = "",
+  diagnostics = {
+    Error = "\u{f057} ", -- fa-times_circle
+    Warn = "\u{f071} ", -- fa-warning
+    Info = "\u{f05a} ", -- fa-info_circle
+    Hint = "\u{f0335} ", -- md-lightbulb
   },
-  signs = { add = "▎", change = "▎", delete = "", topdelete = "", changedelete = "▎", untracked = "▎" },
-  folder = { closed = "", open = "", empty = "", empty_open = "" },
-  file = "",
+  git = {
+    added = "\u{f457} ", -- oct-diff_added
+    modified = "\u{f459} ", -- oct-diff_modified
+    removed = "\u{f458} ", -- oct-diff_removed
+    renamed = "\u{f0055}", -- md-arrow_right_thick
+    untracked = "\u{f005}", -- fa-star
+    ignored = "◌",
+    unstaged = "\u{f0131}", -- md-checkbox_blank_outline
+    staged = "\u{f00c}", -- fa-check
+    conflict = "\u{e727}", -- dev-git_merge
+    branch = "\u{e0a0}", -- pl-branch
+  },
+  signs = { add = "▎", change = "▎", delete = "▁", topdelete = "▔", changedelete = "▎", untracked = "▎" },
+  folder = {
+    closed = "\u{f024b}", -- md-folder
+    open = "\u{f0770}", -- md-folder_open
+    empty = "\u{f0256}", -- md-folder_outline
+    empty_open = "\u{f0dcf}", -- md-folder_open_outline
+  },
+  file = "\u{f0214}", -- md-file
   modified = "●",
-  close = "󰅖",
-  lsp = "",
-  terminal = "",
-  term_new = "",
-  term_hide = "",
-  term_kill = "",
-  prompt = "  ",
-  caret = " ",
-  trunc_left = "",
-  trunc_right = "",
+  close = "\u{f0156}", -- md-close
+  lsp = "\u{f085}", -- fa-cogs
+  terminal = "\u{f120}", -- fa-terminal
+  term_new = "\u{f067}", -- fa-plus
+  term_hide = "\u{f068}", -- fa-minus
+  term_kill = "\u{f00d}", -- fa-times
+  prompt = "\u{f002}  ", -- fa-search
+  caret = "\u{f054} ", -- fa-chevron_right
+  trunc_left = "\u{f104}", -- fa-angle_left
+  trunc_right = "\u{f105}", -- fa-angle_right
   dashboard = {
-    find = "󰈞 ",
-    recent = " ",
-    grep = "󰊄 ",
-    new = " ",
-    explorer = " ",
-    config = " ",
-    plugins = "󰒲 ",
-    health = " ",
-    quit = " ",
+    find = "\u{f021e} ", -- md-file_find
+    recent = "\u{f1da} ", -- fa-history
+    grep = "\u{f0284} ", -- md-format_text
+    new = "\u{f15b} ", -- fa-file
+    explorer = "\u{f07c} ", -- fa-folder_open
+    config = "\u{f013} ", -- fa-gear
+    plugins = "\u{f04b2} ", -- md-sleep (lazy.nvim)
+    health = "\u{f21e} ", -- fa-heartbeat
+    quit = "\u{f011} ", -- fa-power_off
   },
 }
 
@@ -101,11 +114,17 @@ function M.separators(style, nerd)
     return { component = { left = "", right = "" }, section = { left = "", right = "" } }
   end
   if style == "slant" then
-    return { component = { left = "", right = "" }, section = { left = "", right = "" } }
+    return {
+      component = { left = "\u{e0b9}", right = "\u{e0bb}" }, -- ple-backslash / forwardslash_separator
+      section = { left = "\u{e0bc}", right = "\u{e0ba}" }, -- ple-upper_left / lower_right_triangle
+    }
   elseif style == "round" then
-    return { component = { left = "", right = "" }, section = { left = "", right = "" } }
+    return {
+      component = { left = "\u{e0b5}", right = "\u{e0b7}" }, -- ple-right / left_half_circle_thin
+      section = { left = "\u{e0b4}", right = "\u{e0b6}" }, -- ple-right / left_half_circle_thick
+    }
   end
-  return { component = { left = "│", right = "│" }, section = { left = "", right = "" } }
+  return { component = { left = "│", right = "│" }, section = { left = "\u{e0b4}", right = "\u{e0b6}" } }
 end
 
 return M

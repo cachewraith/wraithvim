@@ -24,6 +24,7 @@ function M.define_highlights()
   for group, target in pairs(links) do
     vim.api.nvim_set_hl(0, group, { link = target, default = true })
   end
+  require("wraithvim.ui.material").define_highlights()
 end
 
 --- Apply `ui.colors` overrides. Runs after every :colorscheme.
