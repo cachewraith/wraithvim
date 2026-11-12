@@ -34,6 +34,10 @@ quiet when idle, and recognisably Neovim.
   No background indexing and no update checker.
 - **Live files.** When an AI CLI, a formatter or `git checkout` changes an
   open file, it reloads on its own (OS file events, never your unsaved edits).
+- **29 languages, set up for you.** Open a Go, Rust, TypeScript, Python, …
+  file and WraithVim offers to install its language server, linter and
+  formatter: completion, errors as you type and formatting, no restart
+  ([languages](docs/languages.md)).
 - **Native first.** Built-in LSP client (`vim.lsp.config`/`vim.lsp.enable`),
   `vim.snippet`, `vim.treesitter`, built-in terminal.
 - **Mouse everywhere it works for real.** Click tabs, click files and folders,
@@ -50,7 +54,7 @@ quiet when idle, and recognisably Neovim.
 |---|---|
 | Required | Neovim **0.12+** (LuaJIT build), Git, Linux (x86_64; ARM64 where plugin binaries exist) |
 | Recommended | ripgrep, fd, a C compiler + make (fzf-native), a Nerd Font, a clipboard tool (wl-clipboard / xclip) |
-| Optional | tree-sitter CLI ≥ 0.26.1 (parser installation), language servers and formatters for your languages, Mason |
+| Optional | tree-sitter CLI ≥ 0.26.1 (syntax parsers); Node.js, Go, Python, … for the language tools that need them (installed on demand) |
 
 Supported and tested distributions: Arch Linux, EndeavourOS, Ubuntu, Debian,
 Fedora, Kali Linux. Nothing assumes a particular shell, terminal emulator,
@@ -75,7 +79,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.10.1`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.11.0`. `:Update` follows the
 `main` branch.
 
 Prefer a download? Every release has
@@ -174,7 +178,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `:Format` | Format buffer or range |
 | `:FormatToggle[!]` | Toggle format-on-save (`!` = this buffer only) |
 | `:InstallParsers [parsers]` | Install Treesitter parsers for enabled languages |
-| `:InstallTools` | Install missing tools with Mason (only when enabled; asks first) |
+| `:InstallTools` | Install every missing language server, linter and formatter with Mason (asks first) |
 
 ## Languages
 

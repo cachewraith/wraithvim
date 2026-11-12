@@ -111,7 +111,8 @@ end
 
 --- Install parsers (default: wanted parsers that are not installed yet).
 ---@param parsers? string[]
-function M.install(parsers)
+---@param attach? boolean highlight open buffers once installed
+function M.install(parsers, attach)
   local missing = M.missing_requirements()
   if #missing > 0 then
     vim.notify(
@@ -132,7 +133,16 @@ function M.install(parsers)
     return
   end
   vim.notify("Installing parsers: " .. table.concat(parsers, ", "), vim.log.levels.INFO, { title = "Treesitter" })
-  require("nvim-treesitter").install(parsers)
+  local task = require("nvim-treesitter").install(parsers)
+  if attach and task and task.await then
+    task:await(vim.schedule_wrap(function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then
+          pcall(M.attach, buf, vim.bo[buf].filetype)
+        end
+      end
+    end))
+  end
 end
 
 ---@param cfg table

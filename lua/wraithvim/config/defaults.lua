@@ -55,10 +55,15 @@ return {
       extra_filetypes = { "markdown", "vim", "help", "query", "json", "jsonc", "toml", "diff", "gitcommit" },
     },
     mason = {
-      -- Optional. When enabled, Mason's bin directory is appended to PATH so
-      -- system-installed tools keep priority. Nothing is installed without
-      -- running :InstallTools and confirming.
-      enabled = false,
+      -- Mason installs language servers, linters and formatters into
+      -- ~/.local/share/nvim/mason. Its bin directory is appended to PATH, so
+      -- tools you installed yourself keep priority.
+      enabled = true,
+      -- When you open a file whose tools are missing:
+      --   "ask"    offer to install them (once per language)
+      --   "always" install them right away
+      --   "never"  only show how to install them
+      auto_install = "ask",
     },
     -- Extra Neovim options applied after WraithVim's defaults, e.g. { relativenumber = true }.
     opt = {},
@@ -146,14 +151,33 @@ return {
   languages = {
     bash = { enabled = true },
     cpp = { enabled = true },
+    csharp = { enabled = true },
+    css = { enabled = true },
+    dart = { enabled = true },
+    docker = { enabled = true },
+    elixir = { enabled = true },
     go = { enabled = true },
+    graphql = { enabled = true },
+    html = { enabled = true },
     java = { enabled = true },
+    json = { enabled = true },
+    kotlin = { enabled = true },
     lua = { enabled = true },
+    markdown = { enabled = true },
+    nix = { enabled = true },
     php = { enabled = true },
+    prisma = { enabled = true },
     python = { enabled = true },
+    ruby = { enabled = true },
+    rust = { enabled = true },
     sql = { enabled = true },
+    svelte = { enabled = true },
+    swift = { enabled = true },
+    terraform = { enabled = true },
+    toml = { enabled = true },
     typescript = { enabled = true },
     yaml = { enabled = true },
+    zig = { enabled = true },
   },
 
   -- ~/.config/wraithvim/plugins.lua contributes `specs`; `disable` lists plugin names.

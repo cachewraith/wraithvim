@@ -70,7 +70,8 @@ return {
     extra_filetypes = { "markdown", "vim", "help", "query", "json", "jsonc", "toml", "diff", "gitcommit" },
   },
   mason = {
-    enabled = false,                -- see languages.md
+    enabled = true,                 -- install language tools with Mason (see languages.md)
+    auto_install = "ask",           -- on opening a file with missing tools: "ask" | "always" | "never"
   },
   opt = {},                         -- any vim option, e.g. { relativenumber = true, wrap = true }
 }

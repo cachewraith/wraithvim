@@ -14,7 +14,7 @@ function M.env(extra)
     XDG_DATA_HOME = M.sandbox .. "/data",
     XDG_STATE_HOME = M.sandbox .. "/state",
     XDG_CACHE_HOME = M.sandbox .. "/cache",
-    WRAITHVIM_CONFIG_DIR = M.sandbox .. "/empty-user-config",
+    WRAITHVIM_CONFIG_DIR = M.root .. "/tests/fixtures/config",
   }
   return vim.tbl_extend("force", env, extra or {})
 end

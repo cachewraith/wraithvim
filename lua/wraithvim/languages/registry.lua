@@ -1,17 +1,59 @@
 -- Language profile registry.
 --
 -- A profile describes filetypes, Treesitter parsers, language servers and
--- formatters. Servers and formatters are maps keyed by name so user overrides
+-- formatters, plus `tools` installed alongside them (linters such as
+-- shellcheck). Servers, formatters and tools are maps keyed by name so user overrides
 -- in languages.lua merge naturally; setting an entry to `false` removes it.
 
 local utils = require("wraithvim.core.utils")
 
 local M = {}
 
-M.builtin = { "bash", "cpp", "go", "java", "lua", "php", "python", "sql", "typescript", "yaml" }
+M.builtin = {
+  "bash",
+  "cpp",
+  "csharp",
+  "css",
+  "dart",
+  "docker",
+  "elixir",
+  "go",
+  "graphql",
+  "html",
+  "java",
+  "json",
+  "kotlin",
+  "lua",
+  "markdown",
+  "nix",
+  "php",
+  "prisma",
+  "python",
+  "ruby",
+  "rust",
+  "sql",
+  "svelte",
+  "swift",
+  "terraform",
+  "toml",
+  "typescript",
+  "yaml",
+  "zig",
+}
 
 -- Alternative names accepted in languages.lua.
-M.aliases = { javascript = "typescript", c = "cpp", sh = "bash" }
+M.aliases = {
+  javascript = "typescript",
+  c = "cpp",
+  sh = "bash",
+  cs = "csharp",
+  rs = "rust",
+  md = "markdown",
+  dockerfile = "docker",
+  tf = "terraform",
+  scss = "css",
+  flutter = "dart",
+}
 
 ---@param name string
 ---@return string canonical name
@@ -55,6 +97,7 @@ function M.resolve(name, user)
   merged.parsers = merged.parsers or {}
   merged.servers = prune(merged.servers)
   merged.formatters = prune(merged.formatters)
+  merged.tools = prune(merged.tools)
   if user.lsp == false then
     merged.servers = {}
   end

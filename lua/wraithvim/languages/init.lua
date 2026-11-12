@@ -97,6 +97,21 @@ function M.servers(profiles)
   return out
 end
 
+--- Extra tools (linters) of enabled profiles: { name, cmd, mason, install, language }.
+---@param profiles? table[]
+---@return table[]
+function M.tools(profiles)
+  local out = {}
+  for _, p in ipairs(profiles or M.enabled()) do
+    local names = vim.tbl_keys(p.tools or {})
+    table.sort(names)
+    for _, name in ipairs(names) do
+      out[#out + 1] = vim.tbl_extend("force", p.tools[name], { name = name, language = p.name })
+    end
+  end
+  return out
+end
+
 --- Formatters of enabled profiles, deduplicated by name.
 ---@param profiles? table[]
 ---@return table[]

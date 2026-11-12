@@ -17,7 +17,9 @@ describe("languages", function()
       assert.is_true(#p.filetypes > 0, name)
       assert.is_true(#p.parsers > 0, name)
       assert.is_true(next(p.servers) ~= nil, name .. " has no server")
-      assert.is_true(next(p.formatters) ~= nil, name .. " has no formatter")
+      -- These servers format the file themselves (LSP fallback).
+      local lsp_formats = { docker = true, prisma = true, swift = true, terraform = true, toml = true, zig = true }
+      assert.is_true(next(p.formatters) ~= nil or lsp_formats[name] == true, name .. " has no formatter")
     end
   end)
 

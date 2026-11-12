@@ -68,7 +68,7 @@ describe("core.plugin_manager", function()
     assert.equals("folke/todo-comments.nvim", specs[#specs][1])
   end)
 
-  it("disables mason.nvim unless enabled", function()
+  it("enables mason.nvim unless disabled", function()
     local function mason_enabled(cfg)
       for _, spec in ipairs(pm.build_spec(cfg)) do
         if pm.spec_name(spec) == "mason.nvim" then
@@ -76,8 +76,8 @@ describe("core.plugin_manager", function()
         end
       end
     end
-    assert.is_false(mason_enabled(cfg_with()))
-    assert.is_true(mason_enabled(cfg_with({ options = { mason = { enabled = true } } })))
+    assert.is_true(mason_enabled(cfg_with()))
+    assert.is_false(mason_enabled(cfg_with({ options = { mason = { enabled = false } } })))
   end)
 
   it("keeps netrw when the explorer is disabled", function()

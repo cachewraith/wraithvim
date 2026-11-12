@@ -10,7 +10,7 @@
 local M = {}
 
 --- Released version; kept in sync with CHANGELOG.md (tested).
-M.version = "0.10.1"
+M.version = "0.11.0"
 
 local did_setup = false
 
@@ -51,6 +51,7 @@ function M.setup(opts)
   require("wraithvim.integrations.treesitter").setup(cfg)
   require("wraithvim.config.autocmds").setup(cfg)
   require("wraithvim.features.autoreload").setup(cfg)
+  require("wraithvim.integrations.mason").setup(cfg)
   require("wraithvim.config.commands").setup()
   require("wraithvim.config.keymaps").setup()
   require("wraithvim.features.files").setup()

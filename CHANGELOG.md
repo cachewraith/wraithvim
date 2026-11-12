@@ -6,6 +6,27 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-12
+
+### Added
+
+- Opening a file offers to install what its language needs, once per
+  language: the language server (completion, errors), linters, the formatter
+  and the Treesitter parser. Tools install through Mason in the background and
+  the server starts in the open file without a restart. Missing toolchains
+  (Node.js, Go, …) are named in the prompt. `options.mason.auto_install =
+  "ask" | "always" | "never"`.
+- 19 more languages: Rust, HTML (with Emmet), CSS/SCSS/Less, JSON, Markdown,
+  Dockerfile, TOML, C#, Ruby, Kotlin, Zig, Terraform/HCL, GraphQL, Svelte,
+  Elixir, Prisma, Nix, Dart/Flutter and Swift (29 in total).
+- Lint: ESLint for JavaScript/TypeScript, Ruff for Python, staticcheck in
+  gopls, Clippy in rust-analyzer, clang-tidy in clangd, ShellCheck for Bash.
+
+### Changed
+
+- Mason is enabled by default. Tools you installed yourself still win.
+- Headless runs never offer or start installs.
+
 ## [0.10.1] - 2026-11-12
 
 ### Fixed
@@ -258,7 +279,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...v0.9.0

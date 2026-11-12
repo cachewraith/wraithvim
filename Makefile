@@ -14,7 +14,7 @@ ARCH := $(shell uname -m)
 
 NVIM_ENV := XDG_CONFIG_HOME=$(SANDBOX)/config XDG_DATA_HOME=$(SANDBOX)/data \
 	XDG_STATE_HOME=$(SANDBOX)/state XDG_CACHE_HOME=$(SANDBOX)/cache \
-	WRAITHVIM_CONFIG_DIR=$(SANDBOX)/empty-user-config
+	WRAITHVIM_CONFIG_DIR=$(CURDIR)/tests/fixtures/config
 
 LUA_SOURCES := init.lua lua tests scripts/benchmark.lua
 SHELL_SOURCES := install.sh uninstall.sh scripts/*.sh

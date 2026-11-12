@@ -4,39 +4,100 @@ A profile bundles everything WraithVim knows about a language: filetypes,
 Treesitter parsers, language servers (nvim-lspconfig names) and formatters
 (conform.nvim names). Profiles live in `lua/wraithvim/languages/`.
 
+## Completion, errors and lint: what you get
+
+Open a file and WraithVim offers to install what that language needs, once:
+
+```text
+Go: install the tools for completion, error checking and formatting?
+  gopls    (language server)
+  gofumpt  (formatter)
+  go, gomod, gosum, gowork  (syntax colors)
+[I]nstall  (N)ot now  Ne(v)er for Go
+```
+
+Press <kbd>i</kbd>. The tools install in the background through
+[Mason](https://github.com/mason-org/mason.nvim) and the language server starts
+in the open file as soon as it is ready. No restart.
+
+The language server gives:
+- **completion** of your code and libraries
+- **errors and warnings** as you type, underlined, with the message at the end
+  of the line and a count in the statusline
+- go to definition, hover docs (`K`), rename, code actions
+
+Some languages also get a **linter**. Its findings appear the same way. The
+formatter runs with `Space c f`, or on save if you turn that on.
+
+| Key | Shows |
+|---|---|
+| `Space d d` | Problems on this line |
+| `Space d n` / `Space d p` | Next / previous problem |
+| `Space d x` | Search all problems |
+| `Space c a` | Quick fixes for the problem under the cursor |
+
+**Not now** asks again next session. **Never** stops asking for that
+language; `:InstallTools` installs everything any time. Set
+`mason = { auto_install = "always" }` in `options.lua` to install without
+asking, or `"never"` to never offer.
+
+A tool you installed yourself (on `PATH`) always wins over Mason's copy.
+Some packages need a language toolchain to build. For example, gopls needs Go,
+and npm-based servers need Node.js. The prompt says so when one is missing.
+Headless runs (`nvim --headless`, CI) never install anything.
+
 ## How activation works
 
 1. A profile is **enabled** unless `languages.lua` disables it.
 2. When the first file is opened, WraithVim checks each enabled server's
-   executable on `PATH`. Present → `vim.lsp.enable(server)`. Missing → recorded
-   for `:Health`, and a one-time hint appears when you open a matching
-   file.
-3. Neovim starts a server only when a buffer of one of its filetypes opens,
-   with the project root found by nvim-lspconfig's root markers.
-4. Formatters are registered with conform.nvim per filetype. conform runs a
+   executable on `PATH` (Mason's `bin` directory is appended to it). Present →
+   `vim.lsp.enable(server)`; Neovim starts it when a buffer of one of its
+   filetypes opens, with the project root found by nvim-lspconfig.
+3. Formatters are registered with conform.nvim per filetype. conform runs a
    formatter only if it is installed. It prefers project-local installs such
    as `node_modules/.bin/prettier` and `vendor/bin/pint`, and every formatter
    reads its own project config file (`.prettierrc`, `stylua.toml`,
    `pyproject.toml`, `.clang-format`, `.editorconfig` for shfmt, …).
-5. When no conform formatter applies, the server's own formatting is used
+4. When no conform formatter applies, the server's own formatting is used
    (`options.format.lsp_fallback`). Two formatters never run on the same buffer.
 
-Nothing is installed automatically.
+## Languages
 
-## Profiles
-
-| Profile (aliases) | Filetypes | LSP (executable) | Formatter (executable) | Parsers |
+| Language | Files | Language server | Lint | Formatter |
 |---|---|---|---|---|
-| `php` | php | intelephense (`intelephense`) | pint (`pint`) | php, phpdoc |
-| `typescript` (`javascript`) | javascript, javascriptreact, typescript, typescriptreact | vtsls (`vtsls`) | prettier (`prettier`) | javascript, typescript, tsx, jsdoc |
-| `java` | java | jdtls (`jdtls`) | google-java-format | java |
-| `python` | python | basedpyright (`basedpyright-langserver`) | ruff_format (`ruff`) | python |
-| `go` | go, gomod, gowork, gotmpl | gopls | gofumpt | go, gomod, gosum, gowork |
-| `cpp` (`c`) | c, cpp, objc, objcpp, cuda | clangd | clang-format | c, cpp |
-| `lua` | lua | lua_ls (`lua-language-server`) | stylua | lua, luadoc |
-| `sql` | sql, mysql | sqls | sql_formatter (`sql-formatter`) | sql |
-| `bash` (`sh`) | sh, bash | bashls (`bash-language-server`) | shfmt | bash |
-| `yaml` | yaml, yaml.docker-compose, yaml.gitlab | yamlls (`yaml-language-server`) | prettier | yaml |
+| Bash / POSIX shell (`sh`) | sh, bash | bashls | ShellCheck (bash-language-server) | shfmt |
+| C and C++ (`c`) | c, cpp, objc, objcpp, cuda | clangd | clang-tidy (clangd) | clang-format |
+| C# (`cs`) | cs | csharp_ls | errors from the language server | csharpier |
+| CSS, SCSS and Less (`scss`) | css, scss, less | cssls | errors from the language server | prettier |
+| Dart and Flutter (`flutter`) | dart | dartls | errors from the language server | dart_format |
+| Dockerfile (`dockerfile`) | dockerfile | dockerls | errors from the language server | language server |
+| Elixir | elixir, eelixir, heex, surface | elixirls | errors from the language server | mix |
+| Go | go, gomod, gowork, gotmpl | gopls | staticcheck and vet (gopls) | gofumpt |
+| GraphQL | graphql | graphql | errors from the language server | prettier |
+| HTML | html | emmet_language_server, html | errors from the language server | prettier |
+| Java | java | jdtls | errors from the language server | google-java-format |
+| JSON | json, jsonc, json5 | jsonls | errors from the language server | prettier |
+| Kotlin | kotlin | kotlin_language_server | errors from the language server | ktlint |
+| Lua | lua | lua_ls | errors from the language server | stylua |
+| Markdown (`md`) | markdown | marksman | errors from the language server | prettier |
+| Nix | nix | nil_ls | errors from the language server | nixfmt |
+| PHP | php | intelephense | errors from the language server | pint |
+| Prisma | prisma | prismals | errors from the language server | language server |
+| Python | python | basedpyright, ruff | Ruff (ruff server) + type errors (basedpyright) | ruff_format |
+| Ruby | ruby, eruby | ruby_lsp | RuboCop (ruby-lsp) | rubocop |
+| Rust (`rs`) | rust | rust_analyzer | Clippy (rust-analyzer) | rustfmt |
+| SQL | sql, mysql | sqls | errors from the language server | sql_formatter |
+| Svelte | svelte | svelte | errors from the language server | prettier |
+| Swift | swift | sourcekit | errors from the language server | language server |
+| Terraform and HCL (`tf`) | terraform, terraform-vars, hcl | terraformls | errors from the language server | language server |
+| TOML | toml | taplo | errors from the language server | language server |
+| JavaScript and TypeScript (`javascript`) | javascript, javascriptreact, typescript, typescriptreact | eslint, vtsls | ESLint (eslint server, projects with an ESLint config) | prettier |
+| YAML | yaml, yaml.docker-compose, yaml.gitlab | yamlls | errors from the language server | prettier |
+| Zig | zig, zir | zls | errors from the language server | language server |
+
+Not built in yet: Vue (its server needs a TypeScript plugin setup), Tailwind
+CSS, Haskell, Scala, OCaml. Add them yourself in `languages.lua`; see
+[Adding a language](#adding-a-language).
 
 Notes:
 
@@ -96,22 +157,18 @@ sudo pacman -S --needed lua-language-server stylua \
 Make sure `~/.local/bin` (pipx), `~/go/bin` (go install) and npm's global bin
 directory are on your `PATH`.
 
-### Mason (optional)
+### Mason
 
-```lua
--- ~/.config/wraithvim/options.lua
-return { mason = { enabled = true } }
-```
+Mason is on by default (`options.mason.enabled`). It installs into
+`~/.local/share/nvim/mason`, and its `bin` directory is **appended** to
+`PATH`, so system installs still win.
 
-With Mason enabled:
+- Opening a file offers that language's missing tools (see the top of this page).
+- `:InstallTools` lists everything missing for all enabled languages and
+  installs it after you confirm.
+- `:Mason` opens Mason's own UI (update or remove tools).
 
-- Mason's `bin` directory is **appended** to `PATH`, so system installs still win.
-- `:InstallTools` lists the missing servers and formatters of your
-  enabled languages and installs them **after you confirm**. Restart Neovim
-  afterwards.
-- `:Mason` opens Mason's own UI.
-
-Mason never runs on its own.
+Turn it off with `mason = { enabled = false }` to manage every tool yourself.
 
 ## Treesitter
 

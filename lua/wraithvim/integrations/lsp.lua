@@ -2,7 +2,8 @@
 --
 -- A server is enabled with vim.lsp.enable() only when its language is enabled
 -- and its executable is on PATH; Neovim then starts it lazily when a buffer of
--- a matching filetype opens. Nothing is installed automatically.
+-- a matching filetype opens. Missing servers are offered for installation by
+-- integrations/mason.lua, which calls M.enable() once one is installed.
 
 local utils = require("wraithvim.core.utils")
 local languages = require("wraithvim.languages")
@@ -76,6 +77,21 @@ function M.server_config(server)
   return cfg
 end
 
+--- Configure and enable one server (registry entry). Buffers already open
+--- with a matching filetype get it right away.
+---@param server table
+function M.enable(server)
+  local server_cfg = M.server_config(server)
+  if next(server_cfg) then
+    vim.lsp.config(server.name, server_cfg)
+  end
+  vim.lsp.enable(server.name)
+  if not vim.tbl_contains(M.active, server.name) then
+    M.active[#M.active + 1] = server.name
+  end
+  M.missing[server.name] = nil
+end
+
 function M.setup()
   local cfg = require("wraithvim.core.config").get()
   local profiles = languages.enabled()
@@ -88,12 +104,7 @@ function M.setup()
       end
     end
     if utils.executable(server.cmd) then
-      local server_cfg = M.server_config(server)
-      if next(server_cfg) then
-        vim.lsp.config(server.name, server_cfg)
-      end
-      vim.lsp.enable(server.name)
-      M.active[#M.active + 1] = server.name
+      M.enable(server)
     else
       M.missing[server.name] = server
     end
@@ -110,7 +121,9 @@ function M.setup()
     end,
   })
 
-  if cfg.options.lsp.notify_missing then
+  -- With Mason offering installs, the offer replaces this hint.
+  local offers = cfg.options.mason.enabled and cfg.options.mason.auto_install ~= "never"
+  if cfg.options.lsp.notify_missing and not offers then
     local open_fts = {}
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
       if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then

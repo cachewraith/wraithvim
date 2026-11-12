@@ -9,6 +9,10 @@ return {
       install = "npm install -g bash-language-server",
     },
   },
+  -- bash-language-server shows ShellCheck warnings when shellcheck is installed.
+  tools = {
+    shellcheck = { cmd = "shellcheck", mason = "shellcheck", install = "install shellcheck from your package manager" },
+  },
   formatters = {
     shfmt = {
       cmd = "shfmt",

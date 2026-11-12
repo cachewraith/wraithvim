@@ -3,7 +3,13 @@ return {
   filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
   parsers = { "c", "cpp" },
   servers = {
-    clangd = { cmd = "clangd", mason = "clangd", install = "install clangd (part of clang / clang-tools)" },
+    clangd = {
+      cmd = "clangd",
+      mason = "clangd",
+      install = "install clangd (part of clang / clang-tools)",
+      -- clang-tidy lint checks (configured per project with .clang-tidy).
+      config = { cmd = { "clangd", "--clang-tidy", "--background-index", "--header-insertion=never" } },
+    },
   },
   formatters = {
     ["clang-format"] = {

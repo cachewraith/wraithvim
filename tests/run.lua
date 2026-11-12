@@ -13,7 +13,7 @@ local child_env = {
   XDG_DATA_HOME = vim.env.XDG_DATA_HOME or (sandbox .. "/data"),
   XDG_STATE_HOME = vim.env.XDG_STATE_HOME or (sandbox .. "/state"),
   XDG_CACHE_HOME = vim.env.XDG_CACHE_HOME or (sandbox .. "/cache"),
-  WRAITHVIM_CONFIG_DIR = vim.env.WRAITHVIM_CONFIG_DIR or (sandbox .. "/empty-user-config"),
+  WRAITHVIM_CONFIG_DIR = vim.env.WRAITHVIM_CONFIG_DIR or vim.fs.joinpath(root, "tests", "fixtures", "config"),
 }
 for k, v in pairs(child_env) do
   vim.env[k] = v

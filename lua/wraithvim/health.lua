@@ -203,30 +203,59 @@ local function check_languages()
     end, profiles),
     ", "
   ))
-  h.info(
-    mason and "Mason enabled: missing tools can be installed with :InstallTools"
-      or "Mason disabled: install tools with your package manager (see docs/languages.md)"
-  )
+  local cfg_mason = require("wraithvim.core.config").get().options.mason
+  local on_demand = mason and cfg_mason.auto_install ~= "never"
+  if on_demand then
+    h.info("Missing tools are offered for installation when you open a file of that language (:InstallTools for all)")
+  elseif mason then
+    h.info("Mason enabled: missing tools can be installed with :InstallTools")
+  else
+    h.info("Mason disabled: install tools with your package manager (see docs/languages.md)")
+  end
+  -- With on-demand installs a missing tool is expected, not a problem:
+  -- list those languages once instead of warning per tool.
+  local waiting = {}
+  local function missing(kind, entry, msg)
+    if on_demand then
+      waiting[entry.language] = true
+    else
+      h.warn(msg, { entry.install })
+    end
+    return kind
+  end
   for _, s in ipairs(languages.servers(profiles)) do
     if has(s.cmd) then
       h.ok(("LSP %s (%s): %s"):format(s.name, s.language, vim.fn.exepath(s.cmd)))
     else
-      h.warn(("LSP %s (%s): `%s` not installed (optional)"):format(s.name, s.language, s.cmd), { s.install })
+      missing("LSP", s, ("LSP %s (%s): `%s` not installed (optional)"):format(s.name, s.language, s.cmd))
+    end
+  end
+  for _, t in ipairs(languages.tools(profiles)) do
+    if has(t.cmd) then
+      h.ok(("Linter %s (%s): %s"):format(t.name, t.language, vim.fn.exepath(t.cmd)))
+    else
+      missing("linter", t, ("Linter %s (%s): `%s` not installed (optional)"):format(t.name, t.language, t.cmd))
     end
   end
   for _, f in ipairs(languages.formatters(profiles)) do
     if has(f.cmd) then
       h.ok(("Formatter %s (%s): %s"):format(f.name, f.language, vim.fn.exepath(f.cmd)))
     else
-      h.warn(
+      missing(
+        "formatter",
+        f,
         ("Formatter %s (%s): `%s` not on PATH (optional; project-local installs are also detected)"):format(
           f.name,
           f.language,
           f.cmd
-        ),
-        { f.install }
+        )
       )
     end
+  end
+  local names = vim.tbl_keys(waiting)
+  if #names > 0 then
+    table.sort(names)
+    h.info("Not installed yet (offered when you open such a file): " .. table.concat(names, ", "))
   end
 end
 
@@ -246,7 +275,12 @@ local function check_treesitter()
     h.ok("Parsers available: " .. table.concat(have, ", "))
   end
   if #missing > 0 then
-    h.warn("Parsers not installed (optional): " .. table.concat(missing, ", "), { "Run :InstallParsers" })
+    local mason = require("wraithvim.core.config").get().options.mason
+    if mason.enabled and mason.auto_install ~= "never" and #ts.missing_requirements() == 0 then
+      h.info("Parsers installed when you open such a file: " .. table.concat(missing, ", "))
+    else
+      h.warn("Parsers not installed (optional): " .. table.concat(missing, ", "), { "Run :InstallParsers" })
+    end
   end
   local req = ts.missing_requirements()
   if #req == 0 then
