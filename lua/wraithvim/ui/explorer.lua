@@ -141,7 +141,7 @@ function M.opts()
       filtered_items = {
         visible = false,
         hide_dotfiles = not ex.show_hidden,
-        hide_gitignored = true,
+        hide_gitignored = not ex.show_gitignored,
         hide_by_name = ex.hide,
       },
       follow_current_file = { enabled = true },

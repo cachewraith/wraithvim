@@ -84,14 +84,19 @@ return {
       auto_open = true,
       -- Single left click opens files and toggles directories (VS Code style).
       single_click = true,
+      -- Show dotfiles (.env, .github, …).
       show_hidden = true,
+      -- Show files ignored by .gitignore (dimmed, like VS Code).
+      show_gitignored = true,
       git_status = true,
       diagnostics = false,
       -- Update the tree when files are created or deleted outside Neovim.
       watch = true,
       -- Buttons above the tree: New File, New Folder, Refresh, Collapse All.
       header = true,
-      hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
+      -- Names never shown, e.g. { ".git", "node_modules" }. Shift+H in the
+      -- explorer shows them anyway.
+      hide = {},
     },
     tabline = {
       enabled = true,

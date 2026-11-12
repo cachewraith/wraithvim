@@ -233,7 +233,7 @@ with `scroll = { wheel = 10 }` in `options.lua`.
 | Explorer | right click | Menu: New File, New Folder, Open to the Side, Rename, Delete, Copy Path, Refresh, Collapse All |
 | Explorer | `r`, `d`, `c`, `m` | Rename, delete, copy, move |
 | Explorer | `y`, `x`, `p` | Copy, cut, paste via the explorer clipboard |
-| Explorer | `H`, `R`, `?` | Toggle hidden files, refresh, help |
+| Explorer | `H`, `R`, `?` | Show / hide items listed in `explorer.hide` (cursor in the explorer), refresh, help |
 | Dashboard | letter shown in `[ ]`, `<CR>`, click | Run the item |
 | Conflict RESULT pane | `<leader>co` `<leader>ct` `<leader>cb` `<leader>c0` `<leader>cn` | Take ours / theirs / both / base / none for the conflict under the cursor |
 | Conflict RESULT pane | `]x` / `[x` | Next / previous conflict |

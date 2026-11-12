@@ -80,7 +80,14 @@ describe("ui components", function()
     assert.is_function(ex.window.mappings["}"][1])
     assert.is_function(ex.window.mappings["{"][1])
     assert.is_true(ex.filesystem.use_libuv_file_watcher)
-    setup({ explorer = { watch = false } })
+    -- Nothing is hidden by default.
+    assert.is_false(ex.filesystem.filtered_items.hide_dotfiles)
+    assert.is_false(ex.filesystem.filtered_items.hide_gitignored)
+    assert.same({}, ex.filesystem.filtered_items.hide_by_name)
+    setup({ explorer = { watch = false, show_gitignored = false, hide = { ".git" } } })
+    local items = require("wraithvim.ui.explorer").opts().filesystem.filtered_items
+    assert.is_true(items.hide_gitignored)
+    assert.same({ ".git" }, items.hide_by_name)
     assert.is_false(require("wraithvim.ui.explorer").opts().filesystem.use_libuv_file_watcher)
   end)
 

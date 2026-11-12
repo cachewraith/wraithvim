@@ -6,6 +6,18 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-11-12
+
+### Changed
+
+- The explorer shows everything by default: dotfiles, files ignored by
+  `.gitignore` (dimmed), `.git` and `node_modules`. Nothing is hidden
+  unless you list it in `explorer = { hide = { ... } }`.
+
+### Added
+
+- Option `explorer = { show_gitignored = true }`.
+
 ## [0.9.0] - 2026-11-12
 
 ### Added
@@ -236,7 +248,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...v0.7.0

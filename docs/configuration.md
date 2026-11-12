@@ -108,12 +108,13 @@ return {
     width = 30,
     auto_open = true,                -- show after startup when files/dirs are given (needs >= 100 columns)
     single_click = true,
-    show_hidden = true,              -- dotfiles (gitignored files stay hidden)
+    show_hidden = true,              -- dotfiles (.env, .github, …)
+    show_gitignored = true,          -- files ignored by .gitignore (shown dimmed)
     git_status = true,
     diagnostics = false,
     watch = true,                    -- update the tree when files change outside Neovim
     header = true,                   -- New File / New Folder / Refresh / Collapse buttons above the tree
-    hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
+    hide = {},                       -- names never shown, e.g. { ".git", "node_modules" }
   },
   tabline = {
     enabled = true,

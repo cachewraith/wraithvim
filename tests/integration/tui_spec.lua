@@ -214,7 +214,10 @@ describe("TUI", function()
     assert.is_true(t:wait_for("math.abs(vim.fn.winline() - math.floor(vim.fn.winheight(0) / 2)) <= 1", 2000))
 
     local win = tree_win(t)
-    t:lua("vim.api.nvim_set_current_win(...); vim.api.nvim_win_set_cursor(0, { 1, 0 })", win)
+    -- .git is shown too (nothing is hidden), right above sub/.
+    local git_line = tree_line(t, ".git")
+    assert.is_truthy(git_line)
+    t:lua("local w, l = ...; vim.api.nvim_set_current_win(w); vim.api.nvim_win_set_cursor(0, { l, 0 })", win, git_line)
     t:keys("}")
     local sub = tree_line(t, "sub")
     assert.is_true(t:wait_for(("vim.fn.line('.') == %d"):format(sub), 2000))
