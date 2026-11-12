@@ -6,6 +6,16 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-11-12
+
+### Added
+
+- Line blame like GitLens: the end of the current line shows who changed it,
+  when and the commit message ("Ana, 3 weeks ago • Fix login"), or
+  "You • Uncommitted changes". On by default (`ui.line_blame`); `Space g t`
+  hides / shows it, `Space g Shift+B` shows the full commit. It updates when
+  the cursor moves and does nothing while idle.
+
 ## [0.11.0] - 2026-11-12
 
 ### Added
@@ -279,7 +289,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...v0.10.0

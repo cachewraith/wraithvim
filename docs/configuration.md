@@ -108,6 +108,7 @@ return {
   border = "rounded",                -- floating window borders
   key_hints = true,                  -- popup listing the next keys after Space (which-key)
   separators = "default",            -- default | slant | round | none
+  line_blame = true,                -- "Ana, 3 weeks ago • Fix login" at the end of the current line (Space g t)
   colors = {},                       -- { GroupName = { fg = "#..", bg = "..", bold = true } }
   explorer = {
     enabled = true,

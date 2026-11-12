@@ -265,6 +265,33 @@ describe("features in a real session", function()
     assert.is_true(res.closed)
   end)
 
+  it("shows who changed the current line, when and why (line blame)", function()
+    local res = run(
+      [[
+      vim.cmd.edit("a.lua")
+      vim.api.nvim_win_set_cursor(0, { 2, 0 }) -- committed line
+      local ns = vim.api.nvim_create_namespace("gitsigns_blame")
+      local function text()
+        for _, m in ipairs(vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, { details = true })) do
+          local chunks = m[4].virt_text or {}
+          return table.concat(vim.tbl_map(function(c) return c[1] end, chunks))
+        end
+      end
+      vim.wait(5000, function() return text() ~= nil end, 50)
+      local committed = text()
+      vim.api.nvim_win_set_cursor(0, { 1, 0 }) -- changed, not committed
+      -- Moving the cursor from code does not fire CursorMoved by itself.
+      vim.api.nvim_exec_autocmds("CursorMoved", { buffer = 0 })
+      vim.wait(3000, function() return (text() or ""):find("Uncommitted") ~= nil end, 50)
+      return { committed = committed, uncommitted = text() }
+    ]],
+      { cwd = dir }
+    )
+    -- gitsigns says "You" for lines by your own Git user, like GitLens.
+    assert.matches("You, .* • init", res.committed)
+    assert.matches("You • Uncommitted changes", res.uncommitted)
+  end)
+
   it("reloads open files changed on disk without touching unsaved edits", function()
     env.write(dir .. "/watched.txt", "one\n")
     local res = run(

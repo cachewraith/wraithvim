@@ -31,7 +31,7 @@ argument, so names with spaces, quotes or `$()` are safe.
 | Switch branch | `<leader>gb`, or click the branch in the statusline | `:GitBranches` |
 | Commit graph (this branch / all branches) | `<leader>gg` / `<leader>gG` | `:GitGraph` / `:GitGraphAll` |
 | History | `<leader>gl` (repository), `<leader>gf` (current file) | `:GitLog`, `:GitFileHistory` |
-| Who changed this line | `<leader>gB` | |
+| Who changed this line | shown at the end of the current line; `<leader>gB` for the full commit, `<leader>gt` to hide / show | |
 | Changed files in the explorer | `<leader>ge` | |
 
 ### Commit graph

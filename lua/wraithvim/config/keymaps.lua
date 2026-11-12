@@ -188,6 +188,7 @@ function M.defaults()
     { "n", "<leader>gR", gs("reset_buffer"), desc = "Undo all file changes", plugin = "gitsigns.nvim" },
     { "n", "<leader>gv", gs("preview_hunk"), desc = "Preview hunk", plugin = "gitsigns.nvim" },
     { "n", "<leader>gB", gs("blame_line", { full = true }), desc = "Blame line", plugin = "gitsigns.nvim" },
+    { "n", "<leader>gt", gs("toggle_current_line_blame"), desc = "Toggle line blame", plugin = "gitsigns.nvim" },
     { "n", "]h", gs("nav_hunk", "next"), desc = "Next change (hunk)", plugin = "gitsigns.nvim" },
     { "n", "[h", gs("nav_hunk", "prev"), desc = "Previous change (hunk)", plugin = "gitsigns.nvim" },
     { "n", "<leader>gx", call(c, "quickfix"), desc = "List merge conflicts" },

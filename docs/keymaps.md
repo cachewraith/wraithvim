@@ -126,6 +126,7 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Space g Shift+R | Undo all file changes | `<leader>gR` | n |
 | Space g v | Preview hunk | `<leader>gv` | n |
 | Space g Shift+B | Blame line | `<leader>gB` | n |
+| Space g t | Toggle line blame | `<leader>gt` | n |
 | Space g x | List merge conflicts | `<leader>gx` | n |
 | Space g m | Resolve merge conflict | `<leader>gm` | n |
 | ] h | Next change (hunk) | `]h` | n |

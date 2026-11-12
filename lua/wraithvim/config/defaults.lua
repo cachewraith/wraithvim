@@ -84,6 +84,9 @@ return {
     border = "rounded", -- none | single | double | rounded | solid | shadow
     -- Popup listing the next keys after <leader> or another prefix (which-key).
     key_hints = true,
+    -- Git blame at the end of the current line: "Ana, 3 weeks ago • Fix login".
+    -- Toggle with Space g t.
+    line_blame = true,
     separators = "default", -- default | slant | round | none
     -- Highlight overrides applied after every colorscheme load: { GroupName = { fg = "#ffffff" } }
     colors = {},

@@ -197,7 +197,12 @@ function M.gitsigns_opts()
     watch_gitdir = { follow_files = true },
     update_debounce = 200,
     max_file_length = 40000,
-    current_line_blame = false,
+    -- Who changed the current line, when, and why, at its end (like GitLens).
+    -- Updated on cursor moves only; nothing runs while idle.
+    current_line_blame = require("wraithvim.core.config").get().ui.line_blame,
+    current_line_blame_opts = { virt_text_pos = "eol", delay = 400 },
+    current_line_blame_formatter = "     <author>, <author_time:%R> • <summary>",
+    current_line_blame_formatter_nc = "     You • Uncommitted changes",
     preview_config = { border = require("wraithvim.core.config").get().ui.border },
   }
 end
