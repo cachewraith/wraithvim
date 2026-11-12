@@ -14,10 +14,16 @@ local call, pick = keymaps.call, keymaps.pick
 local M = {}
 
 --- Options that make selection and cursor movement feel like VS Code.
+--- Options the user already set (options.lua, keymaps.lua) are left alone.
 function M.apply_options()
-  vim.opt.keymodel = { "startsel", "stopsel" } -- Shift+arrows select, plain arrows deselect
-  vim.opt.selectmode = { "mouse", "key" } -- typing replaces a selection
-  vim.opt.selection = "exclusive" -- the cursor character is not part of a selection
+  local function default(name, value)
+    if not vim.api.nvim_get_option_info2(name, {}).was_set then
+      vim.opt[name] = value
+    end
+  end
+  default("keymodel", { "startsel", "stopsel" }) -- Shift+arrows select, plain arrows deselect
+  default("selectmode", { "mouse", "key" }) -- typing replaces a selection
+  default("selection", "exclusive") -- the cursor character is not part of a selection
   vim.opt.whichwrap:append("<,>,[,]") -- arrows move across line ends
 end
 

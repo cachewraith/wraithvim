@@ -75,7 +75,9 @@ local function track_cwd(buf)
       local path = type(seq) == "string" and seq:match("^\27%]7;file://[^/]*(/[^\a\27]*)")
       if path then
         vim.b[buf].wraith_term_cwd = vim.uri_decode(path)
-        vim.cmd.redrawstatus({ bang = true })
+        vim.cmd.redrawstatus({ bang = true }) -- the header (winbar)
+        -- lualine keeps its last rendered text; ask it to rebuild.
+        require("wraithvim.ui.statusline").request_refresh()
       end
     end,
   })
@@ -197,12 +199,20 @@ function M.open(position)
   vim.cmd.startinsert()
 end
 
+--- Whether `win` is the only window in its own tab page (which need not be
+--- the current one).
+---@param win integer
+---@return boolean
+local function alone_in_tab(win)
+  return #vim.api.nvim_tabpage_list_wins(vim.api.nvim_win_get_tabpage(win)) == 1
+end
+
 --- Hide the panel terminal window; the shell keeps running.
 function M.hide()
   local p = M.panel
   if p.win and vim.api.nvim_win_is_valid(p.win) then
-    if #vim.api.nvim_tabpage_list_wins(0) == 1 then
-      vim.cmd.enew()
+    if alone_in_tab(p.win) then
+      vim.api.nvim_win_call(p.win, vim.cmd.enew)
     else
       vim.api.nvim_win_close(p.win, false)
     end
@@ -241,6 +251,11 @@ function M.new()
     M.open()
     return M.panel.buf --[[@as integer]]
   end
+  if vim.api.nvim_win_get_config(p.win).relative ~= "" then
+    -- A floating panel cannot be split; open the new terminal at the bottom.
+    M.hide()
+    return M.split()
+  end
   local buf = vim.api.nvim_create_buf(false, true)
   local win = open_window(buf, "right", p.win)
   style_window(win)
@@ -261,7 +276,7 @@ function M.kill(buf)
     pcall(vim.fn.jobstop, job)
   end
   for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-    if #vim.api.nvim_tabpage_list_wins(0) > 1 then
+    if not alone_in_tab(win) then
       pcall(vim.api.nvim_win_close, win, true)
     end
   end
@@ -278,7 +293,7 @@ function M.close()
     if job then
       pcall(vim.fn.jobstop, job)
     end
-    if p.win and vim.api.nvim_win_is_valid(p.win) and #vim.api.nvim_tabpage_list_wins(0) > 1 then
+    if p.win and vim.api.nvim_win_is_valid(p.win) and not alone_in_tab(p.win) then
       vim.api.nvim_win_close(p.win, true)
     end
     if vim.api.nvim_buf_is_valid(p.buf) then

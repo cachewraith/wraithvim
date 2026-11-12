@@ -1,7 +1,7 @@
 -- WraithVim setup sequence.
 --
---   1. built-in editor options (before user files, so user vim.opt calls win)
---   2. version check
+--   1. version check
+--   2. built-in editor options (before user files, so user vim.opt calls win)
 --   3. user configuration (~/.config/wraithvim/*.lua)
 --   4. lazy.nvim with lazy-loaded plugin specs
 --   5. diagnostics, Treesitter hook, autocommands, commands, keymaps
@@ -30,14 +30,16 @@ function M.setup(opts)
     vim.g.wraithvim_root = opts.root
   end
 
-  local options = require("wraithvim.config.options")
-  options.apply_defaults()
-
+  -- First, so older Neovims get this message instead of an error from an
+  -- option they do not have.
   local ok, msg = require("wraithvim.core.bootstrap").check_version()
   if not ok then
     vim.api.nvim_echo({ { msg, "ErrorMsg" } }, true, {})
     return
   end
+
+  local options = require("wraithvim.config.options")
+  options.apply_defaults()
 
   local cfg = require("wraithvim.core.config").setup(opts.config)
   options.apply_user(cfg)

@@ -103,6 +103,13 @@ describe("core.config", function()
     assert.same({ "zig" }, cfg.languages.zig.filetypes)
   end)
 
+  it("reports a misspelled language that is turned off, but accepts aliases", function()
+    local config = fresh_config({ languages = "return { pyhton = false, javascript = false }" })
+    config.setup()
+    assert.equals(1, #config.problems, vim.inspect(config.problems))
+    assert.matches("pyhton", config.problems[1])
+  end)
+
   it("separates plugin specs from named plugin options", function()
     local config = fresh_config({
       plugins = "return { disable = { 'flash.nvim' }, { 'folke/todo-comments.nvim', opts = {} } }",

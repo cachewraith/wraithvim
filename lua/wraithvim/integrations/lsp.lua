@@ -98,11 +98,6 @@ function M.setup()
   M.active, M.missing = {}, {}
 
   for _, server in ipairs(languages.servers(profiles)) do
-    for _, p in ipairs(profiles) do
-      if p.name == server.language then
-        server.filetypes = p.filetypes
-      end
-    end
     if utils.executable(server.cmd) then
       M.enable(server)
     else

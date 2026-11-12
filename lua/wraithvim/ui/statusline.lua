@@ -51,8 +51,13 @@ M.refresh_events = {
   "FileChangedShellPost",
   "TermLeave",
   "VimResized",
+  "WinResized",
+  "BufFilePost",
   "SessionLoadPost",
 }
+
+-- Options shown in the statusline; OptionSet is matched by option name.
+M.refresh_options = { "fileformat", "fileencoding", "readonly", "modifiable" }
 
 -- Interval used for lualine's own timers: long enough that they never matter.
 M.idle_interval = 2 ^ 31 - 1
@@ -77,6 +82,11 @@ end
 local function setup_refresh()
   local group = require("wraithvim.core.utils").augroup("statusline_refresh")
   vim.api.nvim_create_autocmd(M.refresh_events, { group = group, callback = M.request_refresh })
+  vim.api.nvim_create_autocmd("OptionSet", {
+    group = group,
+    pattern = M.refresh_options,
+    callback = M.request_refresh,
+  })
   vim.api.nvim_create_autocmd("User", {
     group = group,
     pattern = { "GitSignsUpdate", "GitSignsChanged" },
@@ -142,6 +152,7 @@ function M.opts()
       if not head or head == "" then
         return ""
       end
+      head = head:gsub("%%", "%%%%") -- branch names may contain "%"
       return ic.git.branch ~= "" and (ic.git.branch .. " " .. head) or head
     end,
     on_click = cmd("GitBranches"),

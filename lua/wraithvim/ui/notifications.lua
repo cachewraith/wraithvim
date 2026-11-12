@@ -41,7 +41,13 @@ function M.wrap(msg, width)
   local out = {}
   for _, line in ipairs(vim.split(msg, "\n", { plain = true })) do
     while vim.fn.strdisplaywidth(line) > width do
-      local cut = vim.fn.byteidx(line, width)
+      -- Cut by screen columns, not characters: CJK and emoji take two each.
+      local chars = width
+      local cut = vim.fn.byteidx(line, chars)
+      while cut > 0 and vim.fn.strdisplaywidth(line:sub(1, cut)) > width do
+        chars = chars - 1
+        cut = vim.fn.byteidx(line, chars)
+      end
       if cut <= 0 then
         break
       end
@@ -68,17 +74,22 @@ local function restack()
 end
 
 local function close(entry)
+  if vim.api.nvim_win_is_valid(entry.win) and not pcall(vim.api.nvim_win_close, entry.win, true) then
+    -- Windows cannot close while text is locked (e.g. during an <expr>
+    -- mapping); try again shortly.
+    vim.defer_fn(function()
+      close(entry)
+    end, 100)
+    return
+  end
   for i, n in ipairs(active) do
     if n == entry then
       table.remove(active, i)
       break
     end
   end
-  if vim.api.nvim_win_is_valid(entry.win) then
-    vim.api.nvim_win_close(entry.win, true)
-  end
   if vim.api.nvim_buf_is_valid(entry.buf) then
-    vim.api.nvim_buf_delete(entry.buf, { force = true })
+    pcall(vim.api.nvim_buf_delete, entry.buf, { force = true })
   end
   restack()
 end
@@ -96,7 +107,15 @@ local function show(msg, level, title)
     width = math.max(width, vim.fn.strdisplaywidth(title) + 2)
   end
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  if not pcall(vim.api.nvim_buf_set_lines, buf, 0, -1, false, lines) then
+    -- Text is locked (e.g. vim.notify from an <expr> mapping): show it as
+    -- soon as that is over.
+    vim.schedule(function()
+      pcall(vim.api.nvim_buf_delete, buf, { force = true })
+      show(msg, level, title)
+    end)
+    return
+  end
   vim.bo[buf].bufhidden = "wipe"
   local border = vim.o.winborder ~= "" and vim.o.winborder ~= "none" and vim.o.winborder or "rounded"
   local ok, win = pcall(vim.api.nvim_open_win, buf, false, {
@@ -115,7 +134,7 @@ local function show(msg, level, title)
     zindex = 150,
   })
   if not ok then
-    vim.api.nvim_buf_delete(buf, { force = true })
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
     original_notify(msg, level)
     return
   end

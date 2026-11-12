@@ -114,11 +114,20 @@ parse_args() {
     shift
   done
   [[ "$APPNAME" =~ ^[A-Za-z0-9._-]+$ ]] || die "--appname may only contain letters, digits, '.', '_' and '-'"
+  [[ "$APPNAME" != "." && "$APPNAME" != ".." ]] || die "invalid --appname $APPNAME"
   # ~/.config/wraithvim holds personal settings; it cannot double as a Neovim config dir.
   [[ "$APPNAME" != "wraithvim" ]] || die "--appname wraithvim collides with the settings directory ~/.config/wraithvim; use e.g. --appname wvim"
   case "$TARGET" in
     /*) ;;
     *) TARGET="$PWD/$TARGET" ;;
+  esac
+  # "dir/" would make backups land inside the directory being moved.
+  while [[ "$TARGET" == */ && "$TARGET" != / ]]; do TARGET="${TARGET%/}"; done
+  # The bootstrap step moves an existing config directory aside, which would
+  # take the freshly installed distribution with it.
+  local config_dir="$CONFIG_HOME/$APPNAME"
+  case "$TARGET/" in
+    "$config_dir"/*) die "--dir cannot be inside $config_dir (the Neovim config directory); keep the default or choose another folder" ;;
   esac
 }
 
@@ -239,8 +248,10 @@ ensure_writable_parent() {
 is_wraithvim_tree() { [[ -f "$1/lua/wraithvim/init.lua" && -f "$1/init.lua" ]]; }
 
 # True when this script runs from an extracted release archive, not a checkout.
+# Checks for .git here rather than asking git: an archive extracted inside
+# some other repository (e.g. a git-tracked $HOME) is still an archive.
 is_archive_copy() {
-  [[ -z "$REPO" ]] && ! git -C "$SCRIPT_DIR" rev-parse --git-dir >/dev/null 2>&1
+  [[ -z "$REPO" && ! -e "$SCRIPT_DIR/.git" ]]
 }
 
 source_repo() {
@@ -298,8 +309,8 @@ install_distribution() {
   fi
 
   ensure_writable_parent "$TARGET"
+  local bak=""
   if [[ -e "$TARGET" || -L "$TARGET" ]]; then
-    local bak
     bak="$(backup_path "$TARGET")"
     warn "$TARGET exists but is not WraithVim; moving it to $bak"
     run mv -- "$TARGET" "$bak"
@@ -322,6 +333,9 @@ install_distribution() {
           warn "could not clone $repo (offline?); copying this archive instead (:Update will be unavailable)"
           copy_files
           return
+        fi
+        if [[ -n "$bak" ]]; then
+          mv -- "$bak" "$TARGET"
         fi
         die "git clone of $repo failed (network or permissions). Nothing was changed."
       fi

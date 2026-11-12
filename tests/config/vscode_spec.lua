@@ -68,6 +68,25 @@ describe("VS Code keymap preset", function()
     assert.is_false(mapped("n", "<C-z>"))
   end)
 
+  it("keeps keys that keymaps.lua maps itself", function()
+    setup_with([[
+      vim.keymap.set("n", "<C-n>", "<cmd>let g:mine = 1<cr>", { desc = "mine" })
+      vim.opt.selection = "inclusive"
+      return { preset = "vscode" }
+    ]])
+    assert.equals("mine", vim.fn.maparg("<C-n>", "n", false, true).desc)
+    assert.equals("inclusive", vim.o.selection)
+    -- Neovim's own default mappings are still replaced by the preset.
+    assert.is_not.matches("snippet", vim.fn.maparg("<Tab>", "s", false, true).desc or "")
+  end)
+
+  it("matches disabled keys however they are spelled", function()
+    pcall(vim.keymap.del, "s", "<C-c>") -- left by earlier tests
+    setup_with('return { preset = "vscode", disable = { "<c-c>", "<Leader>CA" } }')
+    assert.is_false(mapped("s", "<C-c>")) -- Select mode is filtered only by is_disabled
+    assert.is_true(require("wraithvim.config.keymaps").is_disabled("n", "<leader>CA")) -- buffer-local LSP keys
+  end)
+
   it("has a description for every mapping and no duplicates with the defaults", function()
     local seen = {}
     local keymaps = require("wraithvim.config.keymaps")

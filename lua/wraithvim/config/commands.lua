@@ -14,6 +14,17 @@ local function call(mod, fn, ...)
   end
 end
 
+--- The words that start with what has been typed. Neovim does not filter what
+--- a Lua `complete` function returns.
+---@param lead string
+---@param words string[]
+---@return string[]
+local function matching(lead, words)
+  return vim.tbl_filter(function(w)
+    return vim.startswith(w, lead)
+  end, words)
+end
+
 --- Command definitions: name -> { fn, opts }.
 ---@return table<string, { [1]: function, [2]: table }>
 function M.definitions()
@@ -65,8 +76,8 @@ function M.definitions()
       end,
       {
         nargs = "?",
-        complete = function()
-          return { "bottom", "top", "left", "right", "float" }
+        complete = function(lead)
+          return matching(lead, { "bottom", "top", "left", "right", "float" })
         end,
         desc = "Toggle the terminal panel",
       },
@@ -77,8 +88,8 @@ function M.definitions()
       end,
       {
         nargs = "?",
-        complete = function()
-          return { "horizontal", "vertical" }
+        complete = function(lead)
+          return matching(lead, { "horizontal", "vertical" })
         end,
         desc = "Open a terminal in a new split",
       },
@@ -130,11 +141,11 @@ function M.definitions()
       {
         nargs = "+",
         bang = true,
-        complete = function(_, line)
+        complete = function(lead, line)
           if #vim.split(line, "%s+") > 2 then
-            return { "all" }
+            return matching(lead, { "all" })
           end
-          return require(c).choices
+          return matching(lead, require(c).choices)
         end,
         desc = "Take ours/theirs/both/base/none for a conflict (! = whole file)",
       },
@@ -150,7 +161,10 @@ function M.definitions()
     -- Formatting, syntax, tools
     Format = {
       function(o)
-        local range = o.range > 0 and { start = { o.line1, 0 }, ["end"] = { o.line2, 0 } } or nil
+        -- The end column must be the end of the last line, or language
+        -- servers leave that line out.
+        local last = o.range > 0 and vim.api.nvim_buf_get_lines(0, o.line2 - 1, o.line2, true)[1] or ""
+        local range = o.range > 0 and { start = { o.line1, 0 }, ["end"] = { o.line2, #last } } or nil
         require("wraithvim.integrations.formatter").format({ range = range })
       end,
       { range = true, desc = "Format buffer or range" },

@@ -53,6 +53,17 @@ describe("languages", function()
     assert.is_true(vim.tbl_contains(names, "lua"))
   end)
 
+  it("gives custom profiles a description and their servers the profile's filetypes", function()
+    local c = cfg({ mylang = { filetypes = { "mylang" }, servers = { my_ls = { cmd = "my-ls" } } } })
+    local p = registry.resolve("mylang", c.languages.mylang)
+    assert.equals("mylang", p.description)
+    local server = vim.iter(languages.servers({ p })):find(function(s)
+      return s.name == "my_ls"
+    end)
+    -- Without filetypes, vim.lsp.enable would attach it to every buffer.
+    assert.same({ "mylang" }, server.filetypes)
+  end)
+
   it("maps aliases onto their canonical profile", function()
     local c = cfg({ javascript = false, c = false })
     local names = vim.tbl_map(function(p)

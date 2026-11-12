@@ -5,10 +5,13 @@
 
 -- Byte-compile and cache Lua modules (lazy.nvim would enable this later anyway;
 -- doing it first speeds up every require before plugin setup).
-vim.loader.enable()
+-- Guarded so that Neovims too old to run WraithVim still reach its version message.
+if vim.loader then
+  vim.loader.enable()
+end
 
 local source = debug.getinfo(1, "S").source:sub(2)
-local root = vim.fs.dirname(vim.uv.fs_realpath(source) or source)
+local root = vim.fs.dirname((vim.uv or vim.loop).fs_realpath(source) or source)
 
 vim.g.wraithvim_root = root
 vim.opt.rtp:prepend(root)

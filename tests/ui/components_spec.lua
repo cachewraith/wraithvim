@@ -62,6 +62,10 @@ describe("ui components", function()
     local header = tl.header()
     assert.equals(vim.fs.basename(vim.fn.getcwd()), vim.trim(header[1].text))
     assert.matches("main", header[2].text)
+    -- "%" would be read as a tabline item ("%d" is an error).
+    vim.g.gitsigns_head = "feat/100%d"
+    assert.matches("100%%%%d", tl.header()[2].text)
+    vim.g.gitsigns_head = nil
   end)
 
   it("shows line blame by default, GitLens style, and can turn it off", function()

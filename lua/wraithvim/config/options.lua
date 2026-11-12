@@ -57,16 +57,30 @@ function M.apply_defaults()
     o.grepprg = "rg --vimgrep --smart-case"
     o.grepformat = "%f:%l:%c:%m"
   end
+
+  -- Remembered so apply_user can tell whether options.lua changed them.
+  M.initial = { winborder = vim.o.winborder, mousescroll = vim.o.mousescroll }
 end
 
 ---@param cfg table effective configuration
 function M.apply_user(cfg)
   local opts = cfg.options
-  vim.g.mapleader = opts.leader
-  vim.g.maplocalleader = opts.localleader
-  vim.opt.winborder = cfg.ui.border
-  local scroll = opts.scroll
-  vim.opt.mousescroll = ("ver:%d,hor:%d"):format(math.max(1, scroll.wheel), math.max(1, scroll.wheel_horizontal))
+  -- Direct vim.g / vim.opt calls in options.lua win over the same setting
+  -- expressed as data, as documented.
+  local initial = M.initial or {}
+  if vim.g.mapleader == nil then
+    vim.g.mapleader = opts.leader
+  end
+  if vim.g.maplocalleader == nil then
+    vim.g.maplocalleader = opts.localleader
+  end
+  if vim.o.winborder == initial.winborder then
+    vim.opt.winborder = cfg.ui.border
+  end
+  if vim.o.mousescroll == initial.mousescroll then
+    local scroll = opts.scroll
+    vim.opt.mousescroll = ("ver:%d,hor:%d"):format(math.max(1, scroll.wheel), math.max(1, scroll.wheel_horizontal))
+  end
 
   for name, value in pairs(opts.opt) do
     local ok, err = pcall(function()
@@ -77,7 +91,8 @@ function M.apply_user(cfg)
     end
   end
 
-  if opts.system_clipboard then
+  local clipboard_set = opts.opt.clipboard ~= nil or vim.api.nvim_get_option_info2("clipboard", {}).was_set
+  if opts.system_clipboard and not clipboard_set then
     -- Deferred: clipboard provider detection may spawn processes.
     vim.schedule(function()
       vim.opt.clipboard = "unnamedplus"

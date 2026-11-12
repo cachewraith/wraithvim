@@ -29,7 +29,9 @@ end
 ---@param cwd string
 ---@return vim.SystemCompleted
 function M.git(args, cwd)
-  local cmd = { "git", "-C", cwd }
+  -- Paths are always exact file names: without this, `[id].tsx` is a glob that
+  -- also matches `i.tsx` and `d.tsx`, so `git rm` would delete those too.
+  local cmd = { "git", "-C", cwd, "--literal-pathspecs" }
   vim.list_extend(cmd, args)
   return utils.run(cmd)
 end
@@ -43,7 +45,9 @@ function M.current_file()
     return nil
   end
   abs = vim.fs.normalize(vim.fn.fnamemodify(abs, ":p"))
-  local root = M.root(abs)
+  -- Not M.root(): a new file that is not on disk yet must still resolve to its
+  -- own repository, not the one the cwd happens to be in.
+  local root = vim.fs.root(abs, ".git")
   if not root then
     notify("File is not inside a Git repository.", vim.log.levels.WARN)
     return nil

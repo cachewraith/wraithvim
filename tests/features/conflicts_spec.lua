@@ -45,6 +45,17 @@ describe("conflicts: marker parsing", function()
     assert.same({}, conflicts.resolve_region(lines, r, "none"))
   end)
 
+  it("does not mistake a longer ===== underline for the separator", function()
+    local r = conflicts.find_conflicts({ "<<<<<<< HEAD", "Title", "========", "body", "=======", "t", ">>>>>>> x" })
+    assert.same({ { start = 1, sep = 5, finish = 7 } }, r)
+  end)
+
+  it("finds markers in files with CRLF line endings", function()
+    local raw = "<<<<<<< HEAD\r\nours\r\n=======\r\ntheirs\r\n>>>>>>> x\r\n"
+    local r = conflicts.find_conflicts(vim.split(raw, "\n", { plain = true }))
+    assert.same({ { start = 1, sep = 3, finish = 5 } }, r)
+  end)
+
   it("ignores unterminated markers and separators outside conflicts", function()
     assert.same({}, conflicts.find_conflicts({ "=======", "<<<<<<< a", "x" }))
   end)

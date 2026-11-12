@@ -93,6 +93,7 @@ function M.resolve(name, user)
   end
   local merged = utils.merge(base, user)
   merged.name = name
+  merged.description = merged.description or name -- custom profiles may omit it
   merged.filetypes = merged.filetypes or {}
   merged.parsers = merged.parsers or {}
   merged.servers = prune(merged.servers)

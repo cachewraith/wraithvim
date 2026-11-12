@@ -134,14 +134,17 @@ end
 function M.find_conflicts(lines)
   local regions = {}
   local cur
+  -- Markers are exactly seven characters, followed by a label or end of line
+  -- (with an optional \r in CRLF files). Longer runs such as a `========`
+  -- Markdown underline are content, not markers.
   for i, line in ipairs(lines) do
-    if line:match("^<<<<<<<") then
+    if line:match("^<<<<<<<[ \r]") or line == "<<<<<<<" then
       cur = { start = i }
-    elseif cur and not cur.sep and line:match("^|||||||") then
+    elseif cur and not cur.sep and (line:match("^|||||||[ \r]") or line == "|||||||") then
       cur.base = i
-    elseif cur and not cur.sep and line:match("^=======+$") then
+    elseif cur and not cur.sep and line:match("^=======\r?$") then
       cur.sep = i
-    elseif cur and cur.sep and line:match("^>>>>>>>") then
+    elseif cur and cur.sep and (line:match("^>>>>>>>[ \r]") or line == ">>>>>>>") then
       cur.finish = i
       regions[#regions + 1] = cur
       cur = nil

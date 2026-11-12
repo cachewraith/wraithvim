@@ -90,7 +90,10 @@ parse_args() {
     esac
     shift
   done
-  [[ "$APPNAME" =~ ^[A-Za-z0-9._-]+$ ]] || die "invalid --appname"
+  [[ "$APPNAME" =~ ^[A-Za-z0-9._-]+$ && "$APPNAME" != "." && "$APPNAME" != ".." ]] || die "invalid --appname"
+  # With a trailing slash, a symlinked --dir is not seen as a link and
+  # `rm -rf` would delete the linked checkout's contents.
+  while [[ "$TARGET" == */ && "$TARGET" != / ]]; do TARGET="${TARGET%/}"; done
 }
 
 remove_bootstrap() {
@@ -107,6 +110,13 @@ remove_bootstrap() {
   fi
   if confirm "Remove the WraithVim bootstrap $init?"; then
     run rm -f -- "$init"
+    # Older bootstraps the installer kept when it regenerated this one.
+    local old
+    for old in "$init".bak.*; do
+      if [[ -f "$old" ]] && grep -q "$MARKER" "$old"; then
+        run rm -f -- "$old"
+      fi
+    done
     # Remove the directory only if the bootstrap was its sole content.
     if ((DRY_RUN == 0)) && [[ -d "$config_dir" && -z "$(ls -A -- "$config_dir")" ]]; then
       rmdir -- "$config_dir"

@@ -173,7 +173,9 @@ function M.live_grep()
   if tool ~= "rg" then
     hint("rg", "text search")
   end
-  M.pick("live_grep")
+  -- Pass the command chosen now: the one Telescope got at setup reflects the
+  -- directory Neovim started in, which may since have changed.
+  M.pick("live_grep", { vimgrep_arguments = cmd })
 end
 
 function M.grep_word()
@@ -182,7 +184,7 @@ function M.grep_word()
     vim.notify("Text search needs ripgrep. Install ripgrep.", vim.log.levels.ERROR, { title = "WraithVim" })
     return
   end
-  M.pick("grep_string")
+  M.pick("grep_string", { vimgrep_arguments = cmd })
 end
 
 function M.git_files()

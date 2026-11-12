@@ -11,7 +11,7 @@ local function notify(msg, level)
 end
 
 ---@param root string
----@return boolean ok
+---@return boolean ok, boolean? reset the lockfile was reset, so plugins must be restored
 local function handle_dirty_tree(root)
   local r = utils.run({ "git", "-C", root, "status", "--porcelain" })
   if r.code ~= 0 then
@@ -32,8 +32,12 @@ local function handle_dirty_tree(root)
     if choice ~= 1 then
       return false
     end
-    utils.run({ "git", "-C", root, "checkout", "--", "lazy-lock.json" })
-    return true
+    local reset = utils.run({ "git", "-C", root, "checkout", "--", "lazy-lock.json" })
+    if reset.code ~= 0 then
+      notify("Could not reset lazy-lock.json: " .. utils.trim(reset.stderr), vim.log.levels.ERROR)
+      return false
+    end
+    return true, true
   end
   notify(
     "The WraithVim checkout has local modifications:\n"
@@ -55,7 +59,8 @@ function M.run()
     )
     return
   end
-  if not handle_dirty_tree(root) then
+  local clean, reset = handle_dirty_tree(root)
+  if not clean then
     return
   end
   -- A checkout pinned to a release tag has no branch to fast-forward.
@@ -81,10 +86,20 @@ function M.run()
         notify("git pull failed (network or diverged history):\n" .. utils.trim(r.stderr), vim.log.levels.ERROR)
         return
       end
+      -- Plugins on disk still have the :Lazy update versions of a reset lockfile.
+      local function restore_plugins()
+        if package.loaded["lazy"] then
+          notify("Plugin versions changed; installing the pinned versions...")
+          require("lazy").restore({ wait = false })
+        end
+      end
       -- Compare commits rather than parsing git's (localised) output.
       local after = head()
       if after == before then
         notify("WraithVim is up to date (" .. after:sub(1, 7) .. ").")
+        if reset then
+          restore_plugins()
+        end
         return
       end
       local log = utils.run({ "git", "-C", root, "log", "--oneline", "--no-decorate", before .. ".." .. after })
@@ -92,9 +107,8 @@ function M.run()
       -- Sync plugins only when the update changed their pinned versions.
       local lock_changed = utils.run({ "git", "-C", root, "diff", "--quiet", before, after, "--", "lazy-lock.json" }).code
         ~= 0
-      if lock_changed and package.loaded["lazy"] then
-        notify("Plugin versions changed; installing the pinned versions...")
-        require("lazy").restore({ wait = false })
+      if lock_changed or reset then
+        restore_plugins()
       end
       notify("Restart Neovim to apply the update.")
     end)

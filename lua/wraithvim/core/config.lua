@@ -116,6 +116,7 @@ end
 ---@param problems string[]
 ---@return table
 local function normalize_languages(user, defaults, problems)
+  local registry = require("wraithvim.languages.registry")
   local out = vim.deepcopy(defaults)
   for name, v in pairs(user) do
     if type(v) == "boolean" then
@@ -127,6 +128,11 @@ local function normalize_languages(user, defaults, problems)
       if v.enabled ~= nil and type(v.enabled) ~= "boolean" then
         problems[#problems + 1] = ("languages.%s.enabled: expected boolean"):format(name)
         v.enabled = nil
+      end
+      -- Enabled unknown names are reported when the profile is resolved; a
+      -- disabled one would otherwise be a silent typo (`pyhton = false`).
+      if v.enabled == false and v.filetypes == nil and not registry.is_builtin(registry.canonical(name)) then
+        problems[#problems + 1] = ("languages.%s: unknown language"):format(name)
       end
       out[name] = utils.merge(out[name] or { enabled = true }, v)
     end

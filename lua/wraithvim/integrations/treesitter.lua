@@ -17,6 +17,23 @@ function M.has_parser(lang)
   return ok and added == true
 end
 
+local filetypes_registered = false
+
+--- Register nvim-treesitter's filetype -> parser names (typescriptreact -> tsx,
+--- sh -> bash, cs -> c_sharp, jsonc -> json, ...). The plugin itself loads only
+--- for parser commands, so its table is read directly, once.
+local function register_filetypes()
+  if filetypes_registered then
+    return
+  end
+  filetypes_registered = true
+  local file =
+    vim.fs.joinpath(require("wraithvim.core.bootstrap").plugin_root(), "nvim-treesitter", "plugin", "filetypes.lua")
+  if vim.uv.fs_stat(file) then
+    pcall(dofile, file)
+  end
+end
+
 ---@param buf integer
 ---@param ft string
 ---@return boolean started
@@ -29,6 +46,7 @@ function M.attach(buf, ft)
   if utils.is_large_file(buf, cfg.options.large_file_size) then
     return false
   end
+  register_filetypes()
   local lang = vim.treesitter.language.get_lang(ft) or ft
   if not M.has_parser(lang) then
     return false

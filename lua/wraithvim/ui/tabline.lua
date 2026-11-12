@@ -8,11 +8,17 @@ local M = {}
 ---@return table[]
 function M.header()
   local ic = require("wraithvim.ui.icons").get()
-  local project = vim.fs.basename(vim.fn.getcwd())
+  -- Folder and branch names may contain "%", which the tabline would read as
+  -- an item ("100%d" is an error).
+  local function esc(s)
+    return (s:gsub("%%", "%%%%"))
+  end
+  local project = esc(vim.fs.basename(vim.fn.getcwd()))
   local head = vim.b.gitsigns_head
   if not head or head == "" then
     head = vim.g.gitsigns_head
   end
+  head = head and esc(head)
   local items = { { text = " " .. project .. " ", link = "Title" } }
   if head and head ~= "" then
     local prefix = ic.git.branch ~= "" and (ic.git.branch .. " ") or "git:"

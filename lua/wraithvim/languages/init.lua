@@ -91,7 +91,10 @@ function M.servers(profiles)
     table.sort(names)
     for _, name in ipairs(names) do
       local s = p.servers[name]
-      out[#out + 1] = vim.tbl_extend("force", s, { name = name, language = p.name, config = s.config or {} })
+      -- filetypes: custom servers unknown to nvim-lspconfig would otherwise
+      -- attach to every buffer.
+      out[#out + 1] =
+        vim.tbl_extend("force", s, { name = name, language = p.name, filetypes = p.filetypes, config = s.config or {} })
     end
   end
   return out

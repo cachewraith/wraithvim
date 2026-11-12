@@ -12,6 +12,12 @@ describe("config.commands", function()
     end
   end)
 
+  it("completes only arguments that start with what was typed", function()
+    commands.setup()
+    assert.same({ "float" }, vim.fn.getcompletion("Terminal fl", "cmdline"))
+    assert.same({ "theirs" }, vim.fn.getcompletion("ConflictChoose th", "cmdline"))
+  end)
+
   it("documents every command in the README", function()
     local readme = env.read(env.root .. "/README.md")
     for name in pairs(commands.definitions()) do

@@ -14,6 +14,12 @@ describe("ui.notifications", function()
     assert.matches("Notifications", many[11])
   end)
 
+  it("wraps by screen columns, so wide characters fit too", function()
+    for _, line in ipairs(notifications.wrap(string.rep("界", 25), 10)) do
+      assert.is_true(vim.fn.strdisplaywidth(line) <= 10, line)
+    end
+  end)
+
   it("records history and falls back to the original notify without a UI", function()
     local received = {}
     vim.notify = function(msg, level)

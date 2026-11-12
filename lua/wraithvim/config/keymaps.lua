@@ -328,13 +328,18 @@ end
 ---@return boolean
 function M.is_disabled(mode, lhs)
   local disable = require("wraithvim.core.config").get().keymaps.disable
+  if #disable == 0 then
+    return false
+  end
+  -- Compare key codes so "<c-w>" matches "<C-w>" and "<Leader>" matches "<leader>".
+  local key = vim.keycode(lhs)
   for _, d in ipairs(disable) do
-    if d == lhs then
+    if type(d) == "string" and vim.keycode(d) == key then
       return true
     end
-    if type(d) == "table" then
+    if type(d) == "table" and type(d[2]) == "string" then
       local modes = type(d[1]) == "table" and d[1] or { d[1] }
-      if d[2] == lhs and vim.tbl_contains(modes, mode) then
+      if vim.keycode(d[2]) == key and vim.tbl_contains(modes, mode) then
         return true
       end
     end
@@ -350,12 +355,13 @@ end
 
 ---@param entries table[]
 ---@param buf? integer
-local function apply(entries, buf)
+---@param skip? fun(mode: string, lhs: string): boolean also leave these out
+local function apply(entries, buf, skip)
   for _, entry in ipairs(entries) do
     if plugin_available(entry) then
       local modes = type(entry[1]) == "table" and entry[1] or { entry[1] }
       local enabled = vim.tbl_filter(function(m)
-        return not M.is_disabled(m, entry[2])
+        return not M.is_disabled(m, entry[2]) and not (skip and skip(m, entry[2]))
       end, modes)
       if #enabled > 0 then
         M.set(vim.tbl_extend("force", entry, { [1] = enabled }), buf)
@@ -372,14 +378,42 @@ end
 --- Apply defaults, then the user's keymaps.lua (disable list and extra entries).
 M.presets = { "default", "vscode" }
 
+-- Modes covered by the multi-mode letters of vim.keymap.set().
+local mode_aliases = { [""] = { "n", "x", "s", "o" }, v = { "x", "s" }, ["!"] = { "i", "c" } }
+
+--- Load keymaps.lua, recording the global keys it maps itself with
+--- vim.keymap.set() so the preset applied afterwards does not replace them.
+---@return table keymaps, table<string, true> user_keys mode .. keycode(lhs)
+local function load_user_keymaps()
+  local user_keys = {}
+  local keymap_set = vim.keymap.set
+  vim.keymap.set = function(mode, lhs, rhs, opts)
+    if type(lhs) == "string" and not (opts and opts.buffer) then
+      for _, m in ipairs(type(mode) == "table" and mode or { mode }) do
+        for _, each in ipairs(mode_aliases[m] or { m }) do
+          user_keys[each .. vim.keycode(lhs)] = true
+        end
+      end
+    end
+    return keymap_set(mode, lhs, rhs, opts)
+  end
+  local ok, user = pcall(require("wraithvim.core.config").load_keymaps)
+  vim.keymap.set = keymap_set
+  if not ok then
+    error(user, 0)
+  end
+  return user, user_keys
+end
+
 function M.setup()
   apply(M.defaults())
-  local config = require("wraithvim.core.config")
-  local user = config.load_keymaps()
+  local user, user_keys = load_user_keymaps()
   if user.preset == "vscode" then
     local vscode = require("wraithvim.config.vscode")
     vscode.apply_options()
-    apply(vscode.mappings())
+    apply(vscode.mappings(), nil, function(mode, lhs)
+      return user_keys[mode .. vim.keycode(lhs)] == true
+    end)
   elseif user.preset ~= "default" then
     require("wraithvim.core.logger").notify(
       vim.log.levels.WARN,
