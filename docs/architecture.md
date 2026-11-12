@@ -59,7 +59,8 @@ lua/wraithvim/
     notifications.lua          vim.notify replacement (no plugin)
   features/
     explorer.lua search.lua buffers.lua terminal.lua
-    git.lua conflicts.lua diagnostics.lua
+    git.lua graph.lua conflicts.lua diagnostics.lua
+    autoreload.lua             reload files changed on disk (inotify, no polling)
   languages/
     registry.lua               builtin list, aliases, profile resolution
     init.lua                   enabled profiles and derived data

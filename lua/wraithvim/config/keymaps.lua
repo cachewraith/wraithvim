@@ -147,7 +147,8 @@ function M.defaults()
     { "n", "<leader>fR", pick("resume"), desc = "Resume last search", plugin = "telescope.nvim" },
 
     -- Git
-    { "n", "<leader>gg", call(g, "graph"), desc = "Graph (all branches)", plugin = "vim-flog" },
+    { "n", "<leader>gg", call(g, "graph"), desc = "Graph (this branch)", plugin = "vim-flog" },
+    { "n", "<leader>gG", call(g, "graph", true), desc = "Graph (all branches)", plugin = "vim-flog" },
     { "n", "<leader>gs", call(g, "status"), desc = "Status", plugin = "vim-fugitive" },
     { "n", "<leader>gd", call(g, "diff"), desc = "Diff all changes", plugin = "diffview.nvim" },
     { "n", "<leader>gD", call(g, "diff_close"), desc = "Close diff", plugin = "diffview.nvim" },
@@ -261,6 +262,12 @@ function M.defaults()
     { "n", "<leader>w-", "<cmd>resize -3<cr>", desc = "Shorter" },
     { "n", "<leader>w>", "<cmd>vertical resize +5<cr>", desc = "Wider" },
     { "n", "<leader>w<", "<cmd>vertical resize -5<cr>", desc = "Narrower" },
+
+    -- Scrolling (the mouse wheel speed is options.scroll)
+    { { "n", "x" }, "<C-d>", "<C-d>zz", desc = "Half page down (cursor centered)" },
+    { { "n", "x" }, "<C-u>", "<C-u>zz", desc = "Half page up (cursor centered)" },
+    { { "n", "x" }, "<A-j>", "10j", desc = "Jump 10 lines down" },
+    { { "n", "x" }, "<A-k>", "10k", desc = "Jump 10 lines up" },
 
     -- Navigation
     { { "n", "x", "o" }, "s", call("flash", "jump"), desc = "Flash jump", plugin = "flash.nvim" },

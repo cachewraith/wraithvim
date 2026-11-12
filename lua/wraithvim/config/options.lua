@@ -65,6 +65,8 @@ function M.apply_user(cfg)
   vim.g.mapleader = opts.leader
   vim.g.maplocalleader = opts.localleader
   vim.opt.winborder = cfg.ui.border
+  local scroll = opts.scroll
+  vim.opt.mousescroll = ("ver:%d,hor:%d"):format(math.max(1, scroll.wheel), math.max(1, scroll.wheel_horizontal))
 
   for name, value in pairs(opts.opt) do
     local ok, err = pcall(function()

@@ -14,6 +14,14 @@ return {
     system_clipboard = true,
     -- Files larger than this (bytes) skip Treesitter and other per-buffer work.
     large_file_size = 1536 * 1024,
+    -- Lines moved per mouse-wheel notch (Neovim's own default is 3).
+    scroll = {
+      wheel = 6,
+      wheel_horizontal = 8,
+    },
+    -- Reload open files the moment another program (an AI CLI, a formatter,
+    -- git) changes them on disk. Buffers with unsaved edits are never touched.
+    auto_reload = true,
     format = {
       on_save = false,
       timeout_ms = 1000,
@@ -79,6 +87,8 @@ return {
       show_hidden = true,
       git_status = true,
       diagnostics = false,
+      -- Update the tree when files are created or deleted outside Neovim.
+      watch = true,
       hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
     },
     tabline = {

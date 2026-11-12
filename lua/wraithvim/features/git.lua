@@ -141,10 +141,12 @@ function M.branches()
   end
 end
 
---- Commit graph of all branches (vim-flog). `<CR>` opens a commit, `gq` closes.
-function M.graph()
+--- Commit graph (vim-flog) of the current branch, or of every branch with
+--- `all`. Keys are listed in the graph's header (wraithvim.features.graph).
+---@param all? boolean
+function M.graph(all)
   if require_repo() then
-    vim.cmd("Flog -all")
+    vim.cmd(all and "Flog -all" or "Flog")
   end
 end
 

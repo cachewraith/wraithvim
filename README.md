@@ -31,14 +31,15 @@ quiet when idle, and recognisably Neovim.
   at startup, and **0 ms of CPU while idle** with a file open (see
   [performance](docs/performance.md)).
 - **No polling.** The statusline is driven by events, not lualine's timers.
-  There are no file watchers in the explorer, no background indexing and no
-  update checker.
+  No background indexing and no update checker.
+- **Live files.** When an AI CLI, a formatter or `git checkout` changes an
+  open file, it reloads on its own (OS file events, never your unsaved edits).
 - **Native first.** Built-in LSP client (`vim.lsp.config`/`vim.lsp.enable`),
   `vim.snippet`, `vim.treesitter`, built-in terminal.
 - **Mouse everywhere it works for real.** Click tabs, click files and folders,
   drag splits, scroll, select text, click statusline items and the dashboard.
 - **Git-first.** Signs, hunk staging, fugitive status/commit/push/pull,
-  diffview diffs and history, and a WraithVim three-way conflict resolver built
+  diffview diffs and history, a readable commit graph, and a WraithVim three-way conflict resolver built
   on Git's index stages.
 - **Your settings survive updates.** Personal configuration lives in
   `~/.config/wraithvim/`; the distribution lives in `~/.local/share/wraithvim/`.
@@ -74,7 +75,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.6.1`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.7.0`. `:Update` follows the
 `main` branch.
 
 Prefer a download? Every release has
@@ -154,7 +155,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `:TerminalSplit [vertical]` | Independent terminal in a new split |
 | `:TerminalClose` | Stop the panel shell and remove its buffer |
 | `:TerminalNew` | Another terminal beside the panel (like VS Code's **+**) |
-| `:GitGraph` | Commit graph of all branches (`<CR>` opens a commit, `gq` closes) |
+| `:GitGraph` / `:GitGraphAll` | Commit graph of the current branch / all branches (<kbd>Enter</kbd> opens a commit, <kbd>?</kbd> lists keys, <kbd>q</kbd> closes) |
 | `:GitStatus` | fugitive status |
 | `:GitDiff` / `:GitDiffClose` | diffview of all changes / close it |
 | `:GitCommit` / `:GitAmend` | Commit / amend |
@@ -167,6 +168,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `:ConflictChoose[!] {side} [all]` | Take `ours`/`theirs`/`both`/`base`/`none` (`!` = whole file) |
 | `:ConflictResolve [file]` | Check, `git add`, report remaining conflicts |
 | `:ConflictClose` | Close the conflict view |
+| `:DiffDisk` | Compare your unsaved buffer with the version on disk |
 | `:Format` | Format buffer or range |
 | `:FormatToggle[!]` | Toggle format-on-save (`!` = this buffer only) |
 | `:InstallParsers [parsers]` | Install Treesitter parsers for enabled languages |

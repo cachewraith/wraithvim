@@ -29,10 +29,28 @@ argument, so names with spaces, quotes or `$()` are safe.
 | Amend | `<leader>gC` | `:GitAmend` |
 | Push / pull | `<leader>gp` / `<leader>gP` | `:GitPush` / `:GitPull` |
 | Switch branch | `<leader>gb`, or click the branch in the statusline | `:GitBranches` |
-| Commit graph (all branches) | `<leader>gg` | `:GitGraph` |
+| Commit graph (this branch / all branches) | `<leader>gg` / `<leader>gG` | `:GitGraph` / `:GitGraphAll` |
 | History | `<leader>gl` (repository), `<leader>gf` (current file) | `:GitLog`, `:GitFileHistory` |
 | Who changed this line | `<leader>gB` | |
 | Changed files in the explorer | `<leader>ge` | |
+
+### Commit graph
+
+Each line of the graph is one commit: short hash, branch and tag names,
+message, author and a relative date ("2 days ago"). Branch lines have their own
+colors, the branch you are on is green, tags are orange. The header lists the
+keys:
+
+| Key | Action |
+|---|---|
+| <kbd>Enter</kbd> | Open the commit (message and diff) |
+| <kbd>d</kbd> | Side-by-side diff of the commit (diffview) |
+| <kbd>c</kbd> | Check out the commit's branch; a commit without a branch asks before detaching HEAD |
+| <kbd>y</kbd> | Copy the commit hash |
+| <kbd>a</kbd> | Show / hide the other branches |
+| <kbd>u</kbd> | Refresh |
+| <kbd>?</kbd> | Every vim-flog key |
+| <kbd>q</kbd> | Close |
 
 In fugitive's status window: `s` stages, `u` unstages, `-` toggles, `=` shows
 an inline diff, `cc` commits, `ca` amends, `dv` opens a vertical diff, `g?`

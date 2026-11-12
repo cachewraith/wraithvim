@@ -36,6 +36,11 @@ return {
   localleader = "\\",
   system_clipboard = true,          -- clipboard=unnamedplus, set after startup
   large_file_size = 1536 * 1024,    -- bytes; larger files skip Treesitter, syntax, format-on-save
+  scroll = {
+    wheel = 6,                      -- lines per mouse-wheel notch (Neovim's default is 3)
+    wheel_horizontal = 8,
+  },
+  auto_reload = true,               -- reload open files changed by other programs (never unsaved ones)
   format = {
     on_save = false,                -- opt-in format on save
     timeout_ms = 1000,
@@ -68,6 +73,18 @@ return {
 You may also call `vim.opt`, `vim.g` or `vim.api` directly in `options.lua`;
 it runs after WraithVim's own vim options are set.
 
+### Files changed by other programs
+
+With `auto_reload = true` (the default), WraithVim watches the folder of every
+open file through the operating system (inotify on Linux, no polling). When an
+AI CLI, a formatter or `git checkout` changes a file you have open, the buffer
+reloads within a fraction of a second and a notification names the file.
+
+A buffer with unsaved edits is never replaced. You get a warning instead, and
+choose: `:DiffDisk` shows your version and the disk version side by side,
+`:e!` loads the disk version, `:w` keeps yours. A file deleted on disk keeps
+its buffer; `:w` writes it back.
+
 ## ui.lua
 
 Merged in this order: defaults → preset → `ui.lua`.
@@ -94,6 +111,7 @@ return {
     show_hidden = true,              -- dotfiles (gitignored files stay hidden)
     git_status = true,
     diagnostics = false,
+    watch = true,                    -- update the tree when files change outside Neovim
     hide = { ".git", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".DS_Store" },
   },
   tabline = {

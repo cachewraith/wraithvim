@@ -150,12 +150,35 @@ describe("TUI", function()
     t:sleep(300)
     local editor = t:lua("return vim.api.nvim_get_current_win()")
     local pos = t:lua("return vim.api.nvim_win_get_position(...)", editor)
+    -- One wheel notch moves options.scroll.wheel (6) lines.
+    local top = t:lua("return vim.fn.line('w0', ...)", editor)
     t:scroll(pos[1] + 5, pos[2] + 10, "down")
+    assert.is_true(t:wait_for(("vim.fn.line('w0', %d) == %d"):format(editor, top + 6), 2000))
     t:scroll(pos[1] + 5, pos[2] + 10, "down")
-    assert.is_true(t:wait_for(("vim.fn.line('w0', %d) > 1"):format(editor), 2000))
+    assert.is_true(t:wait_for(("vim.fn.line('w0', %d) == %d"):format(editor, top + 12), 2000))
 
     t:drag(pos[1] + 2, pos[2] + 8, pos[1] + 2, pos[2] + 14)
     assert.is_true(t:wait_for("vim.fn.mode() == 'v'", 2000))
+  end)
+
+  it("moves fast with the keyboard in files and in the explorer", function()
+    t = tui.spawn({ cwd = dir, args = { "long.txt" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    t:sleep(300)
+    t:lua("vim.api.nvim_win_set_cursor(0, { 1, 0 })")
+    t:send("\27j") -- Alt+j as a terminal sends it
+    assert.is_true(t:wait_for("vim.fn.line('.') == 11", 2000))
+    t:send("\4") -- Ctrl+d: half page, cursor kept in the middle
+    assert.is_true(t:wait_for("vim.fn.line('.') > 11", 2000))
+    assert.is_true(t:wait_for("math.abs(vim.fn.winline() - math.floor(vim.fn.winheight(0) / 2)) <= 1", 2000))
+
+    local win = tree_win(t)
+    t:lua("vim.api.nvim_set_current_win(...); vim.api.nvim_win_set_cursor(0, { 1, 0 })", win)
+    t:keys("}")
+    local sub = tree_line(t, "sub")
+    assert.is_true(t:wait_for(("vim.fn.line('.') == %d"):format(sub), 2000))
+    t:keys("{")
+    assert.is_true(t:wait_for(("vim.fn.line('.') < %d"):format(sub), 2000))
   end)
 
   it("opens Git branches from the statusline branch component", function()

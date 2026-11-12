@@ -217,25 +217,90 @@ describe("features in a real session", function()
     assert.equals(1, res.diffview)
   end)
 
-  it("shows a commit graph of all branches", function()
+  it("shows a readable commit graph of this branch or all branches", function()
     gh.commit_all(dir, "second commit")
-    gh.git(dir, "branch", "feature-x")
+    gh.git(dir, "checkout", "-q", "-b", "feature-x")
+    env.write(dir .. "/c.txt", "c\n")
+    gh.commit_all(dir, "feature work")
+    gh.git(dir, "checkout", "-q", "main")
     local res = run(
       [[
-      vim.cmd.edit("a.lua")
-      require("wraithvim.features.git").graph()
-      vim.wait(5000, function() return vim.bo.filetype == "floggraph" end, 20)
-      vim.wait(5000, function()
-        return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"):find("second commit", 1, true) ~= nil
-      end, 20)
-      return { ft = vim.bo.filetype, text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") }
+      local graph = require("wraithvim.features.graph")
+      local function open(all)
+        require("wraithvim.features.git").graph(all)
+        vim.wait(5000, function() return vim.bo.filetype == "floggraph" end, 20)
+        vim.wait(5000, function()
+          return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"):find("second commit", 1, true) ~= nil
+        end, 20)
+        return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+      end
+      local out = { branch = open(false), ft = vim.bo.filetype, winbar = vim.wo.winbar }
+      out.q = vim.fn.maparg("q", "n", false, true).rhs
+      out.c = vim.fn.maparg("c", "n", false, true).desc
+      out.hl = vim.api.nvim_get_hl(0, { name = "flogBranch1" }).fg ~= nil
+      vim.fn.search("second commit")
+      local commit = graph.commit()
+      out.hash = commit and commit.hash
+      out.at = commit and graph.branches_at(vim.fn.getcwd(), commit.hash)
+      vim.cmd("normal q")
+      out.closed = vim.bo.filetype ~= "floggraph"
+      out.all = open(true)
+      return out
     ]],
       { cwd = dir, wait_ms = 300 }
     )
     assert.equals("floggraph", res.ft)
-    assert.matches("second commit", res.text)
-    assert.matches("init", res.text)
-    assert.matches("feature%-x", res.text)
+    assert.matches("second commit", res.branch)
+    assert.matches("init", res.branch)
+    assert.matches("ago", res.branch) -- relative dates
+    assert.is_nil(res.branch:find("feature work", 1, true))
+    assert.matches("feature work", res.all)
+    assert.matches("feature%-x", res.all)
+    assert.matches("checkout", res.winbar)
+    assert.matches("FlogQuit", res.q)
+    assert.equals("Check out this commit", res.c)
+    assert.is_true(res.hl)
+    assert.is_string(res.hash)
+    assert.same({ "main" }, res.at)
+    assert.is_true(res.closed)
+  end)
+
+  it("reloads open files changed on disk without touching unsaved edits", function()
+    env.write(dir .. "/watched.txt", "one\n")
+    local res = run(
+      [[
+      local function first() return vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] end
+      local function write(path, text)
+        local f = assert(io.open(path, "w")); f:write(text); f:close()
+      end
+      local out = {}
+      vim.cmd.edit("watched.txt")
+      out.watchers = require("wraithvim.features.autoreload").count()
+      write("watched.txt", "two\n")
+      vim.wait(3000, function() return first() == "two" end, 20)
+      out.plain = first()
+      -- Atomic save: write a temp file and rename it over the original.
+      write("watched.txt.tmp", "three\n")
+      os.rename("watched.txt.tmp", "watched.txt")
+      vim.wait(3000, function() return first() == "three" end, 20)
+      out.atomic = first()
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, { "mine" })
+      write("watched.txt", "four\n")
+      vim.wait(1000)
+      out.kept = first()
+      out.modified = vim.bo.modified
+      vim.cmd("bwipeout!")
+      out.after_close = require("wraithvim.features.autoreload").count()
+      return out
+    ]],
+      { cwd = dir }
+    )
+    assert.equals(1, res.watchers)
+    assert.equals("two", res.plain)
+    assert.equals("three", res.atomic)
+    assert.equals("mine", res.kept)
+    assert.is_true(res.modified)
+    assert.equals(0, res.after_close)
   end)
 
   it("completion engine loads on insert and offers buffer words", function()

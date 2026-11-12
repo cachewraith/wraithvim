@@ -17,6 +17,23 @@ function M.click(state)
   state.commands.open(state)
 end
 
+--- Move the cursor to the next (`dir` = 1) or previous (-1) folder line.
+---@param state table neo-tree state
+---@param dir integer
+function M.jump_folder(state, dir)
+  local win = vim.api.nvim_get_current_win()
+  local last = vim.api.nvim_buf_line_count(vim.api.nvim_win_get_buf(win))
+  local line = vim.api.nvim_win_get_cursor(win)[1] + dir
+  while line >= 1 and line <= last do
+    local ok, node = pcall(state.tree.get_node, state.tree, line)
+    if ok and node and node.type == "directory" then
+      vim.api.nvim_win_set_cursor(win, { line, 0 })
+      return
+    end
+    line = line + dir
+  end
+end
+
 ---@return table neo-tree options
 function M.opts()
   local config = require("wraithvim.core.config").get()
@@ -30,6 +47,18 @@ function M.opts()
     ["h"] = "close_node",
     -- Keep <Space> free for the leader key inside the tree.
     ["<space>"] = "none",
+    ["}"] = {
+      function(state)
+        M.jump_folder(state, 1)
+      end,
+      desc = "Next folder",
+    },
+    ["{"] = {
+      function(state)
+        M.jump_folder(state, -1)
+      end,
+      desc = "Previous folder",
+    },
   }
   if ex.single_click then
     mappings["<LeftRelease>"] = M.click
@@ -84,7 +113,7 @@ function M.opts()
       },
       follow_current_file = { enabled = true },
       -- No filesystem watchers: the tree refreshes on writes and focus.
-      use_libuv_file_watcher = false,
+      use_libuv_file_watcher = ex.watch,
       hijack_netrw_behavior = "open_current",
     },
   }

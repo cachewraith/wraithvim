@@ -10,11 +10,13 @@ are expected to stay within.
   bufferline and the explorer load right after the first screen is drawn
   (`VeryLazy`); gitsigns, nvim-lspconfig and blink.cmp load when the first file
   opens; everything else loads when used.
-- **No idle work.** No repeating timers, no polling, no file watchers in the
-  explorer (`use_libuv_file_watcher = false`), no update checker
+- **No idle work.** No repeating timers, no polling, no update checker
   (`checker.enabled = false`), no config-change watcher, no project indexing.
-  gitsigns keeps an inotify watch on `.git`. That is event-driven: it costs
-  nothing until Git changes something.
+  File watching is event-driven (inotify through `vim.uv.new_fs_event`) and
+  costs nothing until something changes: gitsigns watches `.git`, auto-reload
+  watches the folders of open files (one watch per folder, removed when its
+  last buffer closes), and the explorer watches the folders it shows. Turn the
+  last two off with `auto_reload = false` and `explorer = { watch = false }`.
 - **Event-driven statusline.** By default lualine wakes up every 16 ms to check
   a refresh queue, plus a periodic full refresh. WraithVim sets those intervals
   to effectively never and refreshes lualine itself on the events that change

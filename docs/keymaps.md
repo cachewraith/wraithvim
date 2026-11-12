@@ -101,7 +101,8 @@ One key after <kbd>Space</kbd> for the things you do most.
 
 | Press | Action | Vim notation | Mode |
 |---|---|---|---|
-| Space g g | Graph (all branches) | `<leader>gg` | n |
+| Space g g | Graph (this branch) | `<leader>gg` | n |
+| Space g Shift+G | Graph (all branches) | `<leader>gG` | n |
 | Space g s | Status | `<leader>gs` | n |
 | Space g d | Diff all changes | `<leader>gd` | n |
 | Space g Shift+D | Close diff | `<leader>gD` | n |
@@ -169,6 +170,20 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Space w > | Wider | `<leader>w>` | n |
 | Space w < | Narrower | `<leader>w<` | n |
 
+### Scrolling
+
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Ctrl+D | Half page down (cursor centered) | `<C-d>` | n, x |
+| Ctrl+U | Half page up (cursor centered) | `<C-u>` | n, x |
+| Alt+J | Jump 10 lines down | `<A-j>` | n, x |
+| Alt+K | Jump 10 lines up | `<A-k>` | n, x |
+
+`PageDown`/`PageUp` scroll a full page and `gg`/`G` go to the first/last line,
+as in plain Neovim. In the explorer, `}`/`{` jump to the next/previous folder
+and `z` collapses everything. One mouse-wheel notch moves 6 lines; change it
+with `scroll = { wheel = 10 }` in `options.lua`.
+
 ### Other keys
 
 | Press | Action | Vim notation | Mode |
@@ -210,6 +225,8 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Terminal header | **New** / **Hide** / **Kill** (click) | Another terminal beside it / hide the panel (shell keeps running) / stop the shell |
 | Explorer (neo-tree) | `<CR>`, `l`, single click | Open file / toggle directory |
 | Explorer | `h` | Collapse directory |
+| Explorer | `}` / `{` | Next / previous folder |
+| Explorer | `z` | Collapse all folders |
 | Explorer | `a` / `A` | Add file (end with `/` for a directory) / add directory |
 | Explorer | `r`, `d`, `c`, `m` | Rename, delete, copy, move |
 | Explorer | `y`, `x`, `p` | Copy, cut, paste via the explorer clipboard |
@@ -219,6 +236,9 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Conflict RESULT pane | `]x` / `[x` | Next / previous conflict |
 | Conflict RESULT pane | `<leader>cr` / `<leader>cq` | Mark resolved and stage / close the view |
 | Conflict OURS/BASE/THEIRS pane | `dp` | Put the hunk under the cursor into RESULT |
+| Git graph | `<CR>` | Open the commit |
+| Git graph | `d` / `c` / `y` | Diff of the commit / check it out (asks first) / copy its hash |
+| Git graph | `a` / `u` / `?` / `q` | All branches on/off / refresh / every graph key / close |
 | Completion menu | `<Tab>` / `<S-Tab>` | Next / previous item (or snippet jump) |
 | Completion menu | `<CR>` | Accept the selected item |
 | Completion menu | `<C-space>`, `<C-e>` | Open menu or docs / close menu |
@@ -346,7 +366,7 @@ tests that send real terminal mouse sequences (`tests/integration/tui_spec.lua`)
 | Explorer | Single click on a file | Open it |
 | Explorer | Single click on a directory | Expand / collapse it |
 | Window separators, explorer edge | Drag | Resize splits and panels |
-| Any window | Wheel | Scroll |
+| Any window | Wheel | Scroll 6 lines per notch (`options.scroll`) |
 | Text | Drag | Visual selection |
 | Text | Right click | Neovim's context menu (definition, references, …) |
 | Statusline branch | Click | Branch picker |

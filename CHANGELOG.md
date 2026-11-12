@@ -6,6 +6,32 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-12
+
+### Added
+
+- Open files reload by themselves when another program changes them (an AI
+  CLI, a formatter, `git checkout`), within a fraction of a second. Uses the
+  operating system's file events, no polling. Buffers with unsaved edits are
+  never replaced: you get a warning, and `:DiffDisk` compares your version with
+  the one on disk. Option `auto_reload` (#3).
+- The explorer updates when files are created or deleted outside Neovim
+  (`explorer = { watch = true }`).
+- Faster scrolling (#1): the mouse wheel moves 6 lines per notch (option
+  `scroll`), `Ctrl+D` / `Ctrl+U` keep the cursor in the middle, `Alt+J` /
+  `Alt+K` jump 10 lines, and `}` / `{` jump between folders in the explorer.
+- Git graph actions (#2): `d` diffs the commit, `c` checks it out (asks
+  first), `y` copies its hash, `q` closes, `?` lists every key. A header in the
+  graph shows them.
+- `Space g Shift+G` and `:GitGraphAll` show every branch.
+
+### Changed
+
+- The Git graph is easier to read (#2): one commit per line with hash,
+  branches, message, author and a relative date ("2 days ago"), clearer branch
+  and tag colors. `Space g g` / `:GitGraph` now show the current branch; press
+  `a` in the graph to add the others.
+
 ## [0.6.1] - 2026-11-12
 
 ### Added
@@ -174,7 +200,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...v0.5.0
