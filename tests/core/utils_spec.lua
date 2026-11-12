@@ -34,6 +34,25 @@ describe("core.utils", function()
     assert.is_true(utils.executable("sh"))
   end)
 
+  it("treats a rustup proxy without its component as not installed", function()
+    local dir = env.tmpdir("rustup")
+    local rustup = dir .. "/rustup"
+    -- `rustup which <tool>` fails for components that are not installed.
+    vim.fn.writefile({ "#!/bin/sh", '[ "$2" = wv-present ]' }, rustup)
+    vim.fn.setfperm(rustup, "rwxr-xr-x")
+    vim.uv.fs_symlink(rustup, dir .. "/wv-missing")
+    vim.uv.fs_symlink(rustup, dir .. "/wv-present")
+    local path = vim.env.PATH
+    vim.env.PATH = dir .. ":" .. path
+    utils.reset_executable_cache()
+    local missing, present = utils.executable("wv-missing"), utils.executable("wv-present")
+    vim.env.PATH = path
+    utils.reset_executable_cache()
+    vim.fn.delete(dir, "rf")
+    assert.is_false(missing)
+    assert.is_true(present)
+  end)
+
   it("runs commands without a shell, passing special characters verbatim", function()
     local dir = env.tmpdir("utils")
     local name = dir .. "/a file; $(touch pwned) 'q\".txt"

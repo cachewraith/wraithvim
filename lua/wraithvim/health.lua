@@ -3,11 +3,14 @@
 local M = {}
 
 local h = vim.health
+local utils = require("wraithvim.core.utils")
 
+--- Same test the LSP/lint/format setup uses, so a rustup proxy without its
+--- component shows as missing here too.
 ---@param cmd string
 ---@return boolean
 local function has(cmd)
-  return vim.fn.executable(cmd) == 1
+  return utils.executable(cmd)
 end
 
 ---@param cmd string[]
@@ -291,6 +294,7 @@ local function check_treesitter()
 end
 
 function M.check()
+  utils.reset_executable_cache()
   check_core()
   check_tools()
   check_plugins()

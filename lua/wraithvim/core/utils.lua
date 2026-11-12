@@ -30,13 +30,38 @@ end
 
 local exe_cache = {}
 
+--- True when `name` on PATH is a rustup proxy whose component is not
+--- installed. rustup puts a proxy (a symlink or hard link to rustup) on PATH
+--- for rust-analyzer, rustfmt, clippy and the rest whether or not the
+--- component exists, and the proxy then exits with "Unknown binary".
+---@param name string
+---@return boolean
+local function rustup_proxy_missing(name)
+  if name == "rustup" then
+    return false
+  end
+  local rustup = vim.fn.exepath("rustup")
+  if rustup == "" then
+    return false
+  end
+  local tool, real = vim.uv.fs_stat(vim.fn.exepath(name)), vim.uv.fs_stat(rustup)
+  if not (tool and real and tool.ino == real.ino and tool.dev == real.dev) then
+    return false
+  end
+  local ok, res = pcall(function()
+    return vim.system({ rustup, "which", name }, { text = true }):wait(5000)
+  end)
+  return ok and res.code ~= 0
+end
+
 --- Cached `vim.fn.executable`. PATH lookups hit the filesystem, so cache them.
+--- A rustup proxy without its component counts as not installed.
 ---@param name string
 ---@return boolean
 function M.executable(name)
   local hit = exe_cache[name]
   if hit == nil then
-    hit = vim.fn.executable(name) == 1
+    hit = vim.fn.executable(name) == 1 and not rustup_proxy_missing(name)
     exe_cache[name] = hit
   end
   return hit
