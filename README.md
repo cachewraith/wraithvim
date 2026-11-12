@@ -1,5 +1,8 @@
 # WraithVim
 
+**Website:** <https://cachewraith.github.io/wraithvim-site/> — install guide,
+first steps with an animated demo, and a searchable list of every key.
+
 A lightweight, VS Code-inspired Neovim distribution for developers who live in
 the terminal. WraithVim gives you an explorer, buffer tabs, fuzzy search,
 LSP, completion, formatting, a complete Git workflow (including three-way
