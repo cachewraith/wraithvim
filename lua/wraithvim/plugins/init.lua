@@ -12,6 +12,7 @@ M.modules = {
   "wraithvim.plugins.ui.lualine",
   "wraithvim.plugins.ui.bufferline",
   "wraithvim.plugins.ui.neo_tree",
+  "wraithvim.plugins.ui.which_key",
   "wraithvim.plugins.editor.telescope",
   "wraithvim.plugins.editor.flash",
   "wraithvim.plugins.completion.blink",
@@ -20,6 +21,7 @@ M.modules = {
   "wraithvim.plugins.git.gitsigns",
   "wraithvim.plugins.git.fugitive",
   "wraithvim.plugins.git.diffview",
+  "wraithvim.plugins.git.flog",
   "wraithvim.plugins.syntax.treesitter",
   "wraithvim.plugins.syntax.conform",
 }

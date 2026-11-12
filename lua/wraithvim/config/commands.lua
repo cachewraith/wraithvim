@@ -87,6 +87,7 @@ function M.definitions()
     TerminalNew = { call(t, "new"), { desc = "Open another terminal beside the panel" } },
 
     -- Git
+    GitGraph = { call(g, "graph"), { desc = "Commit graph of all branches" } },
     GitStatus = { call(g, "status"), { desc = "Git status (fugitive)" } },
     GitDiff = { call(g, "diff"), { desc = "Diff working tree (diffview)" } },
     GitDiffClose = { call(g, "diff_close"), { desc = "Close diffview" } },

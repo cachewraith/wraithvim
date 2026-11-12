@@ -82,6 +82,7 @@ return {
   },
   icons = { nerd_font = true },      -- false = ASCII icons, no devicons
   border = "rounded",                -- floating window borders
+  key_hints = true,                  -- popup listing the next keys after Space (which-key)
   separators = "default",            -- default | slant | round | none
   colors = {},                       -- { GroupName = { fg = "#..", bg = "..", bold = true } }
   explorer = {

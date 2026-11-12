@@ -63,6 +63,8 @@ return {
       nerd_font = true,
     },
     border = "rounded", -- none | single | double | rounded | solid | shadow
+    -- Popup listing the next keys after <leader> or another prefix (which-key).
+    key_hints = true,
     separators = "default", -- default | slant | round | none
     -- Highlight overrides applied after every colorscheme load: { GroupName = { fg = "#ffffff" } }
     colors = {},

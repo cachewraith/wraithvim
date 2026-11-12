@@ -171,6 +171,10 @@ describe("TUI", function()
   it("shows a clickable dashboard on an empty start", function()
     t = tui.spawn({ cwd = dir })
     assert.is_true(t:wait_for("vim.bo.filetype == 'wraithdashboard'", 5000))
+    -- The tab bar loads right after the first draw and shifts the window down a
+    -- row; measure positions only once the UI has settled.
+    assert.is_true(t:wait_for("package.loaded.bufferline ~= nil and package.loaded['which-key'] ~= nil", 5000))
+    t:sleep(200)
     local row = t:lua([[
       for i, l in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
         if l:find("New file", 1, true) then return i end
@@ -183,10 +187,10 @@ describe("TUI", function()
     assert.is_true(t:wait_for("vim.bo.filetype ~= 'wraithdashboard' and vim.bo.buftype == ''", 2000))
   end)
 
-  it("toggles the terminal panel with <leader>tt and focuses the editor on click", function()
+  it("toggles the terminal panel with <leader>t and focuses the editor on click", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
-    t:keys(" tt")
+    t:keys(" t")
     assert.is_true(t:wait_for("vim.bo.buftype == 'terminal'", 3000))
     t:keys("<Esc><Esc>")
     -- Normal mode inside the terminal buffer (focus must stay in the terminal).
@@ -199,7 +203,7 @@ describe("TUI", function()
     local pos = t:lua("return vim.api.nvim_win_get_position(...)", editor)
     t:click(pos[1], pos[2] + 3)
     assert.is_true(t:wait_for("vim.fn.expand('%:t') == 'alpha.lua'", 2000))
-    t:keys(" tt")
+    t:keys(" t")
     assert.is_true(t:wait_for("vim.fn.bufwinid(require('wraithvim.features.terminal').panel.buf) == -1", 2000))
   end)
 
@@ -232,7 +236,7 @@ describe("TUI", function()
   it("terminal: header buttons, readable statusline, click to type", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded.lualine ~= nil and package.loaded['neo-tree'] ~= nil", 8000))
-    t:keys(" tt")
+    t:keys(" t")
     assert.is_true(t:wait_for("vim.bo.filetype == 'wraithterm' and vim.fn.mode() == 't'", 3000))
     t:sleep(300)
     local stl = t:lua("return vim.api.nvim_eval_statusline(vim.o.statusline, {}).str")
@@ -335,6 +339,26 @@ describe("TUI", function()
       t:send("\27[102;6u") -- Ctrl+Shift+F (kitty keyboard protocol)
       assert.is_true(t:wait_for("vim.bo.filetype == 'TelescopePrompt'", 5000))
     end)
+  end)
+
+  it("shows key hints after pressing Space", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['which-key'] ~= nil", 8000))
+    t:sleep(300)
+    t:send(" ")
+    local popup = [[(function()
+      for _, w in ipairs(vim.api.nvim_list_wins()) do
+        local b = vim.api.nvim_win_get_buf(w)
+        if vim.api.nvim_win_get_config(w).relative ~= "" then
+          local text = table.concat(vim.api.nvim_buf_get_lines(b, 0, -1, false), "\n")
+          if text:find("Git", 1, true) and text:find("Find", 1, true) then return true end
+        end
+      end
+      return false
+    end)()]]
+    assert.is_true(t:wait_for(popup, 3000))
+    t:send("e") -- <leader>e toggles the explorer and closes the popup
+    assert.is_true(t:wait_for("not " .. popup, 3000))
   end)
 
   it("uses no CPU while idle", function()

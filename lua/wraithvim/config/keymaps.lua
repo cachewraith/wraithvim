@@ -5,15 +5,17 @@
 
 local M = {}
 
+-- Prefix groups (shown by the key-hint popup and the cheatsheet). The most
+-- used actions sit on a single key right after <leader> instead.
 M.groups = {
-  { "<leader>b", "Buffers" },
+  { "<leader>b", "Buffers (tabs)" },
   { "<leader>c", "Code" },
   { "<leader>d", "Diagnostics" },
-  { "<leader>e", "Explorer" },
-  { "<leader>f", "Find / search" },
+  { "<leader>f", "Find" },
   { "<leader>g", "Git" },
   { "<leader>l", "LSP" },
-  { "<leader>t", "Terminal" },
+  { "<leader>T", "Terminals" },
+  { "<leader>u", "Update & tools" },
   { "<leader>w", "Windows" },
 }
 
@@ -45,6 +47,14 @@ end
 
 M.call, M.pick = call, pick
 
+--- True for single-key leader mappings such as <leader>e or <leader><space>.
+---@param lhs string
+---@return boolean
+function M.is_quick(lhs)
+  local rest = lhs:match("^<leader>(.*)$")
+  return rest ~= nil and (#rest == 1 or rest:match("^<[^>]+>$") ~= nil)
+end
+
 local function visual_range()
   local a, b = vim.fn.line("."), vim.fn.line("v")
   return { math.min(a, b), math.max(a, b) }
@@ -61,41 +71,48 @@ function M.defaults()
   local t = "wraithvim.features.terminal"
   local d = "wraithvim.features.diagnostics"
   local f = "wraithvim.integrations.formatter"
+  local cmd = function(command)
+    return "<cmd>" .. command .. "<cr>"
+  end
   return {
-    -- Explorer
-    { "n", "<leader>ee", call(x, "toggle"), desc = "Toggle explorer", plugin = "neo-tree.nvim" },
-    { "n", "<leader>ef", call(x, "reveal"), desc = "Reveal current file", plugin = "neo-tree.nvim" },
-    { "n", "<leader>eg", call(x, "git_status"), desc = "Explorer: Git changes", plugin = "neo-tree.nvim" },
-    { "n", "<leader>eb", call(x, "buffers"), desc = "Explorer: open buffers", plugin = "neo-tree.nvim" },
-    { "n", "<leader>e>", call(x, "resize", 5), desc = "Widen explorer", plugin = "neo-tree.nvim" },
-    { "n", "<leader>e<", call(x, "resize", -5), desc = "Narrow explorer", plugin = "neo-tree.nvim" },
+    -- Quick keys: one key after <leader>
+    { "n", "<leader><space>", call(s, "find_files"), desc = "Find file", plugin = "telescope.nvim" },
+    { "n", "<leader>/", call(s, "live_grep"), desc = "Search text in project", plugin = "telescope.nvim" },
+    { "n", "<leader>,", pick("buffers"), desc = "Switch tab", plugin = "telescope.nvim" },
+    { "n", "<leader>e", call(x, "toggle"), desc = "Explorer", plugin = "neo-tree.nvim" },
+    { "n", "<leader>E", call(x, "reveal"), desc = "Show file in explorer", plugin = "neo-tree.nvim" },
+    { "n", "<leader>t", call(t, "toggle"), desc = "Terminal" },
+    { "n", "<leader>x", call(b, "delete"), desc = "Close tab" },
+    { "n", "<leader>q", cmd("confirm qall"), desc = "Quit (asks to save)" },
+    { "n", "<leader>?", call("wraithvim.config.keymaps", "cheatsheet"), desc = "All keymaps" },
 
-    -- Find / search
-    { "n", "<leader>ff", call(s, "find_files"), desc = "Find files", plugin = "telescope.nvim" },
-    { "n", "<leader>fg", call(s, "live_grep"), desc = "Live grep", plugin = "telescope.nvim" },
-    { { "n", "x" }, "<leader>fw", call(s, "grep_word"), desc = "Search word / selection", plugin = "telescope.nvim" },
-    { "n", "<leader>fb", pick("buffers"), desc = "Find buffers", plugin = "telescope.nvim" },
+    -- Find
+    { "n", "<leader>ff", call(s, "find_files"), desc = "Files", plugin = "telescope.nvim" },
+    { "n", "<leader>fg", call(s, "live_grep"), desc = "Text (live grep)", plugin = "telescope.nvim" },
+    { { "n", "x" }, "<leader>fw", call(s, "grep_word"), desc = "Word / selection", plugin = "telescope.nvim" },
+    { "n", "<leader>fb", pick("buffers"), desc = "Open tabs", plugin = "telescope.nvim" },
     { "n", "<leader>fr", pick("oldfiles"), desc = "Recent files", plugin = "telescope.nvim" },
     { "n", "<leader>fv", call(s, "git_files"), desc = "Git files", plugin = "telescope.nvim" },
-    { "n", "<leader>fx", pick("diagnostics"), desc = "Search diagnostics", plugin = "telescope.nvim" },
-    { "n", "<leader>fh", pick("help_tags"), desc = "Help tags", plugin = "telescope.nvim" },
+    { "n", "<leader>fx", pick("diagnostics"), desc = "Problems", plugin = "telescope.nvim" },
+    { "n", "<leader>fh", pick("help_tags"), desc = "Help", plugin = "telescope.nvim" },
     { "n", "<leader>fk", pick("keymaps"), desc = "Keymaps", plugin = "telescope.nvim" },
     { "n", "<leader>fc", pick("commands"), desc = "Commands", plugin = "telescope.nvim" },
-    { "n", "<leader>f/", pick("current_buffer_fuzzy_find"), desc = "Search in buffer", plugin = "telescope.nvim" },
+    { "n", "<leader>f/", pick("current_buffer_fuzzy_find"), desc = "In this file", plugin = "telescope.nvim" },
     { "n", "<leader>fR", pick("resume"), desc = "Resume last search", plugin = "telescope.nvim" },
-    { { "n", "x" }, "<leader>fd", call(f, "format"), desc = "Format document", plugin = "conform.nvim" },
 
     -- Git
-    { "n", "<leader>gs", call(g, "status"), desc = "Git status", plugin = "vim-fugitive" },
-    { "n", "<leader>gd", call(g, "diff"), desc = "Git diff (all changes)", plugin = "diffview.nvim" },
-    { "n", "<leader>gD", call(g, "diff_close"), desc = "Close diff view", plugin = "diffview.nvim" },
-    { "n", "<leader>gb", call(g, "branches"), desc = "Git branches", plugin = "telescope.nvim" },
-    { "n", "<leader>gc", call(g, "commit"), desc = "Git commit", plugin = "vim-fugitive" },
-    { "n", "<leader>gC", call(g, "commit", true), desc = "Git commit --amend", plugin = "vim-fugitive" },
-    { "n", "<leader>gp", call(g, "push"), desc = "Git push", plugin = "vim-fugitive" },
-    { "n", "<leader>gP", call(g, "pull"), desc = "Git pull", plugin = "vim-fugitive" },
-    { "n", "<leader>gl", call(g, "history"), desc = "Commit history", plugin = "diffview.nvim" },
+    { "n", "<leader>gg", call(g, "graph"), desc = "Graph (all branches)", plugin = "vim-flog" },
+    { "n", "<leader>gs", call(g, "status"), desc = "Status", plugin = "vim-fugitive" },
+    { "n", "<leader>gd", call(g, "diff"), desc = "Diff all changes", plugin = "diffview.nvim" },
+    { "n", "<leader>gD", call(g, "diff_close"), desc = "Close diff", plugin = "diffview.nvim" },
+    { "n", "<leader>gb", call(g, "branches"), desc = "Switch branch", plugin = "telescope.nvim" },
+    { "n", "<leader>gc", call(g, "commit"), desc = "Commit", plugin = "vim-fugitive" },
+    { "n", "<leader>gC", call(g, "commit", true), desc = "Amend last commit", plugin = "vim-fugitive" },
+    { "n", "<leader>gp", call(g, "push"), desc = "Push", plugin = "vim-fugitive" },
+    { "n", "<leader>gP", call(g, "pull"), desc = "Pull", plugin = "vim-fugitive" },
+    { "n", "<leader>gl", call(g, "history"), desc = "History (log)", plugin = "diffview.nvim" },
     { "n", "<leader>gf", call(g, "file_history"), desc = "File history", plugin = "diffview.nvim" },
+    { "n", "<leader>ge", call(x, "git_status"), desc = "Changed files in explorer", plugin = "neo-tree.nvim" },
     { "n", "<leader>ga", call(g, "stage_file"), desc = "Stage file" },
     { "n", "<leader>gu", call(g, "unstage_file"), desc = "Unstage file" },
     { "n", "<leader>gh", gs("stage_hunk"), desc = "Stage / unstage hunk", plugin = "gitsigns.nvim" },
@@ -108,54 +125,53 @@ function M.defaults()
       desc = "Stage / unstage selected lines",
       plugin = "gitsigns.nvim",
     },
-    { "n", "<leader>gr", gs("reset_hunk"), desc = "Reset hunk", plugin = "gitsigns.nvim" },
+    { "n", "<leader>gr", gs("reset_hunk"), desc = "Undo hunk changes", plugin = "gitsigns.nvim" },
     {
       "x",
       "<leader>gr",
       function()
         require("gitsigns").reset_hunk(visual_range())
       end,
-      desc = "Reset selected lines",
+      desc = "Undo changes in selected lines",
       plugin = "gitsigns.nvim",
     },
-    { "n", "<leader>gS", gs("stage_buffer"), desc = "Stage buffer", plugin = "gitsigns.nvim" },
-    { "n", "<leader>gR", gs("reset_buffer"), desc = "Reset buffer", plugin = "gitsigns.nvim" },
+    { "n", "<leader>gS", gs("stage_buffer"), desc = "Stage whole file (hunks)", plugin = "gitsigns.nvim" },
+    { "n", "<leader>gR", gs("reset_buffer"), desc = "Undo all file changes", plugin = "gitsigns.nvim" },
     { "n", "<leader>gv", gs("preview_hunk"), desc = "Preview hunk", plugin = "gitsigns.nvim" },
     { "n", "<leader>gB", gs("blame_line", { full = true }), desc = "Blame line", plugin = "gitsigns.nvim" },
-    { "n", "]h", gs("nav_hunk", "next"), desc = "Next hunk", plugin = "gitsigns.nvim" },
-    { "n", "[h", gs("nav_hunk", "prev"), desc = "Previous hunk", plugin = "gitsigns.nvim" },
+    { "n", "]h", gs("nav_hunk", "next"), desc = "Next change (hunk)", plugin = "gitsigns.nvim" },
+    { "n", "[h", gs("nav_hunk", "prev"), desc = "Previous change (hunk)", plugin = "gitsigns.nvim" },
     { "n", "<leader>gx", call(c, "quickfix"), desc = "List merge conflicts" },
-    { "n", "<leader>gm", call(c, "open"), desc = "Resolve merge conflict (3-way)" },
+    { "n", "<leader>gm", call(c, "open"), desc = "Resolve merge conflict" },
 
-    -- Buffers
-    { "n", "<leader>bb", "<cmd>BufferLinePick<cr>", desc = "Pick buffer", plugin = "bufferline.nvim" },
-    { "n", "<leader>bd", call(b, "delete"), desc = "Delete buffer" },
-    { "n", "<leader>bD", call(b, "delete", 0, true), desc = "Delete buffer (discard changes)" },
-    { "n", "<leader>bo", call(b, "close_others"), desc = "Delete other buffers" },
-    { "n", "<leader>bc", call(b, "cleanup"), desc = "Delete hidden buffers" },
-    { "n", "<leader>bn", "<cmd>bnext<cr>", desc = "Next buffer" },
-    { "n", "<leader>bp", "<cmd>bprevious<cr>", desc = "Previous buffer" },
+    -- Buffers (tabs)
+    { "n", "<leader>bb", "<cmd>BufferLinePick<cr>", desc = "Pick tab", plugin = "bufferline.nvim" },
+    { "n", "<leader>bd", call(b, "delete"), desc = "Close tab" },
+    { "n", "<leader>bD", call(b, "delete", 0, true), desc = "Close tab (discard changes)" },
+    { "n", "<leader>bo", call(b, "close_others"), desc = "Close other tabs" },
+    { "n", "<leader>bc", call(b, "cleanup"), desc = "Close hidden tabs" },
+    { "n", "<leader>bn", "<cmd>bnext<cr>", desc = "Next tab" },
+    { "n", "<leader>bp", "<cmd>bprevious<cr>", desc = "Previous tab" },
 
-    -- Terminal
-    { "n", "<leader>tt", call(t, "toggle"), desc = "Toggle terminal" },
-    { "n", "<leader>th", call(t, "split", "horizontal"), desc = "Terminal in horizontal split" },
-    { "n", "<leader>tv", call(t, "split", "vertical"), desc = "Terminal in vertical split" },
-    { "n", "<leader>tf", call(t, "open", "float"), desc = "Floating terminal" },
-    { "n", "<leader>tn", call(t, "new"), desc = "New terminal beside the panel" },
-    { "n", "<leader>tc", call(t, "close"), desc = "Close terminal" },
+    -- Terminals (the panel itself is <leader>t)
+    { "n", "<leader>Tn", call(t, "new"), desc = "New terminal beside" },
+    { "n", "<leader>Th", call(t, "split", "horizontal"), desc = "Terminal below (split)" },
+    { "n", "<leader>Tv", call(t, "split", "vertical"), desc = "Terminal right (split)" },
+    { "n", "<leader>Tf", call(t, "open", "float"), desc = "Floating terminal" },
+    { "n", "<leader>Tc", call(t, "close"), desc = "Kill terminal panel" },
     -- Ctrl+Shift+` as sent by kitty-protocol / modifyOtherKeys terminals; some report it as Ctrl+~.
     { { "n", "i", "t" }, "<C-S-`>", call(t, "open", "bottom"), desc = "Open terminal at the bottom" },
     { { "n", "i", "t" }, "<C-~>", call(t, "open", "bottom"), desc = "Open terminal at the bottom (Ctrl+Shift+`)" },
 
     -- Diagnostics
-    { "n", "<leader>dd", vim.diagnostic.open_float, desc = "Line diagnostics" },
+    { "n", "<leader>dd", vim.diagnostic.open_float, desc = "Show line problems" },
     {
       "n",
       "<leader>dn",
       function()
         vim.diagnostic.jump({ count = 1, float = true })
       end,
-      desc = "Next diagnostic",
+      desc = "Next problem",
     },
     {
       "n",
@@ -163,32 +179,42 @@ function M.defaults()
       function()
         vim.diagnostic.jump({ count = -1, float = true })
       end,
-      desc = "Previous diagnostic",
+      desc = "Previous problem",
     },
-    { "n", "<leader>dq", vim.diagnostic.setqflist, desc = "Diagnostics to quickfix" },
-    { "n", "<leader>dl", vim.diagnostic.setloclist, desc = "Buffer diagnostics to location list" },
-    { "n", "<leader>dt", call(d, "toggle_virtual_text"), desc = "Toggle inline diagnostics" },
-    { "n", "<leader>dT", call(d, "toggle_buffer"), desc = "Toggle buffer diagnostics" },
-    { "n", "<leader>dx", pick("diagnostics"), desc = "Search all diagnostics", plugin = "telescope.nvim" },
+    { "n", "<leader>dq", vim.diagnostic.setqflist, desc = "All problems (quickfix)" },
+    { "n", "<leader>dl", vim.diagnostic.setloclist, desc = "File problems (list)" },
+    { "n", "<leader>dt", call(d, "toggle_virtual_text"), desc = "Toggle inline problems" },
+    { "n", "<leader>dT", call(d, "toggle_buffer"), desc = "Toggle problems for file" },
+    { "n", "<leader>dx", pick("diagnostics"), desc = "Search problems", plugin = "telescope.nvim" },
 
     -- Code
     { { "n", "x" }, "<leader>cf", call(f, "format"), desc = "Format", plugin = "conform.nvim" },
     { "n", "<leader>cF", call(f, "toggle"), desc = "Toggle format on save", plugin = "conform.nvim" },
 
+    -- Update & tools
+    { "n", "<leader>uu", call("wraithvim.core.update", "run"), desc = "Update WraithVim" },
+    { "n", "<leader>uh", cmd("checkhealth wraithvim"), desc = "Health check" },
+    { "n", "<leader>up", cmd("Lazy"), desc = "Plugins" },
+    { "n", "<leader>uc", cmd("Config"), desc = "Open settings folder" },
+    { "n", "<leader>ul", call("wraithvim.core.logger", "open"), desc = "Log" },
+    { "n", "<leader>un", call("wraithvim.ui.notifications", "show_history"), desc = "Notification history" },
+    { "n", "<leader>ut", cmd("InstallParsers"), desc = "Install syntax parsers" },
+    { "n", "<leader>um", cmd("InstallTools"), desc = "Install language tools (Mason)" },
+
     -- Windows
-    { "n", "<leader>wv", "<cmd>vsplit<cr>", desc = "Split vertically" },
-    { "n", "<leader>ws", "<cmd>split<cr>", desc = "Split horizontally" },
+    { "n", "<leader>wv", "<cmd>vsplit<cr>", desc = "Split right" },
+    { "n", "<leader>ws", "<cmd>split<cr>", desc = "Split below" },
     { "n", "<leader>wc", "<cmd>close<cr>", desc = "Close window" },
     { "n", "<leader>wo", "<cmd>only<cr>", desc = "Close other windows" },
-    { "n", "<leader>w=", "<C-w>=", desc = "Equalize windows" },
-    { "n", "<leader>wh", "<C-w>h", desc = "Focus left window" },
-    { "n", "<leader>wj", "<C-w>j", desc = "Focus window below" },
-    { "n", "<leader>wk", "<C-w>k", desc = "Focus window above" },
-    { "n", "<leader>wl", "<C-w>l", desc = "Focus right window" },
-    { "n", "<leader>w+", "<cmd>resize +3<cr>", desc = "Taller window" },
-    { "n", "<leader>w-", "<cmd>resize -3<cr>", desc = "Shorter window" },
-    { "n", "<leader>w>", "<cmd>vertical resize +5<cr>", desc = "Wider window" },
-    { "n", "<leader>w<", "<cmd>vertical resize -5<cr>", desc = "Narrower window" },
+    { "n", "<leader>w=", "<C-w>=", desc = "Equal sizes" },
+    { "n", "<leader>wh", "<C-w>h", desc = "Go left" },
+    { "n", "<leader>wj", "<C-w>j", desc = "Go down" },
+    { "n", "<leader>wk", "<C-w>k", desc = "Go up" },
+    { "n", "<leader>wl", "<C-w>l", desc = "Go right" },
+    { "n", "<leader>w+", "<cmd>resize +3<cr>", desc = "Taller" },
+    { "n", "<leader>w-", "<cmd>resize -3<cr>", desc = "Shorter" },
+    { "n", "<leader>w>", "<cmd>vertical resize +5<cr>", desc = "Wider" },
+    { "n", "<leader>w<", "<cmd>vertical resize -5<cr>", desc = "Narrower" },
 
     -- Navigation
     { { "n", "x", "o" }, "s", call("flash", "jump"), desc = "Flash jump", plugin = "flash.nvim" },
@@ -197,7 +223,6 @@ function M.defaults()
 
     -- General
     { { "n", "i", "x" }, "<C-s>", "<cmd>write<cr><esc>", desc = "Save file" },
-    { "n", "<leader>?", call("wraithvim.config.keymaps", "cheatsheet"), desc = "Keymap cheatsheet" },
   }
 end
 
@@ -330,17 +355,27 @@ function M.setup()
   end
 end
 
---- Floating cheatsheet of leader mappings, grouped by prefix.
+--- Floating cheatsheet: quick keys first, then each group.
 function M.cheatsheet()
   local lines =
     { "WraithVim keymaps  (<leader> = " .. (vim.g.mapleader == " " and "Space" or vim.g.mapleader) .. ")", "" }
   local all = vim.list_extend(vim.deepcopy(M.defaults()), M.lsp())
+  local function row(e)
+    local modes = type(e[1]) == "table" and table.concat(e[1], "") or e[1]
+    return ("  %-16s %-4s %s"):format(e[2], modes, e.desc or "")
+  end
+  lines[#lines + 1] = "Quick keys"
+  for _, e in ipairs(all) do
+    if M.is_quick(e[2]) and plugin_available(e) then
+      lines[#lines + 1] = row(e)
+    end
+  end
+  lines[#lines + 1] = ""
   for _, group in ipairs(M.groups) do
     lines[#lines + 1] = group[1] .. "  " .. group[2]
     for _, e in ipairs(all) do
       if vim.startswith(e[2], group[1]) and plugin_available(e) then
-        local modes = type(e[1]) == "table" and table.concat(e[1], "") or e[1]
-        lines[#lines + 1] = ("  %-14s %-4s %s"):format(e[2], modes, e.desc or "")
+        lines[#lines + 1] = row(e)
       end
     end
     lines[#lines + 1] = ""

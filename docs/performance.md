@@ -107,6 +107,11 @@ Measured with `scripts/benchmark.sh --dev --runs 20 --idle-seconds 20`:
 | `git status --porcelain` | 17 ms |
 | diffview with 25 changed files | 50 ms |
 
+Re-measured for 0.5.0 (which-key and vim-flog added, 21 plugins), same
+machine, `--startup-only --runs 15`: startup median 19.4 ms without a file and
+40.9 ms with one, still 2 plugins loaded at startup; the idle-CPU test still
+passes.
+
 For comparison, the same TUI idle measurement with lualine's default refresh
 settings used 30–50 ms of CPU per 10 s (≈0.3%), all of it from lualine's
 timers.

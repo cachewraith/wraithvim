@@ -24,7 +24,7 @@ quiet when idle, and recognisably Neovim.
 
 ## Highlights
 
-- **Fast and idle-quiet.** About 20 ms headless startup, 2 of 19 plugins loaded
+- **Fast and idle-quiet.** About 20 ms headless startup, 2 of 21 plugins loaded
   at startup, and **0 ms of CPU while idle** with a file open (see
   [performance](docs/performance.md)).
 - **No polling.** The statusline is driven by events, not lualine's timers.
@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.4.0`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.5.0`. `:Update` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:
@@ -106,22 +106,22 @@ Coming from VS Code? Put `return { preset = "vscode" }` in
 `` Ctrl+` ``, `Ctrl+/`, `Ctrl+C/X/V/Z`, `F2`, `F12`, `Alt+↑/↓`, Shift+Arrow
 selection and more ([full list](docs/keymaps.md#vs-code-keymap-preset)).
 
-Leader is <kbd>Space</kbd>. Press `<leader>?` for an in-editor cheatsheet. The
-full list is in [docs/keymaps.md](docs/keymaps.md).
+Leader is <kbd>Space</kbd>. **Press Space and wait**: a popup shows every key
+you can press next. `Space ?` opens a full cheatsheet; the complete list is in
+[docs/keymaps.md](docs/keymaps.md).
 
 | Keys | Action | Keys | Action |
 |---|---|---|---|
-| `<leader>ee` | Toggle explorer | `<leader>gs` | Git status |
-| `<leader>ff` | Find files | `<leader>gd` | Diff all changes |
-| `<leader>fg` | Live grep | `<leader>gb` | Switch branch |
-| `<leader>fb` | Find buffers | `<leader>gc` | Commit |
-| `<leader>fr` | Recent files | `<leader>gm` | Resolve merge conflict |
-| `<leader>tt` | Toggle terminal | `]h` / `[h` | Next / previous hunk |
-| `` Ctrl+Shift+` `` | Open terminal at the bottom | `<leader>?` | All keymaps |
-| `<leader>bd` | Delete buffer | `<leader>gh` | Stage hunk |
-| `gd` / `K` | Definition / hover | `<leader>rn` | Rename symbol |
-| `<leader>ca` | Code action | `<leader>fd` | Format document |
-| `s` | Flash jump | `<C-s>` | Save |
+| `Space Space` | Find file | `Space g g` | Git graph |
+| `Space /` | Search text in project | `Space g s` | Git status |
+| `Space e` | Explorer | `Space g d` | Diff all changes |
+| `Space t` | Terminal | `Space g c` | Commit |
+| `Space x` | Close tab | `Space g b` | Switch branch |
+| `Space ,` | Switch tab | `Space u u` | Update WraithVim |
+| `Space q` | Quit | `Space u h` | Health check |
+| `gd` / `K` | Definition / hover | `Space r n` | Rename symbol |
+| `Space c a` | Code action | `Space c f` | Format |
+| `` Ctrl+Shift+` `` | Terminal at the bottom | `Ctrl+S` | Save |
 
 ## Commands
 
@@ -140,6 +140,7 @@ full list is in [docs/keymaps.md](docs/keymaps.md).
 | `:TerminalSplit [vertical]` | Independent terminal in a new split |
 | `:TerminalClose` | Stop the panel shell and remove its buffer |
 | `:TerminalNew` | Another terminal beside the panel (like VS Code's **+**) |
+| `:GitGraph` | Commit graph of all branches (`<CR>` opens a commit, `gq` closes) |
 | `:GitStatus` | fugitive status |
 | `:GitDiff` / `:GitDiffClose` | diffview of all changes / close it |
 | `:GitCommit` / `:GitAmend` | Commit / amend |

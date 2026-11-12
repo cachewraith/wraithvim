@@ -29,10 +29,11 @@ describe("config.keymaps", function()
     local prefixes = vim.tbl_map(function(g)
       return g[1]
     end, keymaps.groups)
-    local allowed_extra = { ["<leader>?"] = true, ["<leader>rn"] = true }
+    local keymaps_mod = require("wraithvim.config.keymaps")
+    local allowed_extra = { ["<leader>rn"] = true }
     for _, list in ipairs({ keymaps.defaults(), keymaps.lsp() }) do
       for _, e in ipairs(list) do
-        if vim.startswith(e[2], "<leader>") and not allowed_extra[e[2]] then
+        if vim.startswith(e[2], "<leader>") and not allowed_extra[e[2]] and not keymaps_mod.is_quick(e[2]) then
           local ok = false
           for _, p in ipairs(prefixes) do
             ok = ok or vim.startswith(e[2], p)
@@ -41,6 +42,14 @@ describe("config.keymaps", function()
         end
       end
     end
+  end)
+
+  it("recognises quick (single-key) leader mappings", function()
+    assert.is_true(keymaps.is_quick("<leader>e"))
+    assert.is_true(keymaps.is_quick("<leader><space>"))
+    assert.is_true(keymaps.is_quick("<leader>/"))
+    assert.is_false(keymaps.is_quick("<leader>ff"))
+    assert.is_false(keymaps.is_quick("s"))
   end)
 
   it("documents every mapping in docs/keymaps.md", function()
@@ -72,7 +81,7 @@ describe("config.keymaps", function()
     local function has(mode, lhs)
       return vim.fn.maparg(lhs, mode) ~= ""
     end
-    assert.is_true(has("n", "<leader>tt"))
+    assert.is_true(has("n", "<leader>t"))
     assert.is_true(has("n", "<leader>zz"))
     assert.is_false(has("n", "<leader>bd"))
     assert.is_false(has("n", "<leader>wv"))
@@ -87,6 +96,6 @@ describe("config.keymaps", function()
     vim.g.mapleader = " "
     keymaps.setup() -- lazy.nvim is not set up here, so no plugin is available
     assert.equals("", vim.fn.maparg("<leader>ff", "n"))
-    assert.is_not.equal("", vim.fn.maparg("<leader>tt", "n"))
+    assert.is_not.equal("", vim.fn.maparg("<leader>t", "n"))
   end)
 end)

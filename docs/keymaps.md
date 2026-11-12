@@ -1,8 +1,9 @@
 # Keymaps
 
-Leader is <kbd>Space</kbd>, local leader is `\`. Press `<leader>?` (or run
-`:Keys`) for an in-editor cheatsheet, or `<leader>fk` to fuzzy-search
-every mapping.
+Leader is <kbd>Space</kbd>, local leader is `\`. **Press <kbd>Space</kbd> and
+wait a moment**: a popup lists every key you can press next and what it does
+(turn it off with `key_hints = false` in `ui.lua`). `<leader>?` (or `:Keys`)
+opens a full cheatsheet, and `<leader>fk` fuzzy-searches every mapping.
 
 All mappings live in one registry, `lua/wraithvim/config/keymaps.lua`; a test
 checks that every entry is documented here. Mappings marked with a plugin are
@@ -13,162 +14,174 @@ Neovim's own defaults remain available, for example `K` (hover), `grn`
 `gO` (document symbols), `[d`/`]d` (diagnostics), `[b`/`]b` (buffers) and
 `<C-w>` window commands.
 
-### Explorer
+### Quick keys
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>ee` | n | Toggle explorer | neo-tree.nvim |
-| `<leader>ef` | n | Reveal current file | neo-tree.nvim |
-| `<leader>eg` | n | Explorer: Git changes | neo-tree.nvim |
-| `<leader>eb` | n | Explorer: open buffers | neo-tree.nvim |
-| `<leader>e>` | n | Widen explorer | neo-tree.nvim |
-| `<leader>e<` | n | Narrow explorer | neo-tree.nvim |
+One key after <kbd>Space</kbd> for the things you do most.
 
-### Find / search
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader><space>` | Find file | n |
+| `<leader>/` | Search text in project | n |
+| `<leader>,` | Switch tab | n |
+| `<leader>e` | Explorer | n |
+| `<leader>E` | Show file in explorer | n |
+| `<leader>t` | Terminal | n |
+| `<leader>x` | Close tab | n |
+| `<leader>q` | Quit (asks to save) | n |
+| `<leader>?` | All keymaps | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>ff` | n | Find files | telescope.nvim |
-| `<leader>fg` | n | Live grep | telescope.nvim |
-| `<leader>fw` | n, x | Search word / selection | telescope.nvim |
-| `<leader>fb` | n | Find buffers | telescope.nvim |
-| `<leader>fr` | n | Recent files | telescope.nvim |
-| `<leader>fv` | n | Git files | telescope.nvim |
-| `<leader>fx` | n | Search diagnostics | telescope.nvim |
-| `<leader>fh` | n | Help tags | telescope.nvim |
-| `<leader>fk` | n | Keymaps | telescope.nvim |
-| `<leader>fc` | n | Commands | telescope.nvim |
-| `<leader>f/` | n | Search in buffer | telescope.nvim |
-| `<leader>fR` | n | Resume last search | telescope.nvim |
-| `<leader>fd` | n, x | Format document | conform.nvim |
+### Buffers (tabs) (`<leader>b…`)
 
-### Git
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>bb` | Pick tab | n |
+| `<leader>bd` | Close tab | n |
+| `<leader>bD` | Close tab (discard changes) | n |
+| `<leader>bo` | Close other tabs | n |
+| `<leader>bc` | Close hidden tabs | n |
+| `<leader>bn` | Next tab | n |
+| `<leader>bp` | Previous tab | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>gs` | n | Git status | vim-fugitive |
-| `<leader>gd` | n | Git diff (all changes) | diffview.nvim |
-| `<leader>gD` | n | Close diff view | diffview.nvim |
-| `<leader>gb` | n | Git branches | telescope.nvim |
-| `<leader>gc` | n | Git commit | vim-fugitive |
-| `<leader>gC` | n | Git commit --amend | vim-fugitive |
-| `<leader>gp` | n | Git push | vim-fugitive |
-| `<leader>gP` | n | Git pull | vim-fugitive |
-| `<leader>gl` | n | Commit history | diffview.nvim |
-| `<leader>gf` | n | File history | diffview.nvim |
-| `<leader>ga` | n | Stage file | |
-| `<leader>gu` | n | Unstage file | |
-| `<leader>gh` | n | Stage / unstage hunk | gitsigns.nvim |
-| `<leader>gh` | x | Stage / unstage selected lines | gitsigns.nvim |
-| `<leader>gr` | n | Reset hunk | gitsigns.nvim |
-| `<leader>gr` | x | Reset selected lines | gitsigns.nvim |
-| `<leader>gS` | n | Stage buffer | gitsigns.nvim |
-| `<leader>gR` | n | Reset buffer | gitsigns.nvim |
-| `<leader>gv` | n | Preview hunk | gitsigns.nvim |
-| `<leader>gB` | n | Blame line | gitsigns.nvim |
-| `<leader>gx` | n | List merge conflicts | |
-| `<leader>gm` | n | Resolve merge conflict (3-way) | |
+### Code (`<leader>c…`)
 
-### Git hunks
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>cf` | Format | n, x |
+| `<leader>cF` | Toggle format on save | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `]h` | n | Next hunk | gitsigns.nvim |
-| `[h` | n | Previous hunk | gitsigns.nvim |
+### Diagnostics (`<leader>d…`)
 
-### Buffers
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>dd` | Show line problems | n |
+| `<leader>dn` | Next problem | n |
+| `<leader>dp` | Previous problem | n |
+| `<leader>dq` | All problems (quickfix) | n |
+| `<leader>dl` | File problems (list) | n |
+| `<leader>dt` | Toggle inline problems | n |
+| `<leader>dT` | Toggle problems for file | n |
+| `<leader>dx` | Search problems | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>bb` | n | Pick buffer | bufferline.nvim |
-| `<leader>bd` | n | Delete buffer | |
-| `<leader>bD` | n | Delete buffer (discard changes) | |
-| `<leader>bo` | n | Delete other buffers | |
-| `<leader>bc` | n | Delete hidden buffers | |
-| `<leader>bn` | n | Next buffer | |
-| `<leader>bp` | n | Previous buffer | |
+### Find (`<leader>f…`)
 
-### Terminal
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>ff` | Files | n |
+| `<leader>fg` | Text (live grep) | n |
+| `<leader>fw` | Word / selection | n, x |
+| `<leader>fb` | Open tabs | n |
+| `<leader>fr` | Recent files | n |
+| `<leader>fv` | Git files | n |
+| `<leader>fx` | Problems | n |
+| `<leader>fh` | Help | n |
+| `<leader>fk` | Keymaps | n |
+| `<leader>fc` | Commands | n |
+| `<leader>f/` | In this file | n |
+| `<leader>fR` | Resume last search | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>tt` | n | Toggle terminal | |
-| `<leader>th` | n | Terminal in horizontal split | |
-| `<leader>tv` | n | Terminal in vertical split | |
-| `<leader>tf` | n | Floating terminal | |
-| `<leader>tn` | n | New terminal beside the panel | |
-| `<leader>tc` | n | Close terminal | |
-| `` <C-S-`> `` | n, i, t | Open terminal at the bottom (`` Ctrl+Shift+` ``) | |
-| `<C-~>` | n, i, t | Same key as reported by some terminals | |
+### Git (`<leader>g…`)
 
-### Diagnostics
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>gg` | Graph (all branches) | n |
+| `<leader>gs` | Status | n |
+| `<leader>gd` | Diff all changes | n |
+| `<leader>gD` | Close diff | n |
+| `<leader>gb` | Switch branch | n |
+| `<leader>gc` | Commit | n |
+| `<leader>gC` | Amend last commit | n |
+| `<leader>gp` | Push | n |
+| `<leader>gP` | Pull | n |
+| `<leader>gl` | History (log) | n |
+| `<leader>gf` | File history | n |
+| `<leader>ge` | Changed files in explorer | n |
+| `<leader>ga` | Stage file | n |
+| `<leader>gu` | Unstage file | n |
+| `<leader>gh` | Stage / unstage hunk | n |
+| `<leader>gh` | Stage / unstage selected lines | x |
+| `<leader>gr` | Undo hunk changes | n |
+| `<leader>gr` | Undo changes in selected lines | x |
+| `<leader>gS` | Stage whole file (hunks) | n |
+| `<leader>gR` | Undo all file changes | n |
+| `<leader>gv` | Preview hunk | n |
+| `<leader>gB` | Blame line | n |
+| `<leader>gx` | List merge conflicts | n |
+| `<leader>gm` | Resolve merge conflict | n |
+| `]h` | Next change (hunk) | n |
+| `[h` | Previous change (hunk) | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>dd` | n | Line diagnostics | |
-| `<leader>dn` | n | Next diagnostic | |
-| `<leader>dp` | n | Previous diagnostic | |
-| `<leader>dq` | n | Diagnostics to quickfix | |
-| `<leader>dl` | n | Buffer diagnostics to location list | |
-| `<leader>dt` | n | Toggle inline diagnostics | |
-| `<leader>dT` | n | Toggle buffer diagnostics | |
-| `<leader>dx` | n | Search all diagnostics | telescope.nvim |
+### Terminals (`<leader>T…`)
 
-### Code
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>Tn` | New terminal beside | n |
+| `<leader>Th` | Terminal below (split) | n |
+| `<leader>Tv` | Terminal right (split) | n |
+| `<leader>Tf` | Floating terminal | n |
+| `<leader>Tc` | Kill terminal panel | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>cf` | n, x | Format | conform.nvim |
-| `<leader>cF` | n | Toggle format on save | conform.nvim |
+### Update & tools (`<leader>u…`)
 
-### Windows
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>uu` | Update WraithVim | n |
+| `<leader>uh` | Health check | n |
+| `<leader>up` | Plugins | n |
+| `<leader>uc` | Open settings folder | n |
+| `<leader>ul` | Log | n |
+| `<leader>un` | Notification history | n |
+| `<leader>ut` | Install syntax parsers | n |
+| `<leader>um` | Install language tools (Mason) | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `<leader>wv` | n | Split vertically | |
-| `<leader>ws` | n | Split horizontally | |
-| `<leader>wc` | n | Close window | |
-| `<leader>wo` | n | Close other windows | |
-| `<leader>w=` | n | Equalize windows | |
-| `<leader>wh` | n | Focus left window | |
-| `<leader>wj` | n | Focus window below | |
-| `<leader>wk` | n | Focus window above | |
-| `<leader>wl` | n | Focus right window | |
-| `<leader>w+` | n | Taller window | |
-| `<leader>w-` | n | Shorter window | |
-| `<leader>w>` | n | Wider window | |
-| `<leader>w<` | n | Narrower window | |
+### Windows (`<leader>w…`)
 
-### Navigation and general
+| Keys | Action | Mode |
+|---|---|---|
+| `<leader>wv` | Split right | n |
+| `<leader>ws` | Split below | n |
+| `<leader>wc` | Close window | n |
+| `<leader>wo` | Close other windows | n |
+| `<leader>w=` | Equal sizes | n |
+| `<leader>wh` | Go left | n |
+| `<leader>wj` | Go down | n |
+| `<leader>wk` | Go up | n |
+| `<leader>wl` | Go right | n |
+| `<leader>w+` | Taller | n |
+| `<leader>w-` | Shorter | n |
+| `<leader>w>` | Wider | n |
+| `<leader>w<` | Narrower | n |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `s` | n, x, o | Flash jump | flash.nvim |
-| `S` | n, x, o | Flash Treesitter select | flash.nvim |
-| `r` | o | Flash remote operation | flash.nvim |
-| `<C-s>` | n, i, x | Save file | |
-| `<leader>?` | n | Keymap cheatsheet | |
+### Other keys
 
-### LSP (buffer-local, only when a language server is attached)
+| Keys | Action | Mode |
+|---|---|---|
+| `` <C-S-`> `` | Open terminal at the bottom | n, i, t |
+| `<C-~>` | Open terminal at the bottom (Ctrl+Shift+`) | n, i, t |
+| `s` | Flash jump | n, x, o |
+| `S` | Flash Treesitter select | n, x, o |
+| `r` | Flash remote operation | o |
+| `<C-s>` | Save file | n, i, x |
 
-| Keys | Mode | Action | Plugin |
-|---|---|---|---|
-| `gd` | n | Go to definition | |
-| `gD` | n | Go to declaration | |
-| `<leader>ld` | n | Definition | |
-| `<leader>lD` | n | Declaration | |
-| `<leader>lr` | n | References | |
-| `<leader>li` | n | Implementations | |
-| `<leader>lt` | n | Type definition | |
-| `<leader>lh` | n | Hover | |
-| `<leader>lk` | n | Signature help | |
-| `<leader>ls` | n | Document symbols | telescope.nvim |
-| `<leader>lS` | n | Workspace symbols | telescope.nvim |
-| `<leader>lR` | n | Restart language server | |
-| `<leader>lI` | n | LSP info | |
-| `<leader>lH` | n | Toggle inlay hints | |
-| `<leader>rn` | n | Rename symbol | |
-| `<leader>ca` | n, x | Code action | |
+### LSP (only when a language server is attached)
+
+| Keys | Action | Mode |
+|---|---|---|
+| `gd` | Go to definition | n |
+| `gD` | Go to declaration | n |
+| `<leader>ld` | Definition | n |
+| `<leader>lD` | Declaration | n |
+| `<leader>lr` | References | n |
+| `<leader>li` | Implementations | n |
+| `<leader>lt` | Type definition | n |
+| `<leader>lh` | Hover | n |
+| `<leader>lk` | Signature help | n |
+| `<leader>ls` | Document symbols | n |
+| `<leader>lS` | Workspace symbols | n |
+| `<leader>lR` | Restart language server | n |
+| `<leader>lI` | LSP info | n |
+| `<leader>lH` | Toggle inlay hints | n |
+| `<leader>rn` | Rename symbol | n |
+| `<leader>ca` | Code action | n, x |
 
 ### Inside special buffers
 

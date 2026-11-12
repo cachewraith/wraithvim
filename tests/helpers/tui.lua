@@ -62,7 +62,7 @@ function M:send(bytes)
 end
 
 --- Send keys using Neovim key notation through the terminal.
----@param keys string e.g. "<leader>ee"
+---@param keys string e.g. "<leader>e"
 function M:keys(keys)
   local bytes = vim.api.nvim_replace_termcodes(keys, true, false, true)
   -- A terminal only reads Esc as a key of its own once 'ttimeoutlen' passes;

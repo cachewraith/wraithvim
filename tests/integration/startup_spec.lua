@@ -36,7 +36,7 @@ describe("startup", function()
         if vim.fn.exists(":" .. n) ~= 2 then missing[#missing + 1] = n end
       end
       local maps = {}
-      for _, lhs in ipairs({ "<leader>ee", "<leader>ff", "<leader>fg", "<leader>gs", "<leader>tt", "<leader>bd" }) do
+      for _, lhs in ipairs({ "<leader>e", "<leader><space>", "<leader>/", "<leader>ff", "<leader>gs", "<leader>gg", "<leader>t", "<leader>x", "<leader>uu" }) do
         maps[lhs] = vim.fn.maparg(lhs, "n") ~= ""
       end
       return { missing = missing, maps = maps }
@@ -106,7 +106,7 @@ describe("startup", function()
     local res, messages = run(
       [[
       return { problems = require("wraithvim.core.config").problems, width = require("wraithvim.core.config").get().ui.explorer.width,
-               tt = vim.fn.maparg("<leader>tt", "n") ~= "" }
+               tt = vim.fn.maparg("<leader>t", "n") ~= "" }
     ]],
       { env = { WRAITHVIM_CONFIG_DIR = dir }, wait_ms = 300 }
     )
@@ -215,6 +215,27 @@ describe("features in a real session", function()
     assert.equals("TelescopePrompt", res.telescope)
     assert.equals("fugitive", res.fugitive)
     assert.equals(1, res.diffview)
+  end)
+
+  it("shows a commit graph of all branches", function()
+    gh.commit_all(dir, "second commit")
+    gh.git(dir, "branch", "feature-x")
+    local res = run(
+      [[
+      vim.cmd.edit("a.lua")
+      require("wraithvim.features.git").graph()
+      vim.wait(5000, function() return vim.bo.filetype == "floggraph" end, 20)
+      vim.wait(5000, function()
+        return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"):find("second commit", 1, true) ~= nil
+      end, 20)
+      return { ft = vim.bo.filetype, text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") }
+    ]],
+      { cwd = dir, wait_ms = 300 }
+    )
+    assert.equals("floggraph", res.ft)
+    assert.matches("second commit", res.text)
+    assert.matches("init", res.text)
+    assert.matches("feature%-x", res.text)
   end)
 
   it("completion engine loads on insert and offers buffer words", function()

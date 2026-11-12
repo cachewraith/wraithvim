@@ -9,7 +9,7 @@
 │  tests            │                                              │
 │  README.md        │                                              │
 │  (explorer)       ├──────────────────────────────────────────────┤
-│                   │ terminal panel (<leader>tt)                  │
+│                   │ terminal panel (<leader>t)                   │
 ├───────────────────┴──────────────────────────────────────────────┤
 │ NORMAL │  main  +2 ~1 │ lua/x.lua ●  E1 W2      lua_ls │ lua │ utf-8 │ LF │ 42% │ 10:4 │
 └──────────────────────────────────────────────────────────────────┘
@@ -33,7 +33,7 @@
 
 | Setting | default | compact | minimal |
 |---|---|---|---|
-| Explorer | 30 columns, opens on start with files | 24 columns, opens on start | on demand only (`<leader>ee`) |
+| Explorer | 30 columns, opens on start with files | 24 columns, opens on start | on demand only (`<leader>e`) |
 | Tabline | always shown, header, close icons | shown with 2+ buffers, no header, no close icons | off |
 | Statusline | branch, diff, file, diagnostics, LSP, filetype, encoding, position | no encoding | branch, file, diagnostics, filetype, position |
 | Separators | thin bars + powerline-style sections | none | none |
@@ -44,7 +44,7 @@
 ## Small terminals
 
 - The explorer auto-opens only when the terminal is at least 100 columns wide.
-  Open it anytime with `<leader>ee`.
+  Open it anytime with `<leader>e`.
 - The global statusline (`laststatus=3`) uses a single line for all windows.
 - Telescope switches to a stacked layout below 120 columns.
 - Dashboard content is centred and recomputed on resize.
@@ -60,7 +60,6 @@ installer chooses this automatically when `fc-list` finds no Nerd Font.
 ## Resizing panels
 
 - Drag any window separator with the mouse, including the explorer edge.
-- `<leader>e>` / `<leader>e<` widen or narrow the explorer by 5 columns.
 - `<leader>w+`, `<leader>w-`, `<leader>w>`, `<leader>w<` resize the current
   window; `<leader>w=` equalises.
 - The terminal panel keeps its height when other windows change
@@ -75,20 +74,20 @@ installer chooses this automatically when `fc-list` finds no Nerd Font.
  TERMINAL │  bash │  ~/projects/api              Esc Esc: scroll & copy
 ```
 
-- `<leader>tt` / `:Terminal` toggles one panel terminal; `` Ctrl+Shift+` ``
+- `<leader>t` / `:Terminal` toggles one panel terminal; `` Ctrl+Shift+` ``
   always opens (or focuses) it at the bottom. Hiding it keeps the shell
   running; showing it again reuses the same shell.
 - **Typing works like VS Code:** entering the terminal window, or clicking
   inside it, starts typing. `Esc Esc` stops typing so you can scroll or
   select and copy output; the statusline shows which mode you are in.
 - **Header buttons:** **New** opens another terminal beside the panel
-  (`<leader>tn`, `:TerminalNew`), **Hide** hides the panel, **Kill** stops that
+  (`<leader>Tn`, `:TerminalNew`), **Hide** hides the panel, **Kill** stops that
   terminal's shell. The header shows the shell and its folder; shells that
   report directory changes (fish does by default) update it after `cd`.
 - The shell is your `$SHELL`, started directly in the current folder. Use
   another one with `terminal = { shell = "fish" }` in `ui.lua`, or turn the
   header off with `terminal = { winbar = false }`.
-- `:Terminal float` opens the panel as a floating window; `<leader>th` /
-  `<leader>tv` open independent terminals in splits.
+- `:Terminal float` opens the panel as a floating window; `<leader>Th` /
+  `<leader>Tv` open independent terminals in splits.
 - Terminal buffers never appear as tabs and are removed when their shell
   exits. `:TerminalClose` stops the panel shell.

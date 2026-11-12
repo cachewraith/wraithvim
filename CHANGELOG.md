@@ -6,6 +6,31 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-12
+
+### Added
+
+- Git graph: `<leader>gg` / `:GitGraph` shows a commit graph of all branches
+  (vim-flog); `<CR>` opens a commit, `gq` closes.
+- Key-hint popup (which-key): press `Space` and wait to see every next key.
+  Turn off with `key_hints = false` in `ui.lua`.
+- "Update & tools" keys: `<leader>uu` update, `<leader>uh` health,
+  `<leader>up` plugins, `<leader>uc` settings folder, `<leader>ul` log,
+  `<leader>un` notifications, `<leader>ut` parsers, `<leader>um` Mason tools.
+- Quick single keys: `<leader><space>` find file, `<leader>/` search text,
+  `<leader>,` switch tab, `<leader>x` close tab, `<leader>q` quit.
+
+### Changed (breaking)
+
+- `<leader>e` toggles the explorer (was `<leader>ee`), `<leader>E` reveals the
+  current file (was `<leader>ef`), explorer Git changes moved to `<leader>ge`.
+  `<leader>eb`, `<leader>e>` and `<leader>e<` were removed (use `<leader>,`,
+  mouse dragging or `<leader>w>`/`<leader>w<`).
+- `<leader>t` toggles the terminal (was `<leader>tt`); the other terminal keys
+  moved to `<leader>T…` (`Tn`, `Th`, `Tv`, `Tf`, `Tc`).
+- `<leader>fd` was removed; format with `<leader>cf`.
+- Clearer descriptions for all mappings.
+
 ## [0.4.0] - 2026-11-12
 
 ### Added
@@ -120,7 +145,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...v0.2.0

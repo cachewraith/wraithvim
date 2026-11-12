@@ -29,9 +29,10 @@ argument, so names with spaces, quotes or `$()` are safe.
 | Amend | `<leader>gC` | `:GitAmend` |
 | Push / pull | `<leader>gp` / `<leader>gP` | `:GitPush` / `:GitPull` |
 | Switch branch | `<leader>gb`, or click the branch in the statusline | `:GitBranches` |
+| Commit graph (all branches) | `<leader>gg` | `:GitGraph` |
 | History | `<leader>gl` (repository), `<leader>gf` (current file) | `:GitLog`, `:GitFileHistory` |
 | Who changed this line | `<leader>gB` | |
-| Changed files in the explorer | `<leader>eg` | |
+| Changed files in the explorer | `<leader>ge` | |
 
 In fugitive's status window: `s` stages, `u` unstages, `-` toggles, `=` shows
 an inline diff, `cc` commits, `ca` amends, `dv` opens a vertical diff, `g?`

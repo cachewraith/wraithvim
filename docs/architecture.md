@@ -122,6 +122,8 @@ Deviations from the original proposal, and why:
 | gitsigns.nvim | signs, hunks, blame | first file opened |
 | vim-fugitive | Git porcelain | `:Git` and Git keys |
 | diffview.nvim | diffs, history | `:Diffview*` and Git keys |
+| vim-flog | commit graph | `:Flog`, `:GitGraph`, `<leader>gg` |
+| which-key.nvim | key-hint popup | `VeryLazy` (only when `ui.key_hints`) |
 | nvim-treesitter (`main`) | parser installation | `:TSInstall`, `:InstallParsers` |
 | conform.nvim | formatting | first save, format keys |
 

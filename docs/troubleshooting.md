@@ -56,7 +56,7 @@ settings.
 
 **The explorer did not open at startup**: it only auto-opens when files or a
 directory are given and the terminal is at least 100 columns wide. Use
-`<leader>ee`.
+`<leader>e`.
 
 ## Search
 

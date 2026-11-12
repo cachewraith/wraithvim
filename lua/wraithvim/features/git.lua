@@ -141,6 +141,13 @@ function M.branches()
   end
 end
 
+--- Commit graph of all branches (vim-flog). `<CR>` opens a commit, `gq` closes.
+function M.graph()
+  if require_repo() then
+    vim.cmd("Flog -all")
+  end
+end
+
 function M.diff()
   if require_repo() then
     vim.cmd("DiffviewOpen")
