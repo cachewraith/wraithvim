@@ -126,6 +126,18 @@ describe("features.terminal", function()
     vim.fn.jobstop(vim.b[extra].terminal_job_id)
   end)
 
+  it("moves a visible panel to another place with the same shell", function()
+    terminal.open("bottom")
+    local buf = terminal.panel.buf
+    terminal.open("right")
+    assert.equals(buf, terminal.panel.buf)
+    assert.equals("right", terminal.panel.position)
+    assert.equals(1, #vim.fn.win_findbuf(buf))
+    terminal.hide()
+    terminal.open() -- comes back where it was
+    assert.equals("right", terminal.panel.position)
+  end)
+
   it("starts in the current working directory", function()
     local dir = vim.fn.tempname()
     vim.fn.mkdir(dir, "p")

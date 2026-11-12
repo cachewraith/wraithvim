@@ -254,6 +254,10 @@ end
 
 ---@return string winbar
 function M.header()
+  local win = vim.g.statusline_winid or vim.api.nvim_get_current_win()
+  if vim.b[vim.api.nvim_win_get_buf(win)].neo_tree_source == "git_status" then
+    return require("wraithvim.features.panels").changes_header()
+  end
   local nerd = require("wraithvim.core.config").get().ui.icons.nerd_font
   local function button(fn, label)
     return ("%%@v:lua.require'wraithvim.features.files'.%s@%s%%X"):format(fn, label)

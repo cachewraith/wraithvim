@@ -16,6 +16,7 @@ describe("config.commands", function()
     commands.setup()
     assert.same({ "float" }, vim.fn.getcompletion("Terminal fl", "cmdline"))
     assert.same({ "theirs" }, vim.fn.getcompletion("ConflictChoose th", "cmdline"))
+    assert.same({ "graph" }, vim.fn.getcompletion("SidePanel gr", "cmdline"))
   end)
 
   it("documents every command in the README", function()

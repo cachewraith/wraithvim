@@ -58,6 +58,7 @@ end
 function M.mappings()
   local x = "wraithvim.features.explorer"
   local t = "wraithvim.features.terminal"
+  local sp = "wraithvim.features.panels"
   local s = "wraithvim.features.search"
   local list = {
     -- Files, search, panels
@@ -74,6 +75,10 @@ function M.mappings()
     -- Terminals without the kitty protocol send Ctrl+` as NUL, read as <C-Space>.
     { { "n", "t" }, "<C-Space>", call(t, "toggle"), desc = "Toggle terminal (Ctrl+` in classic terminals)" },
     { "n", "<C-\\>", "<cmd>vsplit<cr>", desc = "Split editor right" },
+    -- Kitty-protocol terminals only; Alt+1 / Alt+0 / Space s s work everywhere.
+    { { "n", "i", "t" }, "<C-1>", call(sp, "focus_code"), desc = "Focus editor" },
+    { { "n", "i", "t" }, "<C-0>", call(sp, "focus_explorer"), desc = "Focus explorer", plugin = "neo-tree.nvim" },
+    { { "n", "i", "t" }, "<C-A-b>", call(sp, "toggle"), desc = "Toggle side panel" },
     { "n", "<C-S-g>", call("wraithvim.features.git", "status"), desc = "Source control", plugin = "vim-fugitive" },
 
     -- Tabs (buffers)

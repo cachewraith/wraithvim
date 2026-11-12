@@ -14,6 +14,7 @@ M.groups = {
   { "<leader>f", "Find" },
   { "<leader>g", "Git" },
   { "<leader>l", "LSP" },
+  { "<leader>s", "Side panel" },
   { "<leader>T", "Terminals" },
   { "<leader>u", "Update & tools" },
   { "<leader>w", "Windows" },
@@ -114,6 +115,7 @@ function M.defaults()
   local c = "wraithvim.features.conflicts"
   local b = "wraithvim.features.buffers"
   local t = "wraithvim.features.terminal"
+  local sp = "wraithvim.features.panels"
   local d = "wraithvim.features.diagnostics"
   local f = "wraithvim.integrations.formatter"
   local cmd = function(command)
@@ -202,6 +204,18 @@ function M.defaults()
     { "n", "<leader>bc", call(b, "cleanup"), desc = "Close hidden tabs" },
     { "n", "<leader>bn", "<cmd>bnext<cr>", desc = "Next tab" },
     { "n", "<leader>bp", "<cmd>bprevious<cr>", desc = "Previous tab" },
+
+    -- Side panel (graph, changes or terminal beside the editor)
+    { "n", "<leader>ss", call(sp, "toggle"), desc = "Show / hide side panel" },
+    { "n", "<leader>sg", call(sp, "open", "graph"), desc = "Git graph", plugin = "vim-flog" },
+    { "n", "<leader>sc", call(sp, "open", "changes"), desc = "Changed files", plugin = "neo-tree.nvim" },
+    { "n", "<leader>st", call(sp, "open", "terminal"), desc = "Terminal" },
+    { "n", "<leader>sm", call(sp, "move"), desc = "Move to the other side" },
+    -- Move the cursor between panels from any mode, even inside a terminal.
+    { { "n", "i", "t" }, "<A-1>", call(sp, "focus_code"), desc = "Go to code" },
+    { { "n", "i", "t" }, "<A-2>", call(sp, "focus_side"), desc = "Go to side panel" },
+    { { "n", "i", "t" }, "<A-3>", call(sp, "focus_terminal"), desc = "Go to terminal" },
+    { { "n", "i", "t" }, "<A-0>", call(sp, "focus_explorer"), desc = "Go to explorer", plugin = "neo-tree.nvim" },
 
     -- Terminals (the panel itself is <leader>t)
     { "n", "<leader>Tn", call(t, "new"), desc = "New terminal beside" },

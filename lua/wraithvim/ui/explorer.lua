@@ -137,6 +137,23 @@ function M.opts()
       width = ex.width,
       mappings = mappings,
     },
+    -- The side panel's "changes" view (wraithvim.features.panels).
+    git_status = {
+      window = {
+        width = ui.side_panel.width,
+        mappings = {
+          ["d"] = {
+            function(state)
+              local node = state.tree:get_node()
+              if node and node.type == "file" then
+                require("wraithvim.features.panels").diff_file(node.path)
+              end
+            end,
+            desc = "Diff this file",
+          },
+        },
+      },
+    },
     filesystem = {
       filtered_items = {
         visible = false,

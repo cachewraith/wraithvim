@@ -6,6 +6,20 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Side panel: a column beside the editor (right by default, or left) that
+  shows the Git graph (`Space s g`), the changed files (`Space s c`; Enter
+  opens, `d` diffs, `ga`/`gu` stage) or the terminal (`Space s t`), one at a
+  time, like VS Code's secondary side bar. `Space s s` hides / shows it,
+  `Space s m` moves it to the other side; `:SidePanel graph left` as a
+  command; `side_panel` in `ui.lua` sets the default side and width.
+- Move the cursor between panels from any mode, even from inside a
+  terminal: `Alt+1` code, `Alt+2` side panel, `Alt+3` terminal, `Alt+0`
+  explorer. The VS Code preset adds `Ctrl+1`, `Ctrl+0` and `Ctrl+Alt+B`.
+- `:Terminal right` (or any other place) moves a visible terminal there with
+  the same shell; hidden, it comes back where it was.
+
 ## [0.12.0] - 2026-11-12
 
 ### Added

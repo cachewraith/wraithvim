@@ -128,6 +128,12 @@ return {
       diagnostics = true,
       encoding = true,
     },
+    -- Column beside the editor for the Git graph, the changed files or the
+    -- terminal, one at a time (Space s). Alt+2 puts the cursor in it.
+    side_panel = {
+      position = "right", -- right | left
+      width = 60,
+    },
     terminal = {
       enabled = true,
       position = "bottom", -- bottom | top | left | right | float

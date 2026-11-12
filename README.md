@@ -139,6 +139,8 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `gd` / `K` | Definition / hover | `Space r n` | Rename symbol |
 | `Space c a` | Code action | `Space c f` | Format |
 | `` Ctrl+Shift+` `` | Terminal at the bottom | `Ctrl+S` | Save |
+| `Space s g` | Git graph in the side panel | `Space s c` | Changed files in the side panel |
+| `Alt+1` / `Alt+2` | Go to code / side panel | `Alt+3` / `Alt+0` | Go to terminal / explorer |
 
 ## Commands
 
@@ -161,6 +163,7 @@ list is in [docs/keymaps.md](docs/keymaps.md).
 | `:TerminalSplit [vertical]` | Independent terminal in a new split |
 | `:TerminalClose` | Stop the panel shell and remove its buffer |
 | `:TerminalNew` | Another terminal beside the panel (like VS Code's **+**) |
+| `:SidePanel [view] [side]` | Show the Git graph, changed files or terminal (`graph`, `changes`, `terminal`) beside the editor, `left` or `right`; no argument shows / hides it |
 | `:GitGraph` / `:GitGraphAll` | Commit graph of the current branch / all branches (<kbd>Enter</kbd> opens a commit, <kbd>?</kbd> lists keys, <kbd>q</kbd> closes) |
 | `:GitStatus` | fugitive status |
 | `:GitDiff` / `:GitDiffClose` | diffview of all changes / close it |

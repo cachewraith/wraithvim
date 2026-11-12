@@ -106,6 +106,18 @@ function M.setup(cfg)
     end,
   })
 
+  au({ "WinEnter", "BufWinEnter" }, {
+    group = group,
+    desc = "Remember the last code window (Alt+1 goes back to it)",
+    callback = function()
+      local panels = require("wraithvim.features.panels")
+      local win = vim.api.nvim_get_current_win()
+      if panels.is_code_win(win) then
+        panels.last_code_win = win
+      end
+    end,
+  })
+
   au("TermOpen", {
     group = group,
     desc = "Terminal buffer defaults",

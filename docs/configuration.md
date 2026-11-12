@@ -139,6 +139,10 @@ return {
     diagnostics = true,
     encoding = true,
   },
+  side_panel = {
+    position = "right",              -- right | left: Git graph, changes or terminal (Space s)
+    width = 60,                      -- at most 45% of the screen
+  },
   terminal = {
     enabled = true,
     position = "bottom",             -- bottom | top | left | right | float

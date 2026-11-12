@@ -12,7 +12,7 @@ local M = {}
 
 M.filetype = "wraithterm"
 
----@type { buf: integer?, win: integer? }
+---@type { buf: integer?, win: integer?, position: string? }
 M.panel = { buf = nil, win = nil }
 
 ---@return table ui.terminal
@@ -173,12 +173,17 @@ function M.winbar()
   })
 end
 
---- Open the panel terminal, creating it on first use.
+--- Open the panel terminal, creating it on first use. Given a `position`
+--- other than where the panel is shown, it moves there with the same shell.
+--- Without one, a hidden panel comes back where it was last.
 ---@param position? string
 function M.open(position)
   local t = settings()
-  position = position or t.position
   local p = M.panel
+  if position and position ~= p.position and p.win and vim.api.nvim_win_is_valid(p.win) then
+    M.hide()
+  end
+  position = position or p.position or t.position
   if p.win and vim.api.nvim_win_is_valid(p.win) then
     -- The panel window may have been switched to another buffer meanwhile.
     if p.buf and vim.api.nvim_buf_is_valid(p.buf) and vim.api.nvim_win_get_buf(p.win) ~= p.buf then
@@ -194,7 +199,7 @@ function M.open(position)
     if fresh then
       start_shell(buf)
     end
-    M.panel = { buf = buf, win = win }
+    M.panel = { buf = buf, win = win, position = position }
   end
   vim.cmd.startinsert()
 end

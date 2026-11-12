@@ -274,6 +274,44 @@ describe("TUI", function()
     assert.is_true(t:wait_for("vim.fn.bufwinid(require('wraithvim.features.terminal').panel.buf) == -1", 2000))
   end)
 
+  it("shows the graph, changes and terminal in a side panel and moves between panels with Alt+number", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    local side = "(require('wraithvim.features.panels').visible() or {}).view"
+    -- Let the explorer finish its startup render (it puts focus back when done).
+    assert.is_true(vim.wait(5000, function()
+      return tree_win(t) ~= nil
+    end, 50))
+    t:sleep(300)
+    t:keys(" sg")
+    assert.is_true(t:wait_for("vim.bo.filetype == 'floggraph'", 5000))
+    -- On the right edge of the screen.
+    assert.equals(t:lua("return vim.o.columns"), t:lua("return vim.fn.win_screenpos(0)[2] + vim.fn.winwidth(0) - 1"))
+    -- Alt+3 (ESC 3 in any terminal): the terminal, ready to type.
+    t:send("\0273")
+    assert.is_true(t:wait_for("vim.bo.buftype == 'terminal' and vim.fn.mode() == 't'", 3000))
+    -- Alt+1 from inside the shell: back to the code.
+    t:send("\0271")
+    assert.is_true(t:wait_for("vim.fn.expand('%:t') == 'alpha.lua' and vim.fn.mode() == 'n'", 2000))
+    t:send("\0272")
+    assert.is_true(t:wait_for("vim.bo.filetype == 'floggraph'", 2000))
+    -- One view at a time: changes replace the graph.
+    t:keys(" sc")
+    assert.is_true(t:wait_for(side .. " == 'changes'", 5000))
+    assert.equals(
+      0,
+      t:lua([[return #vim.tbl_filter(function(w)
+        return vim.bo[vim.api.nvim_win_get_buf(w)].filetype == "floggraph"
+      end, vim.api.nvim_tabpage_list_wins(0))]])
+    )
+    -- The bottom terminal moves to the side with the same shell.
+    local shell = t:lua("return require('wraithvim.features.terminal').panel.buf")
+    t:send("\0271")
+    t:keys(" st")
+    assert.is_true(t:wait_for(side .. " == 'terminal'", 3000))
+    assert.equals(shell, t:lua("return require('wraithvim.features.terminal').panel.buf"))
+  end)
+
   it("opens the terminal at the bottom with Ctrl+Shift+`", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))

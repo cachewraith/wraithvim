@@ -132,6 +132,23 @@ One key after <kbd>Space</kbd> for the things you do most.
 | ] h | Next change (hunk) | `]h` | n |
 | [ h | Previous change (hunk) | `[h` | n |
 
+### Side panel (`<leader>s…`)
+
+A column beside the editor (on the right; `side_panel.position = "left"` in
+`ui.lua` or `Space s m` moves it) that shows the Git graph, the changed files
+or the terminal, one at a time, like VS Code's secondary side bar. Opening
+another view there replaces the one shown; the terminal keeps running while
+it is hidden. In the changed files, `Enter` opens a file, `d` shows its diff,
+`ga` / `gu` stage / unstage it and `gc` commits.
+
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space s s | Show / hide side panel | `<leader>ss` | n |
+| Space s g | Git graph | `<leader>sg` | n |
+| Space s c | Changed files | `<leader>sc` | n |
+| Space s t | Terminal | `<leader>st` | n |
+| Space s m | Move to the other side | `<leader>sm` | n |
+
 ### Terminals (`<leader>T…`)
 
 | Press | Action | Vim notation | Mode |
@@ -172,6 +189,23 @@ One key after <kbd>Space</kbd> for the things you do most.
 | Space w - | Shorter | `<leader>w-` | n |
 | Space w > | Wider | `<leader>w>` | n |
 | Space w < | Narrower | `<leader>w<` | n |
+
+### Moving between panels
+
+Put the cursor in a panel from any mode, even while typing in a terminal
+(where Space would just type a space). A hidden side panel, terminal or
+explorer opens. These work in every terminal emulator.
+
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Alt+1 | Go to code | `<A-1>` | n, i, t |
+| Alt+2 | Go to side panel | `<A-2>` | n, i, t |
+| Alt+3 | Go to terminal | `<A-3>` | n, i, t |
+| Alt+0 | Go to explorer | `<A-0>` | n, i, t |
+
+Alt+1 goes back to the code window you used last. Inside a shell, these keys
+are no longer sent to it (some shells use Alt+number to repeat a command);
+turn them off with `disable = { "<A-1>" }` in `keymaps.lua` if you need that.
 
 ### Scrolling
 
@@ -300,6 +334,9 @@ see the Terminal table above.
 | `` <C-`> `` | Toggle terminal | normal, terminal |
 | `<C-Space>` | Toggle terminal (Ctrl+` in classic terminals) | normal, terminal |
 | `<C-\>` | Split editor right | normal |
+| `<C-1>` | Focus editor | normal, insert, terminal |
+| `<C-0>` | Focus explorer | normal, insert, terminal |
+| `<C-A-b>` | Toggle side panel | normal, insert, terminal |
 | `<C-S-g>` | Source control | normal |
 | `<C-Tab>` | Next tab | normal |
 | `<C-S-Tab>` | Previous tab | normal |

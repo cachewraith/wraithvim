@@ -96,6 +96,30 @@ If the file already exists it is opened, never overwritten. Press
 - The terminal panel keeps its height when other windows change
   (`winfixheight`).
 
+## Side panel
+
+```text
+ Explorer │ main.go                       │  Git graph  Enter open  d diff …
+          │                               │ * a1b2c3d (HEAD -> main) Fix login
+          │                               │ * 9f8e7d6 Add tests
+```
+
+- A column beside the editor, on the right by default, like VS Code's
+  secondary side bar. It shows one view at a time: **Git graph**
+  (`Space s g`), **changed files** (`Space s c`) or the **terminal**
+  (`Space s t`). `:SidePanel graph left` does the same as a command.
+- `Space s s` (VS Code preset: `Ctrl+Alt+B`) hides it and brings back the
+  last view; `Space s m` moves it to the other side. Set the default side
+  and width with `side_panel = { position = "left", width = 50 }` in `ui.lua`.
+- In the changed files, `Enter` opens a file, `d` shows its diff, `ga` / `gu`
+  stage / unstage it and `gc` commits. The graph keys are listed in its
+  header.
+- The terminal moves there with the same shell, and back to the bottom with
+  `` Ctrl+Shift+` ``.
+- **Move the cursor between panels** from any mode, even while typing in a
+  terminal: `Alt+1` code, `Alt+2` side panel, `Alt+3` terminal, `Alt+0`
+  explorer.
+
 ## Terminal panel
 
 ```text

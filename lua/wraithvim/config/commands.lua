@@ -94,6 +94,31 @@ function M.definitions()
         desc = "Open a terminal in a new split",
       },
     },
+    SidePanel = {
+      function(o)
+        local panels = require("wraithvim.features.panels")
+        local view, side
+        for _, arg in ipairs(o.fargs) do
+          if arg == "left" or arg == "right" then
+            side = arg
+          else
+            view = arg
+          end
+        end
+        if not view and not side then
+          panels.toggle()
+        else
+          panels.open(view, side)
+        end
+      end,
+      {
+        nargs = "*",
+        complete = function(lead)
+          return matching(lead, { "graph", "changes", "terminal", "left", "right" })
+        end,
+        desc = "Show the Git graph, changed files or terminal beside the editor",
+      },
+    },
     TerminalClose = { call(t, "close"), { desc = "Stop and close the terminal panel" } },
     TerminalNew = { call(t, "new"), { desc = "Open another terminal beside the panel" } },
 
