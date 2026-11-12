@@ -1,9 +1,26 @@
 # Keymaps
 
-Leader is <kbd>Space</kbd>, local leader is `\`. **Press <kbd>Space</kbd> and
-wait a moment**: a popup lists every key you can press next and what it does
-(turn it off with `key_hints = false` in `ui.lua`). `<leader>?` (or `:Keys`)
-opens a full cheatsheet, and `<leader>fk` fuzzy-searches every mapping.
+**Don't want to remember keys?** Press `Space p` (or `F1`, `Ctrl+Shift+P`, or
+type `:Actions`) and type what you want — "pull", "graph", "terminal" — then
+Enter. Every action is listed with its key, so you pick them up as you go.
+Most actions are also plain commands: `:Explorer`, `:FindFile`, `:Search`,
+`:Terminal`, `:GitGraph`, `:GitPull`, `:Update`, … (see the README).
+
+**Press <kbd>Space</kbd> and wait a moment**: a popup lists every key you can
+press next (turn it off with `key_hints = false` in `ui.lua`). `Space ?` (or
+`:Keys`) opens a full cheatsheet.
+
+### How to read the keys
+
+| Written | Press |
+|---|---|
+| `Space g p` | Space, then g, then p — one after another, not together |
+| `Shift+P` (Vim: a capital `P`) | hold Shift and press p |
+| `Ctrl+S` (Vim: `<C-s>`) | hold Ctrl and press s |
+| `Alt+Down` (Vim: `<A-Down>`, `<M-…>`) | hold Alt and press Down |
+| Vim notation `<leader>` | Space |
+
+So `<leader>gP` in Vim notation means **Space, g, Shift+P** (Git pull).
 
 All mappings live in one registry, `lua/wraithvim/config/keymaps.lua`; a test
 checks that every entry is documented here. Mappings marked with a plugin are
@@ -18,170 +35,171 @@ Neovim's own defaults remain available, for example `K` (hover), `grn`
 
 One key after <kbd>Space</kbd> for the things you do most.
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader><space>` | Find file | n |
-| `<leader>/` | Search text in project | n |
-| `<leader>,` | Switch tab | n |
-| `<leader>e` | Explorer | n |
-| `<leader>E` | Show file in explorer | n |
-| `<leader>t` | Terminal | n |
-| `<leader>x` | Close tab | n |
-| `<leader>q` | Quit (asks to save) | n |
-| `<leader>?` | All keymaps | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space Space | Find file | `<leader><space>` | n |
+| Space / | Search text in project | `<leader>/` | n |
+| Space , | Switch tab | `<leader>,` | n |
+| Space e | Explorer | `<leader>e` | n |
+| Space Shift+E | Show file in explorer | `<leader>E` | n |
+| Space t | Terminal | `<leader>t` | n |
+| Space x | Close tab | `<leader>x` | n |
+| Space q | Quit (asks to save) | `<leader>q` | n |
+| Space p | Actions (search by name) | `<leader>p` | n |
+| Space ? | All keymaps | `<leader>?` | n |
 
 ### Buffers (tabs) (`<leader>b…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>bb` | Pick tab | n |
-| `<leader>bd` | Close tab | n |
-| `<leader>bD` | Close tab (discard changes) | n |
-| `<leader>bo` | Close other tabs | n |
-| `<leader>bc` | Close hidden tabs | n |
-| `<leader>bn` | Next tab | n |
-| `<leader>bp` | Previous tab | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space b b | Pick tab | `<leader>bb` | n |
+| Space b d | Close tab | `<leader>bd` | n |
+| Space b Shift+D | Close tab (discard changes) | `<leader>bD` | n |
+| Space b o | Close other tabs | `<leader>bo` | n |
+| Space b c | Close hidden tabs | `<leader>bc` | n |
+| Space b n | Next tab | `<leader>bn` | n |
+| Space b p | Previous tab | `<leader>bp` | n |
 
 ### Code (`<leader>c…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>cf` | Format | n, x |
-| `<leader>cF` | Toggle format on save | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space c f | Format | `<leader>cf` | n, x |
+| Space c Shift+F | Toggle format on save | `<leader>cF` | n |
 
 ### Diagnostics (`<leader>d…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>dd` | Show line problems | n |
-| `<leader>dn` | Next problem | n |
-| `<leader>dp` | Previous problem | n |
-| `<leader>dq` | All problems (quickfix) | n |
-| `<leader>dl` | File problems (list) | n |
-| `<leader>dt` | Toggle inline problems | n |
-| `<leader>dT` | Toggle problems for file | n |
-| `<leader>dx` | Search problems | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space d d | Show line problems | `<leader>dd` | n |
+| Space d n | Next problem | `<leader>dn` | n |
+| Space d p | Previous problem | `<leader>dp` | n |
+| Space d q | All problems (quickfix) | `<leader>dq` | n |
+| Space d l | File problems (list) | `<leader>dl` | n |
+| Space d t | Toggle inline problems | `<leader>dt` | n |
+| Space d Shift+T | Toggle problems for file | `<leader>dT` | n |
+| Space d x | Search problems | `<leader>dx` | n |
 
 ### Find (`<leader>f…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>ff` | Files | n |
-| `<leader>fg` | Text (live grep) | n |
-| `<leader>fw` | Word / selection | n, x |
-| `<leader>fb` | Open tabs | n |
-| `<leader>fr` | Recent files | n |
-| `<leader>fv` | Git files | n |
-| `<leader>fx` | Problems | n |
-| `<leader>fh` | Help | n |
-| `<leader>fk` | Keymaps | n |
-| `<leader>fc` | Commands | n |
-| `<leader>f/` | In this file | n |
-| `<leader>fR` | Resume last search | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space f f | Files | `<leader>ff` | n |
+| Space f g | Text (live grep) | `<leader>fg` | n |
+| Space f w | Word / selection | `<leader>fw` | n, x |
+| Space f b | Open tabs | `<leader>fb` | n |
+| Space f r | Recent files | `<leader>fr` | n |
+| Space f v | Git files | `<leader>fv` | n |
+| Space f x | Problems | `<leader>fx` | n |
+| Space f h | Help | `<leader>fh` | n |
+| Space f k | Keymaps | `<leader>fk` | n |
+| Space f c | Commands | `<leader>fc` | n |
+| Space f / | In this file | `<leader>f/` | n |
+| Space f Shift+R | Resume last search | `<leader>fR` | n |
 
 ### Git (`<leader>g…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>gg` | Graph (all branches) | n |
-| `<leader>gs` | Status | n |
-| `<leader>gd` | Diff all changes | n |
-| `<leader>gD` | Close diff | n |
-| `<leader>gb` | Switch branch | n |
-| `<leader>gc` | Commit | n |
-| `<leader>gC` | Amend last commit | n |
-| `<leader>gp` | Push | n |
-| `<leader>gP` | Pull | n |
-| `<leader>gl` | History (log) | n |
-| `<leader>gf` | File history | n |
-| `<leader>ge` | Changed files in explorer | n |
-| `<leader>ga` | Stage file | n |
-| `<leader>gu` | Unstage file | n |
-| `<leader>gh` | Stage / unstage hunk | n |
-| `<leader>gh` | Stage / unstage selected lines | x |
-| `<leader>gr` | Undo hunk changes | n |
-| `<leader>gr` | Undo changes in selected lines | x |
-| `<leader>gS` | Stage whole file (hunks) | n |
-| `<leader>gR` | Undo all file changes | n |
-| `<leader>gv` | Preview hunk | n |
-| `<leader>gB` | Blame line | n |
-| `<leader>gx` | List merge conflicts | n |
-| `<leader>gm` | Resolve merge conflict | n |
-| `]h` | Next change (hunk) | n |
-| `[h` | Previous change (hunk) | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space g g | Graph (all branches) | `<leader>gg` | n |
+| Space g s | Status | `<leader>gs` | n |
+| Space g d | Diff all changes | `<leader>gd` | n |
+| Space g Shift+D | Close diff | `<leader>gD` | n |
+| Space g b | Switch branch | `<leader>gb` | n |
+| Space g c | Commit | `<leader>gc` | n |
+| Space g Shift+C | Amend last commit | `<leader>gC` | n |
+| Space g p | Push | `<leader>gp` | n |
+| Space g Shift+P | Pull | `<leader>gP` | n |
+| Space g l | History (log) | `<leader>gl` | n |
+| Space g f | File history | `<leader>gf` | n |
+| Space g e | Changed files in explorer | `<leader>ge` | n |
+| Space g a | Stage file | `<leader>ga` | n |
+| Space g u | Unstage file | `<leader>gu` | n |
+| Space g h | Stage / unstage hunk | `<leader>gh` | n |
+| Space g h | Stage / unstage selected lines | `<leader>gh` | x |
+| Space g r | Undo hunk changes | `<leader>gr` | n |
+| Space g r | Undo changes in selected lines | `<leader>gr` | x |
+| Space g Shift+S | Stage whole file (hunks) | `<leader>gS` | n |
+| Space g Shift+R | Undo all file changes | `<leader>gR` | n |
+| Space g v | Preview hunk | `<leader>gv` | n |
+| Space g Shift+B | Blame line | `<leader>gB` | n |
+| Space g x | List merge conflicts | `<leader>gx` | n |
+| Space g m | Resolve merge conflict | `<leader>gm` | n |
+| ] h | Next change (hunk) | `]h` | n |
+| [ h | Previous change (hunk) | `[h` | n |
 
 ### Terminals (`<leader>T…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>Tn` | New terminal beside | n |
-| `<leader>Th` | Terminal below (split) | n |
-| `<leader>Tv` | Terminal right (split) | n |
-| `<leader>Tf` | Floating terminal | n |
-| `<leader>Tc` | Kill terminal panel | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space Shift+T n | New terminal beside | `<leader>Tn` | n |
+| Space Shift+T h | Terminal below (split) | `<leader>Th` | n |
+| Space Shift+T v | Terminal right (split) | `<leader>Tv` | n |
+| Space Shift+T f | Floating terminal | `<leader>Tf` | n |
+| Space Shift+T c | Kill terminal panel | `<leader>Tc` | n |
 
 ### Update & tools (`<leader>u…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>uu` | Update WraithVim | n |
-| `<leader>uh` | Health check | n |
-| `<leader>up` | Plugins | n |
-| `<leader>uc` | Open settings folder | n |
-| `<leader>ul` | Log | n |
-| `<leader>un` | Notification history | n |
-| `<leader>ut` | Install syntax parsers | n |
-| `<leader>um` | Install language tools (Mason) | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space u u | Update WraithVim | `<leader>uu` | n |
+| Space u h | Health check | `<leader>uh` | n |
+| Space u p | Plugins | `<leader>up` | n |
+| Space u c | Open settings folder | `<leader>uc` | n |
+| Space u l | Log | `<leader>ul` | n |
+| Space u n | Notification history | `<leader>un` | n |
+| Space u t | Install syntax parsers | `<leader>ut` | n |
+| Space u m | Install language tools (Mason) | `<leader>um` | n |
 
 ### Windows (`<leader>w…`)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `<leader>wv` | Split right | n |
-| `<leader>ws` | Split below | n |
-| `<leader>wc` | Close window | n |
-| `<leader>wo` | Close other windows | n |
-| `<leader>w=` | Equal sizes | n |
-| `<leader>wh` | Go left | n |
-| `<leader>wj` | Go down | n |
-| `<leader>wk` | Go up | n |
-| `<leader>wl` | Go right | n |
-| `<leader>w+` | Taller | n |
-| `<leader>w-` | Shorter | n |
-| `<leader>w>` | Wider | n |
-| `<leader>w<` | Narrower | n |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Space w v | Split right | `<leader>wv` | n |
+| Space w s | Split below | `<leader>ws` | n |
+| Space w c | Close window | `<leader>wc` | n |
+| Space w o | Close other windows | `<leader>wo` | n |
+| Space w = | Equal sizes | `<leader>w=` | n |
+| Space w h | Go left | `<leader>wh` | n |
+| Space w j | Go down | `<leader>wj` | n |
+| Space w k | Go up | `<leader>wk` | n |
+| Space w l | Go right | `<leader>wl` | n |
+| Space w + | Taller | `<leader>w+` | n |
+| Space w - | Shorter | `<leader>w-` | n |
+| Space w > | Wider | `<leader>w>` | n |
+| Space w < | Narrower | `<leader>w<` | n |
 
 ### Other keys
 
-| Keys | Action | Mode |
-|---|---|---|
-| `` <C-S-`> `` | Open terminal at the bottom | n, i, t |
-| `<C-~>` | Open terminal at the bottom (Ctrl+Shift+`) | n, i, t |
-| `s` | Flash jump | n, x, o |
-| `S` | Flash Treesitter select | n, x, o |
-| `r` | Flash remote operation | o |
-| `<C-s>` | Save file | n, i, x |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| Ctrl+Shift+` | Open terminal at the bottom | `` <C-S-`> `` | n, i, t |
+| Ctrl+~ | Open terminal at the bottom (Ctrl+Shift+`) | `<C-~>` | n, i, t |
+| s | Flash jump | `s` | n, x, o |
+| Shift+S | Flash Treesitter select | `S` | n, x, o |
+| r | Flash remote operation | `r` | o |
+| Ctrl+S | Save file | `<C-s>` | n, i, x |
 
 ### LSP (only when a language server is attached)
 
-| Keys | Action | Mode |
-|---|---|---|
-| `gd` | Go to definition | n |
-| `gD` | Go to declaration | n |
-| `<leader>ld` | Definition | n |
-| `<leader>lD` | Declaration | n |
-| `<leader>lr` | References | n |
-| `<leader>li` | Implementations | n |
-| `<leader>lt` | Type definition | n |
-| `<leader>lh` | Hover | n |
-| `<leader>lk` | Signature help | n |
-| `<leader>ls` | Document symbols | n |
-| `<leader>lS` | Workspace symbols | n |
-| `<leader>lR` | Restart language server | n |
-| `<leader>lI` | LSP info | n |
-| `<leader>lH` | Toggle inlay hints | n |
-| `<leader>rn` | Rename symbol | n |
-| `<leader>ca` | Code action | n, x |
+| Press | Action | Vim notation | Mode |
+|---|---|---|---|
+| g d | Go to definition | `gd` | n |
+| g Shift+D | Go to declaration | `gD` | n |
+| Space l d | Definition | `<leader>ld` | n |
+| Space l Shift+D | Declaration | `<leader>lD` | n |
+| Space l r | References | `<leader>lr` | n |
+| Space l i | Implementations | `<leader>li` | n |
+| Space l t | Type definition | `<leader>lt` | n |
+| Space l h | Hover | `<leader>lh` | n |
+| Space l k | Signature help | `<leader>lk` | n |
+| Space l s | Document symbols | `<leader>ls` | n |
+| Space l Shift+S | Workspace symbols | `<leader>lS` | n |
+| Space l Shift+R | Restart language server | `<leader>lR` | n |
+| Space l Shift+I | LSP info | `<leader>lI` | n |
+| Space l Shift+H | Toggle inlay hints | `<leader>lH` | n |
+| Space r n | Rename symbol | `<leader>rn` | n |
+| Space c a | Code action | `<leader>ca` | n, x |
 
 ### Inside special buffers
 

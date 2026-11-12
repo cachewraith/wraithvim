@@ -52,6 +52,52 @@ describe("config.keymaps", function()
     assert.is_false(keymaps.is_quick("s"))
   end)
 
+  it("shows keys in plain words", function()
+    assert.equals("Space g Shift+P", keymaps.human("<leader>gP"))
+    assert.equals("Space Space", keymaps.human("<leader><space>"))
+    assert.equals("Ctrl+Shift+F", keymaps.human("<C-S-f>"))
+    assert.equals("Shift+Alt+Down", keymaps.human("<S-A-Down>"))
+    assert.equals("Ctrl+S", keymaps.human("<C-s>"))
+    assert.equals("] h", keymaps.human("]h"))
+    assert.equals("F12", keymaps.human("<F12>"))
+  end)
+
+  it("lists every action in the palette with its key", function()
+    vim.env.WRAITHVIM_CONFIG_DIR = env.tmpdir("palette")
+    setup_config()
+    local items = keymaps.palette_items()
+    local by_label = {}
+    for _, it in ipairs(items) do
+      by_label[it.label] = it.keys
+      assert.is_function(it.run)
+    end
+    -- Plugin-backed mappings are skipped here (lazy.nvim is not set up), so
+    -- check plain ones plus commands.
+    assert.equals("Space x", by_label["Close tab"])
+    assert.equals("Space t", by_label["Terminal"])
+    assert.equals("Space u u", by_label["Update & tools: Update WraithVim"])
+    assert.equals(":GitGraph", by_label["Command: Commit graph of all branches"])
+    assert.equals(":Update", by_label["Command: Update WraithVim and sync pinned plugins"])
+    for label in pairs(by_label) do
+      assert.is_nil(label:find("classic terminals", 1, true))
+    end
+  end)
+
+  it("palette runs commands", function()
+    local ran
+    local real = vim.cmd
+    vim.cmd = function(c)
+      ran = c
+    end
+    for _, it in ipairs(keymaps.palette_items()) do
+      if it.keys == ":Keys" then
+        it.run()
+      end
+    end
+    vim.cmd = real
+    assert.equals("Keys", ran)
+  end)
+
   it("documents every mapping in docs/keymaps.md", function()
     local doc = env.read(env.root .. "/docs/keymaps.md")
     assert.is_string(doc)

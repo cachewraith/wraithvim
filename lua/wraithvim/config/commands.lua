@@ -87,6 +87,11 @@ function M.definitions()
     TerminalNew = { call(t, "new"), { desc = "Open another terminal beside the panel" } },
 
     -- Git
+    Actions = { call("wraithvim.config.keymaps", "palette"), { desc = "Search and run any action by name" } },
+    Explorer = { call("wraithvim.features.explorer", "toggle"), { desc = "Toggle the file explorer" } },
+    FindFile = { call("wraithvim.features.search", "find_files"), { desc = "Find a file by name" } },
+    Search = { call("wraithvim.features.search", "live_grep"), { desc = "Search text in the project" } },
+    CloseTab = { call("wraithvim.features.buffers", "delete"), { desc = "Close the current tab (buffer)" } },
     GitGraph = { call(g, "graph"), { desc = "Commit graph of all branches" } },
     GitStatus = { call(g, "status"), { desc = "Git status (fugitive)" } },
     GitDiff = { call(g, "diff"), { desc = "Diff working tree (diffview)" } },

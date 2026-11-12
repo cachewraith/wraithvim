@@ -6,6 +6,21 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-12
+
+### Added
+
+- Actions palette (like VS Code's Command Palette): `Space p`, `:Actions`,
+  and in the VS Code preset `F1` / `Ctrl+Shift+P`. Search any action by name
+  and press Enter; each entry shows its key.
+- Commands `:Explorer`, `:FindFile`, `:Search` and `:CloseTab`.
+
+### Changed
+
+- Keys are shown in plain words in the cheatsheet, the palette and the docs:
+  `Space g Shift+P` instead of `<leader>gP`, `Ctrl+S` instead of `<C-s>`.
+  docs/keymaps.md explains how to read them.
+
 ## [0.5.0] - 2026-11-12
 
 ### Added
@@ -145,7 +160,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...v0.3.0

@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.5.0`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.6.0`. `:Update` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:
@@ -107,8 +107,10 @@ Coming from VS Code? Put `return { preset = "vscode" }` in
 selection and more ([full list](docs/keymaps.md#vs-code-keymap-preset)).
 
 Leader is <kbd>Space</kbd>. **Press Space and wait**: a popup shows every key
-you can press next. `Space ?` opens a full cheatsheet; the complete list is in
-[docs/keymaps.md](docs/keymaps.md).
+you can press next. **`Space p`** lets you search every action by name (like
+VS Code's Command Palette), and `Space ?` opens a full cheatsheet. Keys are
+pressed one after another; `Shift+P` means hold Shift and press p. The complete
+list is in [docs/keymaps.md](docs/keymaps.md).
 
 | Keys | Action | Keys | Action |
 |---|---|---|---|
@@ -119,6 +121,7 @@ you can press next. `Space ?` opens a full cheatsheet; the complete list is in
 | `Space x` | Close tab | `Space g b` | Switch branch |
 | `Space ,` | Switch tab | `Space u u` | Update WraithVim |
 | `Space q` | Quit | `Space u h` | Health check |
+| `Space p` | **Search actions by name** | `Space ?` | All keys |
 | `gd` / `K` | Definition / hover | `Space r n` | Rename symbol |
 | `Space c a` | Code action | `Space c f` | Format |
 | `` Ctrl+Shift+` `` | Terminal at the bottom | `Ctrl+S` | Save |
@@ -133,6 +136,9 @@ you can press next. `Space ?` opens a full cheatsheet; the complete list is in
 | `:Profile` | Plugin load profile (`:Lazy profile`) |
 | `:Benchmark` | Run `scripts/benchmark.sh` in a terminal split |
 | `:Config` | Open `~/.config/wraithvim/` |
+| `:Actions` | Search and run any action by name (also `Space p`, `F1`) |
+| `:Explorer` / `:FindFile` / `:Search` | Toggle explorer / find a file / search text in the project |
+| `:CloseTab` | Close the current tab |
 | `:Keys` | Keymap cheatsheet |
 | `:Notifications` | Notification history |
 | `:BufferCleanup` | Delete hidden, unmodified buffers |

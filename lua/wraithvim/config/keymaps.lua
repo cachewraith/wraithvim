@@ -47,6 +47,51 @@ end
 
 M.call, M.pick = call, pick
 
+local key_names = {
+  leader = "Space",
+  space = "Space",
+  cr = "Enter",
+  esc = "Esc",
+  tab = "Tab",
+  bs = "Backspace",
+  up = "Up",
+  down = "Down",
+  left = "Left",
+  right = "Right",
+  pageup = "PageUp",
+  pagedown = "PageDown",
+}
+local modifier_names = { c = "Ctrl", s = "Shift", a = "Alt", m = "Alt", d = "Cmd" }
+
+--- Human-readable key sequence: "<leader>gP" -> "Space g Shift+P",
+--- "<C-S-f>" -> "Ctrl+Shift+F", "]h" -> "] h".
+---@param lhs string
+---@return string
+function M.human(lhs)
+  local parts = {}
+  local i = 1
+  while i <= #lhs do
+    local special = lhs:match("^<([^<>]+)>", i)
+    if special then
+      local words, rest = {}, special
+      -- Peel modifier prefixes such as "C-" and "S-" off "C-S-f".
+      while #rest > 2 and rest:match("^%a%-") do
+        local m = rest:sub(1, 1)
+        words[#words + 1] = modifier_names[m:lower()] or m
+        rest = rest:sub(3)
+      end
+      words[#words + 1] = key_names[rest:lower()] or (#rest == 1 and rest:upper()) or rest
+      parts[#parts + 1] = table.concat(words, "+")
+      i = i + #special + 2
+    else
+      local ch = lhs:sub(i, i)
+      parts[#parts + 1] = ch:match("%u") and ("Shift+" .. ch) or ch
+      i = i + 1
+    end
+  end
+  return table.concat(parts, " ")
+end
+
 --- True for single-key leader mappings such as <leader>e or <leader><space>.
 ---@param lhs string
 ---@return boolean
@@ -84,6 +129,7 @@ function M.defaults()
     { "n", "<leader>t", call(t, "toggle"), desc = "Terminal" },
     { "n", "<leader>x", call(b, "delete"), desc = "Close tab" },
     { "n", "<leader>q", cmd("confirm qall"), desc = "Quit (asks to save)" },
+    { "n", "<leader>p", call("wraithvim.config.keymaps", "palette"), desc = "Actions (search by name)" },
     { "n", "<leader>?", call("wraithvim.config.keymaps", "cheatsheet"), desc = "All keymaps" },
 
     -- Find
@@ -361,8 +407,7 @@ function M.cheatsheet()
     { "WraithVim keymaps  (<leader> = " .. (vim.g.mapleader == " " and "Space" or vim.g.mapleader) .. ")", "" }
   local all = vim.list_extend(vim.deepcopy(M.defaults()), M.lsp())
   local function row(e)
-    local modes = type(e[1]) == "table" and table.concat(e[1], "") or e[1]
-    return ("  %-16s %-4s %s"):format(e[2], modes, e.desc or "")
+    return ("  %-22s %s"):format(M.human(e[2]), e.desc or "")
   end
   lines[#lines + 1] = "Quick keys"
   for _, e in ipairs(all) do
@@ -372,7 +417,7 @@ function M.cheatsheet()
   end
   lines[#lines + 1] = ""
   for _, group in ipairs(M.groups) do
-    lines[#lines + 1] = group[1] .. "  " .. group[2]
+    lines[#lines + 1] = M.human(group[1]) .. "  " .. group[2]
     for _, e in ipairs(all) do
       if vim.startswith(e[2], group[1]) and plugin_available(e) then
         lines[#lines + 1] = row(e)
@@ -386,12 +431,13 @@ function M.cheatsheet()
     for _, e in ipairs(require("wraithvim.config.vscode").mappings()) do
       if not seen[e[2]] and plugin_available(e) and not e.desc:find("classic terminals", 1, true) then
         seen[e[2]] = true
-        lines[#lines + 1] = ("  %-14s %s"):format(e[2], e.desc)
+        lines[#lines + 1] = ("  %-22s %s"):format(M.human(e[2]), e.desc)
       end
     end
     lines[#lines + 1] = ""
   end
-  lines[#lines + 1] = "Other: Ctrl+Shift+` terminal at the bottom, s/S flash, ]h/[h hunks, ]x/[x conflicts, <C-s> save."
+  lines[#lines + 1] =
+    "Other: Ctrl+Shift+` terminal at the bottom, s / Shift+S flash jump, ] h / [ h changes, Ctrl+S save."
   lines[#lines + 1] = "Full list: :Telescope keymaps"
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
@@ -411,6 +457,118 @@ function M.cheatsheet()
   })
   vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, nowait = true })
   vim.keymap.set("n", "<Esc>", "<cmd>close<cr>", { buffer = buf, nowait = true })
+end
+
+--- Everything you can do, searchable by name (like VS Code's Command
+--- Palette): every normal-mode mapping plus argument-free commands. Each
+--- entry shows its key so it can be learned.
+---@return { label: string, keys: string, run: function }[]
+function M.palette_items()
+  local items = {}
+  local function group_of(lhs)
+    for _, g in ipairs(M.groups) do
+      if vim.startswith(lhs, g[1]) then
+        return g[2]
+      end
+    end
+  end
+  local function add(entry, prefix)
+    local modes = type(entry[1]) == "table" and entry[1] or { entry[1] }
+    if not vim.tbl_contains(modes, "n") or not plugin_available(entry) or M.is_disabled("n", entry[2]) then
+      return
+    end
+    if entry.desc:find("classic terminals", 1, true) or entry.desc:find("Ctrl+Shift+`)", 1, true) then
+      return -- alternative encodings of a key already listed
+    end
+    local group = prefix or group_of(entry[2])
+    local label = group and (group .. ": " .. entry.desc) or entry.desc
+    local rhs = entry[3]
+    items[#items + 1] = {
+      label = label,
+      keys = M.human(entry[2]),
+      run = function()
+        if type(rhs) == "function" then
+          rhs()
+        else
+          vim.api.nvim_feedkeys(vim.keycode(rhs), entry.remap and "m" or "n", false)
+        end
+      end,
+    }
+  end
+  for _, e in ipairs(M.defaults()) do
+    add(e)
+  end
+  for _, e in ipairs(M.lsp()) do
+    add(e, "LSP")
+  end
+  if require("wraithvim.core.config").get().keymaps.preset == "vscode" then
+    for _, e in ipairs(require("wraithvim.config.vscode").mappings()) do
+      add(e, "VS Code")
+    end
+  end
+  local defs = require("wraithvim.config.commands").definitions()
+  local names = vim.tbl_keys(defs)
+  table.sort(names)
+  for _, name in ipairs(names) do
+    local opts = defs[name][2]
+    if opts.nargs == nil or opts.nargs == "?" or opts.nargs == "*" then
+      items[#items + 1] = {
+        label = "Command: " .. (opts.desc or name),
+        keys = ":" .. name,
+        run = function()
+          vim.cmd(name)
+        end,
+      }
+    end
+  end
+  return items
+end
+
+--- Open the actions palette (Telescope when available, else vim.ui.select).
+function M.palette()
+  local items = M.palette_items()
+  local width = 0
+  for _, it in ipairs(items) do
+    width = math.max(width, vim.fn.strdisplaywidth(it.label))
+  end
+  local function display(it)
+    return it.label .. string.rep(" ", width - vim.fn.strdisplaywidth(it.label) + 3) .. it.keys
+  end
+  local function run(it)
+    vim.schedule(it.run)
+  end
+  if not require("wraithvim.core.plugin_manager").has("telescope.nvim") then
+    vim.ui.select(items, { prompt = "Actions", format_item = display }, function(it)
+      if it then
+        run(it)
+      end
+    end)
+    return
+  end
+  local actions = require("telescope.actions")
+  local state = require("telescope.actions.state")
+  require("telescope.pickers")
+    .new({}, {
+      prompt_title = "Actions  (type a name, Enter to run)",
+      finder = require("telescope.finders").new_table({
+        results = items,
+        entry_maker = function(it)
+          return { value = it, display = display(it), ordinal = it.label .. " " .. it.keys }
+        end,
+      }),
+      sorter = require("telescope.config").values.generic_sorter({}),
+      attach_mappings = function(bufnr)
+        actions.select_default:replace(function()
+          local entry = state.get_selected_entry()
+          actions.close(bufnr)
+          if entry then
+            run(entry.value)
+          end
+        end)
+        return true
+      end,
+    })
+    :find()
 end
 
 return M

@@ -56,8 +56,8 @@ function M.mappings()
   local list = {
     -- Files, search, panels
     { "n", "<C-p>", call(s, "find_files"), desc = "Quick open file", plugin = "telescope.nvim" },
-    { { "n", "i" }, "<F1>", pick("commands"), desc = "Command palette", plugin = "telescope.nvim" },
-    { { "n", "i" }, "<C-S-p>", pick("commands"), desc = "Command palette", plugin = "telescope.nvim" },
+    { { "n", "i" }, "<F1>", call("wraithvim.config.keymaps", "palette"), desc = "Command palette" },
+    { { "n", "i" }, "<C-S-p>", call("wraithvim.config.keymaps", "palette"), desc = "Command palette" },
     { { "n", "i" }, "<C-S-f>", call(s, "live_grep"), desc = "Search in project", plugin = "telescope.nvim" },
     { "n", "<C-f>", "/", desc = "Find in file", silent = false },
     { "n", "<C-g>", go_to_line, desc = "Go to line" },
