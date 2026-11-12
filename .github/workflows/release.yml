@@ -1,0 +1,39 @@
+name: release
+
+# Attach a source archive to every published release. GitHub counts downloads
+# of release assets (not of clones or its automatic source zips), so this file
+# is what the website's download counter reports. The stable name makes
+# https://github.com/cachewraith/wraithvim/releases/latest/download/wraithvim.tar.gz
+# always point at the newest release.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to attach the archive to (e.g. v0.6.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build wraithvim.tar.gz
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          git archive --format=tar.gz --prefix=wraithvim/ -o wraithvim.tar.gz "$TAG"
+          tar -tzf wraithvim.tar.gz | grep -q '^wraithvim/install.sh$'
+          sha256sum wraithvim.tar.gz | tee wraithvim.tar.gz.sha256
+      - name: Upload to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: gh release upload "$TAG" wraithvim.tar.gz wraithvim.tar.gz.sha256 --clobber

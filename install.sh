@@ -10,6 +10,9 @@ set -euo pipefail
 
 readonly MIN_NVIM="0.12.0"
 readonly MARKER="WraithVim bootstrap"
+# Cloned when install.sh runs from a downloaded archive (no .git), so the
+# installation is a real checkout that :Update can fast-forward.
+readonly UPSTREAM="${WRAITHVIM_UPSTREAM:-https://github.com/cachewraith/wraithvim.git}"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -235,14 +238,29 @@ ensure_writable_parent() {
 
 is_wraithvim_tree() { [[ -f "$1/lua/wraithvim/init.lua" && -f "$1/init.lua" ]]; }
 
+# True when this script runs from an extracted release archive, not a checkout.
+is_archive_copy() {
+  [[ -z "$REPO" ]] && ! git -C "$SCRIPT_DIR" rev-parse --git-dir >/dev/null 2>&1
+}
+
 source_repo() {
   if [[ -n "$REPO" ]]; then
     printf '%s' "$REPO"
-  elif git -C "$SCRIPT_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-    printf '%s' "$SCRIPT_DIR"
+  elif is_archive_copy; then
+    printf '%s' "$UPSTREAM"
   else
-    printf ''
+    printf '%s' "$SCRIPT_DIR"
   fi
+}
+
+copy_files() {
+  run mkdir -p -- "$TARGET"
+  if ((DRY_RUN)); then
+    printf '  [dry-run] copy %s -> %s (excluding .tests)\n' "$SCRIPT_DIR" "$TARGET"
+  else
+    tar -C "$SCRIPT_DIR" --exclude=./.tests -cf - . | tar -C "$TARGET" -xf -
+  fi
+  ok "copied files"
 }
 
 install_distribution() {
@@ -289,6 +307,7 @@ install_distribution() {
 
   local repo
   repo="$(source_repo)"
+  is_archive_copy && info "Installing from a release archive: cloning $repo so :Update works"
   run mkdir -p -- "$(dirname -- "$TARGET")"
   if [[ -n "$repo" ]]; then
     # Clone into a temporary sibling first so a failed clone leaves nothing behind.
@@ -299,6 +318,11 @@ install_distribution() {
       tmp="$(mktemp -d "$(dirname -- "$TARGET")/.wraithvim-install.XXXXXX")"
       if ! git clone --quiet -- "$repo" "$tmp/wraithvim"; then
         rm -rf -- "$tmp"
+        if is_archive_copy; then
+          warn "could not clone $repo (offline?); copying this archive instead (:Update will be unavailable)"
+          copy_files
+          return
+        fi
         die "git clone of $repo failed (network or permissions). Nothing was changed."
       fi
       # A local clone points origin at this directory; prefer this checkout's upstream.
@@ -313,15 +337,6 @@ install_distribution() {
       rmdir -- "$tmp"
     fi
     ok "cloned $repo"
-  else
-    warn "this copy is not a Git checkout; copying files (:Update will be unavailable)"
-    run mkdir -p -- "$TARGET"
-    if ((DRY_RUN)); then
-      printf '  [dry-run] copy %s -> %s (excluding .tests)\n' "$SCRIPT_DIR" "$TARGET"
-    else
-      tar -C "$SCRIPT_DIR" --exclude=./.tests -cf - . | tar -C "$TARGET" -xf -
-    fi
-    ok "copied files"
   fi
 }
 

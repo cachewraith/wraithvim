@@ -71,8 +71,13 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.6.0`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.6.1`. `:Update` follows the
 `main` branch.
+
+Prefer a download? Every release has
+[`wraithvim.tar.gz`](https://github.com/cachewraith/wraithvim/releases/latest/download/wraithvim.tar.gz)
+attached; extract it and run `./install.sh` (it still sets up an updatable Git
+install).
 
 Try WraithVim **next to your current config**:
 

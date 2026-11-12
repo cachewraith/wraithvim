@@ -147,6 +147,48 @@ describe("install.sh", function()
     assert.equals(0, #vim.fn.glob(home .. "/.config/nvim.bak.*", false, true))
   end)
 
+  --- A release archive: the project without .git, like wraithvim.tar.gz.
+  local function archive_copy()
+    local dir = env.tmpdir("archive") .. "/wraithvim"
+    vim.fn.mkdir(dir, "p")
+    local r = vim.system({ "bash", "-c", 'git -C "$1" archive HEAD | tar -C "$2" -xf -', "_", src, dir }):wait()
+    assert(r.code == 0, r.stderr)
+    return dir
+  end
+
+  local function sh_in(dir, args, extra_env)
+    local cmd = { "bash", dir .. "/install.sh" }
+    vim.list_extend(cmd, args or {})
+    local e = vim.tbl_extend("force", {
+      HOME = home,
+      PATH = vim.env.PATH,
+      XDG_CONFIG_HOME = home .. "/.config",
+      XDG_DATA_HOME = home .. "/.local/share",
+      XDG_STATE_HOME = home .. "/.local/state",
+    }, extra_env or {})
+    return vim.system(cmd, { env = e, clear_env = true, text = true, stdin = "" }):wait(120000)
+  end
+
+  it("turns a release archive into an updatable Git checkout", function()
+    local dir = archive_copy()
+    local r = sh_in(dir, {}, { WRAITHVIM_UPSTREAM = src })
+    assert.equals(0, r.code, r.stderr)
+    assert.matches("release archive", r.stdout)
+    local target = home .. "/.local/share/wraithvim"
+    assert.is_not_nil(vim.uv.fs_stat(target .. "/.git"))
+    assert.equals(src, vim.trim(gh.git(target, "remote", "get-url", "origin").stdout))
+  end)
+
+  it("falls back to copying an archive when the upstream cannot be cloned", function()
+    local dir = archive_copy()
+    local r = sh_in(dir, {}, { WRAITHVIM_UPSTREAM = home .. "/unreachable" })
+    assert.equals(0, r.code, r.stderr)
+    assert.matches("could not clone", r.stderr)
+    local target = home .. "/.local/share/wraithvim"
+    assert.is_not_nil(vim.uv.fs_stat(target .. "/lua/wraithvim/init.lua"))
+    assert.is_nil(vim.uv.fs_stat(target .. "/.git"))
+  end)
+
   it("links a checkout with --link", function()
     assert.equals(0, sh(home, "install.sh", { "--link" }).code)
     local target = home .. "/.local/share/wraithvim"

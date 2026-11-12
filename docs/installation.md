@@ -100,7 +100,23 @@ Options:
 Running the installer again is safe: it reports "already installed" and
 "bootstrap already up to date" and changes nothing.
 
-## 2b. Install by cloning, without the installer
+## 2b. Install from the release download
+
+Every release has a `wraithvim.tar.gz` attached (this is what the website's
+download counter counts):
+
+```bash
+curl -LO https://github.com/cachewraith/wraithvim/releases/latest/download/wraithvim.tar.gz
+tar -xzf wraithvim.tar.gz && cd wraithvim
+./install.sh
+```
+
+Run from an archive, `install.sh` clones the GitHub repository into
+`~/.local/share/wraithvim`, so the result is a normal Git install that
+`:Update` can update. Without network access it copies the archive instead
+(`:Update` is then unavailable; re-run the installer from a newer archive).
+
+## 2c. Install by cloning, without the installer
 
 ```bash
 git clone https://github.com/cachewraith/wraithvim ~/.local/share/wraithvim
@@ -137,7 +153,7 @@ Linux on first use. If that is impossible, it silently uses its Lua matcher.
 ```
 
 Updates follow the `main` branch. To stay on a release instead, check out its
-tag (`git -C ~/.local/share/wraithvim checkout v0.6.0`). `:Update` then
+tag (`git -C ~/.local/share/wraithvim checkout v0.6.1`). `:Update` then
 refuses to pull (a detached tag has no branch to fast-forward); switch back
 with `git -C ~/.local/share/wraithvim checkout main`.
 

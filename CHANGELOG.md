@@ -6,6 +6,20 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-11-12
+
+### Added
+
+- Every GitHub release gets a `wraithvim.tar.gz` asset (release workflow), so
+  downloads are counted; `releases/latest/download/wraithvim.tar.gz` always
+  points at the newest one.
+
+### Changed
+
+- `install.sh` run from a downloaded archive clones the repository, giving an
+  updatable Git install instead of a plain copy (falls back to copying when
+  offline).
+
 ## [0.6.0] - 2026-11-12
 
 ### Added
@@ -160,7 +174,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/cachewraith/wraithvim/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/cachewraith/wraithvim/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...v0.4.0
