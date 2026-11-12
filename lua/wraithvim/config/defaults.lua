@@ -19,6 +19,12 @@ return {
       wheel = 6,
       wheel_horizontal = 8,
     },
+    search = {
+      -- Folders skipped by file and text search (Space Space, Space /), like
+      -- VS Code's search.exclude. Everything else the explorer shows is
+      -- searched, including dotfiles and files ignored by .gitignore.
+      exclude = { ".git", "node_modules" },
+    },
     -- Reload open files the moment another program (an AI CLI, a formatter,
     -- git) changes them on disk. Buffers with unsaved edits are never touched.
     auto_reload = true,

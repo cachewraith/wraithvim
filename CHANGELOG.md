@@ -6,6 +6,16 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.10.1] - 2026-11-12
+
+### Fixed
+
+- File search (`Space Space`) and text search (`Space /`) now find what the
+  explorer shows, including files ignored by `.gitignore` such as `.env` or
+  `dist/`. `.git` and `node_modules` are skipped, like VS Code's search; change
+  that with `options.search.exclude`. Search follows `explorer.show_hidden`,
+  `explorer.show_gitignored` and `explorer.hide`.
+
 ## [0.10.0] - 2026-11-12
 
 ### Changed
@@ -248,7 +258,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/cachewraith/wraithvim/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/cachewraith/wraithvim/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/cachewraith/wraithvim/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/cachewraith/wraithvim/compare/v0.7.0...v0.8.0

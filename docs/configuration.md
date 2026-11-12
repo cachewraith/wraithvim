@@ -41,6 +41,12 @@ return {
     wheel_horizontal = 8,
   },
   auto_reload = true,               -- reload open files changed by other programs (never unsaved ones)
+  search = {
+    -- Skipped by file search (Space Space) and text search (Space /).
+    -- Everything else the explorer shows is searched, dotfiles and
+    -- .gitignore'd files included. Use { ".git" } to search node_modules too.
+    exclude = { ".git", "node_modules" },
+  },
   format = {
     on_save = false,                -- opt-in format on save
     timeout_ms = 1000,
