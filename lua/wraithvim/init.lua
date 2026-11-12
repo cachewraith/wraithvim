@@ -10,7 +10,7 @@
 local M = {}
 
 --- Released version; kept in sync with CHANGELOG.md (tested).
-M.version = "0.13.0"
+M.version = "0.13.1"
 
 local did_setup = false
 

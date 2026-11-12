@@ -6,6 +6,16 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-11-12
+
+### Fixed
+
+- Opening a Rust file no longer shows "Client rust_analyzer quit with exit
+  code 1" when rustup is installed without its rust-analyzer component.
+  WraithVim now sees that rust-analyzer is missing and offers to install it,
+  and `:Health` reports it as missing instead of OK. The same goes for other
+  rustup tools such as `rustfmt`.
+
 ## [0.13.0] - 2026-11-12
 
 ### Added
@@ -339,7 +349,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.1...HEAD
+[0.13.1]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/cachewraith/wraithvim/compare/v0.10.1...v0.11.0
