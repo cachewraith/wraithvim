@@ -90,6 +90,36 @@ local function cmd(command)
   end
 end
 
+--- lualine extension for WraithVim terminals: shell and folder instead of
+--- the raw `term://…` buffer name, plus a hint for the current mode.
+---@param ic table icon set
+---@param nerd boolean
+---@return table
+function M.terminal_extension(ic, nerd)
+  local function shell()
+    return (nerd and (ic.terminal .. " ") or "") .. (vim.b.wraith_term_shell or "shell")
+  end
+  local function folder()
+    local cwd = vim.fn.fnamemodify(vim.b.wraith_term_cwd or vim.fn.getcwd(), ":~")
+    return (nerd and (ic.folder.open .. " ") or "") .. cwd:gsub("%%", "%%%%")
+  end
+  local function hint()
+    if vim.api.nvim_get_mode().mode == "t" then
+      return "Esc Esc: scroll & copy"
+    end
+    return "click or i: type"
+  end
+  return {
+    filetypes = { require("wraithvim.features.terminal").filetype },
+    sections = {
+      lualine_a = { "mode" },
+      lualine_b = { shell },
+      lualine_c = { folder },
+      lualine_x = { hint },
+    },
+  }
+end
+
 ---@return table lualine options
 function M.opts()
   local config = require("wraithvim.core.config").get()
@@ -216,7 +246,7 @@ function M.opts()
       lualine_c = { filename },
       lualine_x = { location },
     },
-    extensions = { "neo-tree", "fugitive", "quickfix", "man", "lazy" },
+    extensions = { "neo-tree", "fugitive", "quickfix", "man", "lazy", M.terminal_extension(ic, nerd) },
   }
 end
 

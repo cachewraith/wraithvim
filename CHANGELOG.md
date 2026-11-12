@@ -6,6 +6,28 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-12
+
+### Added
+
+- VS Code-style terminal panel: a header showing the shell and its folder
+  with clickable **New**, **Hide** and **Kill** buttons; a readable statusline
+  (shell, folder, and a hint for the current mode) instead of the raw
+  `term://…` name and `[RO]`.
+- Entering a terminal window or clicking inside it starts typing.
+- `:TerminalNew` / `<leader>tn`: another terminal beside the panel.
+- `ui.terminal.shell` to choose the shell (e.g. `"fish"`), `ui.terminal.winbar`
+  to hide the header. The header follows `cd` for shells that emit OSC 7.
+
+### Changed
+
+- The shell starts directly instead of through an extra `sh -c` process.
+
+### Fixed
+
+- WraithVim highlight groups (dashboard, terminal header) survive
+  `:colorscheme` changes.
+
 ## [0.3.0] - 2026-11-11
 
 ### Changed (breaking)
@@ -98,7 +120,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/cachewraith/wraithvim/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/cachewraith/wraithvim/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/cachewraith/wraithvim/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/cachewraith/wraithvim/compare/v0.1.0...v0.1.1

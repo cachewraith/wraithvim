@@ -96,6 +96,7 @@ Neovim's own defaults remain available, for example `K` (hover), `grn`
 | `<leader>th` | n | Terminal in horizontal split | |
 | `<leader>tv` | n | Terminal in vertical split | |
 | `<leader>tf` | n | Floating terminal | |
+| `<leader>tn` | n | New terminal beside the panel | |
 | `<leader>tc` | n | Close terminal | |
 | `` <C-S-`> `` | n, i, t | Open terminal at the bottom (`` Ctrl+Shift+` ``) | |
 | `<C-~>` | n, i, t | Same key as reported by some terminals | |
@@ -173,7 +174,9 @@ Neovim's own defaults remain available, for example `K` (hover), `grn`
 
 | Where | Keys | Action |
 |---|---|---|
-| Terminal | `<Esc><Esc>` | Leave terminal mode |
+| Terminal | `<Esc><Esc>` | Stop typing, to scroll or select/copy output |
+| Terminal | click inside, or `i` | Type again (entering a terminal window starts typing automatically) |
+| Terminal header | **New** / **Hide** / **Kill** (click) | Another terminal beside it / hide the panel (shell keeps running) / stop the shell |
 | Explorer (neo-tree) | `<CR>`, `l`, single click | Open file / toggle directory |
 | Explorer | `h` | Collapse directory |
 | Explorer | `a` / `A` | Add file (end with `/` for a directory) / add directory |

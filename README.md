@@ -71,7 +71,7 @@ installer moves an existing `~/.config/nvim` to a timestamped backup
 from a clone anywhere else and it clones itself to `~/.local/share/wraithvim`.
 
 To install a specific release, check out its tag first, e.g.
-`git -C ~/.local/share/wraithvim checkout v0.3.0`. `:Update` follows the
+`git -C ~/.local/share/wraithvim checkout v0.4.0`. `:Update` follows the
 `main` branch.
 
 Try WraithVim **next to your current config**:
@@ -139,6 +139,7 @@ full list is in [docs/keymaps.md](docs/keymaps.md).
 | `:Terminal [pos]` | Toggle the terminal panel (`bottom`, `top`, `left`, `right`, `float`) |
 | `:TerminalSplit [vertical]` | Independent terminal in a new split |
 | `:TerminalClose` | Stop the panel shell and remove its buffer |
+| `:TerminalNew` | Another terminal beside the panel (like VS Code's **+**) |
 | `:GitStatus` | fugitive status |
 | `:GitDiff` / `:GitDiffClose` | diffview of all changes / close it |
 | `:GitCommit` / `:GitAmend` | Commit / amend |

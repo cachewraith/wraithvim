@@ -84,6 +84,7 @@ function M.definitions()
       },
     },
     TerminalClose = { call(t, "close"), { desc = "Stop and close the terminal panel" } },
+    TerminalNew = { call(t, "new"), { desc = "Open another terminal beside the panel" } },
 
     -- Git
     GitStatus = { call(g, "status"), { desc = "Git status (fugitive)" } },

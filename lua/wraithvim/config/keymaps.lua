@@ -141,6 +141,7 @@ function M.defaults()
     { "n", "<leader>th", call(t, "split", "horizontal"), desc = "Terminal in horizontal split" },
     { "n", "<leader>tv", call(t, "split", "vertical"), desc = "Terminal in vertical split" },
     { "n", "<leader>tf", call(t, "open", "float"), desc = "Floating terminal" },
+    { "n", "<leader>tn", call(t, "new"), desc = "New terminal beside the panel" },
     { "n", "<leader>tc", call(t, "close"), desc = "Close terminal" },
     -- Ctrl+Shift+` as sent by kitty-protocol / modifyOtherKeys terminals; some report it as Ctrl+~.
     { { "n", "i", "t" }, "<C-S-`>", call(t, "open", "bottom"), desc = "Open terminal at the bottom" },

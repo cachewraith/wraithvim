@@ -229,6 +229,40 @@ describe("TUI", function()
     )
   end)
 
+  it("terminal: header buttons, readable statusline, click to type", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded.lualine ~= nil and package.loaded['neo-tree'] ~= nil", 8000))
+    t:keys(" tt")
+    assert.is_true(t:wait_for("vim.bo.filetype == 'wraithterm' and vim.fn.mode() == 't'", 3000))
+    t:sleep(300)
+    local stl = t:lua("return vim.api.nvim_eval_statusline(vim.o.statusline, {}).str")
+    assert.is_nil(stl:find("term://", 1, true))
+    assert.is_nil(stl:find("[RO]", 1, true))
+    assert.matches("bash", stl)
+    local pos = t:lua("return vim.api.nvim_win_get_position(0)")
+    -- Esc Esc to scroll/copy, then a click inside goes back to typing.
+    t:keys("<Esc><Esc>")
+    assert.is_true(t:wait_for("vim.fn.mode() ~= 't'", 2000))
+    t:click(pos[1] + 3, pos[2] + 5)
+    assert.is_true(t:wait_for("vim.fn.mode() == 't'", 2000))
+    -- Header buttons: New opens a second terminal, Hide hides the panel.
+    local bar = t:lua("return vim.api.nvim_eval_statusline(vim.wo.winbar, { winid = 0, use_winbar = true }).str")
+    t:click(pos[1], pos[2] + vim.fn.strdisplaywidth(bar:sub(1, bar:find("New", 1, true) - 1)))
+    assert.is_true(
+      t:wait_for(
+        "#vim.tbl_filter(function(b) return vim.bo[b].filetype == 'wraithterm' end, vim.api.nvim_list_bufs()) == 2",
+        3000
+      )
+    )
+    local pwin = t:lua("return require('wraithvim.features.terminal').panel.win")
+    local ppos = t:lua("return vim.api.nvim_win_get_position(...)", pwin)
+    local pbar =
+      t:lua("return vim.api.nvim_eval_statusline(vim.wo[...].winbar, { winid = ..., use_winbar = true }).str", pwin)
+    t:click(ppos[1], ppos[2] + vim.fn.strdisplaywidth(pbar:sub(1, pbar:find("Hide", 1, true) - 1)))
+    assert.is_true(t:wait_for("not vim.api.nvim_win_is_valid(" .. pwin .. ")", 2000))
+    assert.is_true(t:lua("return vim.api.nvim_buf_is_valid(require('wraithvim.features.terminal').panel.buf)"))
+  end)
+
   it("shows notifications as floating windows that close themselves", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("vim.v.vim_did_enter == 1", 5000))

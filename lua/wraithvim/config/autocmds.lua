@@ -93,6 +93,19 @@ function M.setup(cfg)
     end,
   })
 
+  au({ "WinEnter", "BufWinEnter" }, {
+    group = group,
+    desc = "Start typing when entering a WraithVim terminal (like VS Code)",
+    callback = function()
+      if vim.bo.filetype == "wraithterm" and vim.api.nvim_get_mode().mode ~= "t" then
+        local job = vim.b.terminal_job_id
+        if job and vim.fn.jobwait({ job }, 0)[1] == -1 then
+          vim.cmd.startinsert()
+        end
+      end
+    end,
+  })
+
   au("TermOpen", {
     group = group,
     desc = "Terminal buffer defaults",

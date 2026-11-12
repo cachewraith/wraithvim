@@ -68,11 +68,27 @@ installer chooses this automatically when `fc-list` finds no Nerd Font.
 
 ## Terminal panel
 
-`<leader>tt` / `:Terminal` toggles one panel terminal; `` Ctrl+Shift+` ``
-always opens (or focuses) it at the bottom. Hiding it keeps
-the shell running; showing it again reuses the same buffer and process. The
-shell is `&shell` (your login shell, e.g. fish or bash), started in the current
-working directory. `:Terminal float` opens the panel as a floating
-window. `<leader>th` / `<leader>tv` open additional, independent terminals in
-splits. Terminal buffers are unlisted (they never appear as tabs) and are
-wiped when their shell exits. `:TerminalClose` stops the panel shell.
+```text
+  TERMINAL  bash   ~/projects/api                    New   Hide   Kill
+ ❯ npm run dev
+ ...
+ TERMINAL │  bash │  ~/projects/api              Esc Esc: scroll & copy
+```
+
+- `<leader>tt` / `:Terminal` toggles one panel terminal; `` Ctrl+Shift+` ``
+  always opens (or focuses) it at the bottom. Hiding it keeps the shell
+  running; showing it again reuses the same shell.
+- **Typing works like VS Code:** entering the terminal window, or clicking
+  inside it, starts typing. `Esc Esc` stops typing so you can scroll or
+  select and copy output; the statusline shows which mode you are in.
+- **Header buttons:** **New** opens another terminal beside the panel
+  (`<leader>tn`, `:TerminalNew`), **Hide** hides the panel, **Kill** stops that
+  terminal's shell. The header shows the shell and its folder; shells that
+  report directory changes (fish does by default) update it after `cd`.
+- The shell is your `$SHELL`, started directly in the current folder. Use
+  another one with `terminal = { shell = "fish" }` in `ui.lua`, or turn the
+  header off with `terminal = { winbar = false }`.
+- `:Terminal float` opens the panel as a floating window; `<leader>th` /
+  `<leader>tv` open independent terminals in splits.
+- Terminal buffers never appear as tabs and are removed when their shell
+  exits. `:TerminalClose` stops the panel shell.

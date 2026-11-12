@@ -7,6 +7,23 @@ local logger = require("wraithvim.core.logger")
 
 local M = {}
 
+--- WraithVim's own highlight groups, linked to standard groups so every
+--- colorscheme styles them. `:colorscheme` clears them, so this runs after
+--- every colorscheme load.
+function M.define_highlights()
+  local links = {
+    WraithDashboardHeader = "Title",
+    WraithDashboardItem = "Normal",
+    WraithDashboardFooter = "Comment",
+    WraithTermTitle = "Title",
+    WraithTermInfo = "Comment",
+    WraithTermButton = "Special",
+  }
+  for group, target in pairs(links) do
+    vim.api.nvim_set_hl(0, group, { link = target, default = true })
+  end
+end
+
 --- Apply `ui.colors` overrides. Runs after every :colorscheme.
 ---@param colors table<string, table>
 function M.apply_colors(colors)
@@ -39,9 +56,11 @@ function M.setup(cfg, plugins_ok)
   vim.api.nvim_create_autocmd("ColorScheme", {
     group = utils.augroup("ui_colors"),
     callback = function()
+      M.define_highlights()
       M.apply_colors(ui.colors)
     end,
   })
+  M.define_highlights()
 
   if ui.notifications.enabled then
     require("wraithvim.ui.notifications").setup(ui.notifications)

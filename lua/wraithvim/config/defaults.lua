@@ -100,6 +100,10 @@ return {
       position = "bottom", -- bottom | top | left | right | float
       height = 12,
       width = 80,
+      -- Shell to start; "" uses Neovim's 'shell' (your $SHELL), e.g. "fish" or "zsh -l".
+      shell = "",
+      -- Header with the shell, its folder and New / Hide / Kill buttons.
+      winbar = true,
     },
     dashboard = {
       enabled = true,

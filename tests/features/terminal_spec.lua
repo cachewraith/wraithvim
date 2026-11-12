@@ -49,6 +49,60 @@ describe("features.terminal", function()
     assert.equals(win, vim.api.nvim_get_current_win())
   end)
 
+  it("starts the shell directly, honouring ui.terminal.shell", function()
+    package.loaded["wraithvim.core.config"] = nil
+    require("wraithvim.core.config").setup({ ui = { terminal = { shell = "sh -i" } } })
+    assert.same({ "sh", "-i" }, terminal.shell_cmd())
+    terminal.open()
+    local buf = terminal.panel.buf
+    assert.equals(terminal.filetype, vim.bo[buf].filetype)
+    assert.equals("sh", vim.b[buf].wraith_term_shell)
+    local pid = vim.fn.jobpid(vim.b[buf].terminal_job_id)
+    local argv = vim.split(io.open("/proc/" .. pid .. "/cmdline"):read("*a"), "\0", { trimempty = true })
+    -- Exactly the shell and its argument: no `sh -c` wrapper process.
+    assert.equals(2, #argv, vim.inspect(argv))
+    assert.equals("sh", vim.fs.basename(argv[1]))
+    assert.equals("-i", argv[2])
+  end)
+
+  it("shows a header with the shell, folder and buttons", function()
+    terminal.open()
+    local win = terminal.panel.win
+    assert.matches("wraithvim.features.terminal", vim.wo[win].winbar)
+    vim.g.statusline_winid = win
+    local bar = terminal.winbar()
+    vim.g.statusline_winid = nil
+    assert.matches("TERMINAL", bar)
+    assert.matches("on_new", bar)
+    assert.matches("on_hide", bar) -- only the panel can be hidden
+    assert.matches("on_kill", bar)
+    assert.is_truthy(bar:find(vim.fn.fnamemodify(vim.fn.getcwd(), ":~"), 1, true))
+  end)
+
+  it("follows the shell's folder from OSC 7", function()
+    terminal.open()
+    local buf = terminal.panel.buf
+    vim.fn.chansend(vim.b[buf].terminal_job_id, "printf '\\033]7;file://host/tmp/wraith%%20dir\\a'\n")
+    assert.is_true(vim.wait(3000, function()
+      return vim.b[buf].wraith_term_cwd == "/tmp/wraith dir"
+    end, 20))
+  end)
+
+  it("opens another terminal beside the panel and kills it on request", function()
+    terminal.open()
+    local panel = terminal.panel.buf
+    local extra = terminal.new()
+    assert.is_not.equal(panel, extra)
+    assert.equals(terminal.filetype, vim.bo[extra].filetype)
+    assert.is_not.equal(-1, vim.fn.bufwinid(panel)) -- panel still visible
+    vim.g.statusline_winid = vim.fn.bufwinid(extra)
+    assert.is_nil(terminal.winbar():find("on_hide", 1, true))
+    vim.g.statusline_winid = nil
+    terminal.kill(extra)
+    assert.is_false(vim.api.nvim_buf_is_valid(extra))
+    assert.is_true(vim.api.nvim_buf_is_valid(panel))
+  end)
+
   it("starts in the current working directory", function()
     local dir = vim.fn.tempname()
     vim.fn.mkdir(dir, "p")

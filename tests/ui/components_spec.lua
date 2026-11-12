@@ -32,6 +32,23 @@ describe("ui components", function()
     assert.equals("", vim.b[buf].wraith_lsp)
   end)
 
+  it("terminal statusline shows the shell and folder instead of term://", function()
+    setup()
+    local opts = require("wraithvim.ui.statusline").opts()
+    local ext
+    for _, e in ipairs(opts.extensions) do
+      if type(e) == "table" then
+        ext = e
+      end
+    end
+    assert.same({ "wraithterm" }, ext.filetypes)
+    vim.b.wraith_term_shell = "fish"
+    vim.b.wraith_term_cwd = vim.fn.getcwd()
+    assert.matches("fish$", ext.sections.lualine_b[1]())
+    assert.is_truthy(ext.sections.lualine_c[1]():find(vim.fn.fnamemodify(vim.fn.getcwd(), ":~"), 1, true))
+    assert.equals("click or i: type", ext.sections.lualine_x[1]())
+  end)
+
   it("tabline closes buffers safely and shows the project header", function()
     setup()
     local tl = require("wraithvim.ui.tabline")

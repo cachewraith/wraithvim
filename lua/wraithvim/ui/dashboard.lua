@@ -221,10 +221,6 @@ function M.open()
 end
 
 function M.setup()
-  vim.api.nvim_set_hl(0, "WraithDashboardHeader", { link = "Title", default = true })
-  vim.api.nvim_set_hl(0, "WraithDashboardItem", { link = "Normal", default = true })
-  vim.api.nvim_set_hl(0, "WraithDashboardFooter", { link = "Comment", default = true })
-
   local group = require("wraithvim.core.utils").augroup("dashboard_start")
   vim.api.nvim_create_autocmd("StdinReadPre", {
     group = group,

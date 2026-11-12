@@ -115,6 +115,8 @@ return {
     position = "bottom",             -- bottom | top | left | right | float
     height = 12,
     width = 80,
+    shell = "",                      -- "" = your $SHELL; e.g. "fish" or "zsh -l"
+    winbar = true,                   -- header with shell, folder and New/Hide/Kill buttons
   },
   dashboard = { enabled = true },
   notifications = {
