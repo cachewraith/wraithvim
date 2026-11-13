@@ -6,6 +6,17 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-13
+
+### Added
+
+- Brackets and quotes close themselves as you type, like VS Code: `{` gives
+  `{}` with the cursor inside, typing `}` steps over the closer, Backspace
+  between a pair deletes both, and Enter between `{}` opens an indented line.
+  `(`, `[`, `"`, `'` and `` ` `` work the same way. Nothing is added in front
+  of a word, and `'` after a letter stays single (`don't`). Turn it off with
+  `disable = { "mini.pairs" }` in `~/.config/wraithvim/plugins.lua`.
+
 ## [0.13.2] - 2026-11-13
 
 ### Fixed
@@ -360,7 +371,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.2...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/cachewraith/wraithvim/compare/v0.13.2...v0.14.0
 [0.13.2]: https://github.com/cachewraith/wraithvim/compare/v0.13.1...v0.13.2
 [0.13.1]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...v0.13.0
