@@ -31,6 +31,7 @@ describe("core.plugin_manager", function()
       "neo-tree.nvim",
       "telescope.nvim",
       "flash.nvim",
+      "mini.pairs",
       "blink.cmp",
       "nvim-lspconfig",
       "gitsigns.nvim",

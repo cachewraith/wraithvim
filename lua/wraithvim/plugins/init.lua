@@ -15,6 +15,7 @@ M.modules = {
   "wraithvim.plugins.ui.which_key",
   "wraithvim.plugins.editor.telescope",
   "wraithvim.plugins.editor.flash",
+  "wraithvim.plugins.editor.pairs",
   "wraithvim.plugins.completion.blink",
   "wraithvim.plugins.lsp.lspconfig",
   "wraithvim.plugins.lsp.mason",

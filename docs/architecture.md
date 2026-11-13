@@ -117,6 +117,7 @@ Deviations from the original proposal, and why:
 | nvim-web-devicons | icons (Nerd Font only) | dependency |
 | telescope.nvim (+ fzf-native when make/cc exist) | search | `:Telescope`, search keys |
 | flash.nvim | jump labels | `s`, `S`, `r` |
+| mini.pairs | auto-close brackets and quotes | `InsertEnter` |
 | blink.cmp (+ friendly-snippets) | completion, signature help | `InsertEnter`, `CmdlineEnter`, or first file (LSP capabilities) |
 | nvim-lspconfig | server definitions | first file opened |
 | mason.nvim | optional tool installer | `:Mason` (only when enabled) |
