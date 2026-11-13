@@ -34,12 +34,115 @@ function M.jump_folder(state, dir)
   end
 end
 
+-- VS Code's git decoration colors (gitDecoration.* in Dark+ / Light+).
+M.git_colors = {
+  dark = {
+    untracked = "#73c991",
+    added = "#81b88b",
+    modified = "#e2c08d",
+    deleted = "#c74e39",
+    conflict = "#e4676b",
+    ignored = "#8c8c8c",
+  },
+  light = {
+    untracked = "#007100",
+    added = "#587c0c",
+    modified = "#895503",
+    deleted = "#ad0707",
+    conflict = "#ad0707",
+    ignored = "#8e8e90",
+  },
+}
+
+-- neo-tree highlight group -> M.git_colors key.
+local git_groups = {
+  NeoTreeGitUntracked = "untracked",
+  NeoTreeGitAdded = "added",
+  NeoTreeGitStaged = "added",
+  NeoTreeGitRenamed = "untracked",
+  NeoTreeGitModified = "modified",
+  NeoTreeGitUnstaged = "modified",
+  NeoTreeGitDeleted = "deleted",
+  NeoTreeGitConflict = "conflict",
+  NeoTreeGitIgnored = "ignored",
+}
+
+--- Color the explorer's git status like VS Code. Not `default`: colorschemes
+--- style these groups themselves (tokyonight makes new files purple), and
+--- `ui.colors` is applied afterwards, so user overrides still win.
+function M.define_highlights()
+  local colors = M.git_colors[vim.o.background] or M.git_colors.dark
+  for group, key in pairs(git_groups) do
+    vim.api.nvim_set_hl(0, group, { fg = colors[key] })
+  end
+end
+
+-- Change letter -> VS Code letter and highlight group.
+local decorations = {
+  M = { "M", "NeoTreeGitModified" },
+  T = { "M", "NeoTreeGitModified" },
+  A = { "A", "NeoTreeGitAdded" },
+  C = { "A", "NeoTreeGitAdded" },
+  D = { "D", "NeoTreeGitDeleted" },
+  R = { "R", "NeoTreeGitRenamed" },
+}
+
+--- VS Code letter and highlight group for a neo-tree git status code: "?"
+--- (untracked), "!" (ignored), a porcelain "XY" pair with "." for unchanged,
+--- or the single letter neo-tree bubbles up to folders ("U" = conflict).
+---@param status string
+---@return string? letter, string? highlight
+function M.git_decoration(status)
+  if status == "?" then
+    return "U", "NeoTreeGitUntracked"
+  elseif status == "!" then
+    return "", "NeoTreeGitIgnored"
+  end
+  local x, y = status:sub(1, 1), status:sub(2, 2)
+  if x == "U" or y == "U" or (x == y and (x == "A" or x == "D")) then
+    return "C", "NeoTreeGitConflict"
+  end
+  -- The working tree change wins, except that a staged new file stays new.
+  local change = (y ~= "" and y ~= "." and x ~= "A") and y or x
+  local d = decorations[change]
+  if d then
+    return d[1], d[2]
+  end
+end
+
+--- neo-tree `git_status` component, VS Code style: a letter after changed
+--- files (U, M, A, D, R, C) and a dot after folders holding changes, in the
+--- color the file name takes too (`name.use_git_status_colors`).
+---@param node table neo-tree node
+---@param state table neo-tree state
+function M.git_status(_, node, state)
+  if node.type ~= "file" and node.type ~= "directory" then
+    return {}
+  end
+  local status = require("neo-tree.git").find_existing_status_code(node.path, state.git_base_by_worktree)
+  if type(status) == "table" then
+    status = status[1]
+  end
+  if not status then
+    return {}
+  end
+  local letter, group = M.git_decoration(status)
+  if not letter then
+    return {}
+  end
+  if node.type == "directory" and letter ~= "" then
+    letter = "●"
+  end
+  return { text = letter == "" and "" or letter .. " ", highlight = group }
+end
+
 ---@return table neo-tree options
 function M.opts()
   local config = require("wraithvim.core.config").get()
   local ui = config.ui
   local ex = ui.explorer
   local nerd = ui.icons.nerd_font
+  local components = { git_status = M.git_status }
   local ic = require("wraithvim.ui.icons").get()
 
   local mappings = {
@@ -81,21 +184,6 @@ function M.opts()
     mappings["<2-LeftMouse>"] = "none"
   end
 
-  local git_symbols = nil
-  if not nerd then
-    git_symbols = {
-      added = ic.git.added,
-      modified = ic.git.modified,
-      deleted = ic.git.removed,
-      renamed = ic.git.renamed,
-      untracked = ic.git.untracked,
-      ignored = ic.git.ignored,
-      unstaged = ic.git.unstaged,
-      staged = ic.git.staged,
-      conflict = ic.git.conflict,
-    }
-  end
-
   return {
     close_if_last_window = true,
     popup_border_style = ui.border == "none" and "single" or ui.border,
@@ -114,7 +202,6 @@ function M.opts()
         provider = nerd and require("wraithvim.ui.material").provider or nil,
       },
       modified = { symbol = nerd and "●" or "[+]" },
-      git_status = git_symbols and { symbols = git_symbols } or nil,
     },
     event_handlers = {
       {
@@ -139,6 +226,7 @@ function M.opts()
     },
     -- The side panel's "changes" view (wraithvim.features.panels).
     git_status = {
+      components = components,
       window = {
         width = ui.side_panel.width,
         mappings = {
@@ -154,7 +242,9 @@ function M.opts()
         },
       },
     },
+    buffers = { components = components },
     filesystem = {
+      components = components,
       filtered_items = {
         visible = false,
         hide_dotfiles = not ex.show_hidden,
