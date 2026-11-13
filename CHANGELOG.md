@@ -6,6 +6,17 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.13.2] - 2026-11-13
+
+### Fixed
+
+- New (untracked) files now stand out in the file explorer the way they do in
+  VS Code: a green name with a `U`, and a green dot on every folder holding
+  one. Before, colorschemes such as tokyonight colored them purple and folders
+  showed only an icon. Modified files show a yellow `M`, deleted a red `D`,
+  staged new files `A`, renames `R` and conflicts `C`. Override the colors
+  with `ui.colors` (`NeoTreeGitUntracked`, `NeoTreeGitModified`, ...).
+
 ## [0.13.1] - 2026-11-12
 
 ### Fixed
@@ -349,7 +360,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.1...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.13.2...HEAD
+[0.13.2]: https://github.com/cachewraith/wraithvim/compare/v0.13.1...v0.13.2
 [0.13.1]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/cachewraith/wraithvim/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/cachewraith/wraithvim/compare/v0.11.0...v0.12.0
