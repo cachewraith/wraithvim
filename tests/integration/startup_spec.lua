@@ -351,6 +351,24 @@ describe("features in a real session", function()
     assert.is_true(res.loaded)
     assert.is_true(vim.tbl_contains(res.labels, "wraithword"), vim.inspect(res.labels))
   end)
+
+  it("keeps loading modules when the Lua cache folder is deleted", function()
+    local res = run(
+      [[
+      vim.fn.delete(vim.loader.path, "rf")
+      local extra = vim.fn.tempname()
+      vim.fn.mkdir(extra .. "/lua", "p")
+      vim.fn.writefile({ "return 42" }, extra .. "/lua/wraith_cache_probe.lua")
+      vim.opt.rtp:prepend(extra)
+      local ok, value = pcall(require, "wraith_cache_probe")
+      return { ok = ok, value = tostring(value), dir = vim.uv.fs_stat(vim.loader.path) ~= nil }
+    ]],
+      { cwd = dir }
+    )
+    assert.is_true(res.ok, res.value)
+    assert.equals("42", res.value)
+    assert.is_true(res.dir)
+  end)
 end)
 
 describe("language tooling", function()
