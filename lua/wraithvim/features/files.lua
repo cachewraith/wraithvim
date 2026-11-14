@@ -238,6 +238,16 @@ function M.action(name)
   actions[name](state)
 end
 
+--- Run a right-click menu item. :popup runs the chosen item before it
+--- returns, where opening a window is not allowed (E565): neo-tree's rename
+--- and delete prompts failed there. Run it once the menu has closed.
+---@param name string
+function M.menu_action(name)
+  vim.schedule(function()
+    M.action(name)
+  end)
+end
+
 -- Header (winbar of the explorer window).
 function M.on_new_file()
   M.action("new_file")
@@ -302,7 +312,7 @@ local function define_menu()
     local name = item[1]:gsub(" ", "\\ ")
     if item[2] then
       vim.cmd(
-        ("anoremenu <silent> %d ]WraithTree.%s <Cmd>lua require('wraithvim.features.files').action(%q)<CR>"):format(
+        ("anoremenu <silent> %d ]WraithTree.%s <Cmd>lua require('wraithvim.features.files').menu_action(%q)<CR>"):format(
           i * 10,
           name,
           item[2]

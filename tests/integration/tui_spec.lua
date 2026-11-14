@@ -172,6 +172,27 @@ describe("TUI", function()
     assert.is_true(t:wait_for("vim.fn.expand('%:.') == 'sub/key.lua'", 3000))
   end)
 
+  it("renames a file from the right-click menu", function()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    t:sleep(500)
+    local win = tree_win(t)
+    local p = line_pos(t, win, tree_line(t, "beta.lua"))
+    t:click(p[1], p[2] + 6, "right")
+    t:sleep(300)
+    -- Rename is the fourth item (New File, New Folder, Open to the Side, Rename).
+    for _ = 1, 4 do
+      t:send("\27[B")
+      t:sleep(80)
+    end
+    t:send("\r")
+    -- neo-tree's rename prompt opens (it failed with E565 inside :popup).
+    assert.is_true(t:wait_for("vim.bo.filetype == 'neo-tree-popup' and vim.fn.mode() == 'i'", 2000))
+    assert.is_false(t:lua("return vim.v.errmsg:find('E565') ~= nil"))
+    t:keys("<C-u>gone.lua<CR>")
+    assert.is_true(t:wait_for("vim.fn.filereadable('gone.lua') == 1 and vim.fn.filereadable('beta.lua') == 0", 3000))
+  end)
+
   it("resizes the explorer by dragging its separator without opening files", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
