@@ -15,8 +15,12 @@ are expected to stay within.
   File watching is event-driven (inotify through `vim.uv.new_fs_event`) and
   costs nothing until something changes: gitsigns watches `.git`, auto-reload
   watches the folders of open files (one watch per folder, removed when its
-  last buffer closes), and the explorer watches the folders it shows. Turn the
-  last two off with `auto_reload = false` and `explorer = { watch = false }`.
+  last buffer closes), the explorer watches the folders it shows, and while a
+  Git graph or changed files view is open, the repository's folders and Git
+  directory are watched so those views update live (ignored folders such as
+  `node_modules` are skipped; the watches go away with the last view). Turn
+  these off with `auto_reload = false`, `explorer = { watch = false }` and
+  `side_panel = { watch = false }`.
 - **Event-driven statusline.** By default lualine wakes up every 16 ms to check
   a refresh queue, plus a periodic full refresh. WraithVim sets those intervals
   to effectively never and refreshes lualine itself on the events that change

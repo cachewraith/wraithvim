@@ -165,6 +165,9 @@ function M.open(view, position)
   local current = M.visible()
   if current and current.view == view and position == M.position() then
     vim.api.nvim_set_current_win(current.win)
+    if view == "changes" then
+      M.refresh_changes()
+    end
     return
   end
   if current then
@@ -215,6 +218,31 @@ function M.diff_file(path)
   local root = require("wraithvim.features.git").root(path)
   local rel = root and vim.fs.relpath(root, path) or path
   vim.cmd("DiffviewOpen -- " .. vim.fn.fnameescape(rel))
+end
+
+local refresh_pending = false
+
+--- Rescan the changes view when it is shown. neo-tree rescans it only after
+--- a :write or a change inside .git, so files deleted, created or renamed
+--- (from the explorer or a shell) would linger there. Bursts of calls run
+--- `git status` once.
+function M.refresh_changes()
+  if refresh_pending or not package.loaded["neo-tree"] then
+    return
+  end
+  refresh_pending = true
+  vim.defer_fn(function()
+    refresh_pending = false
+    local current = M.visible()
+    if not current or current.view ~= "changes" then
+      return
+    end
+    local manager = require("neo-tree.sources.manager")
+    local state = manager.get_state("git_status")
+    if state.path and not state.loading then
+      pcall(manager.navigate, state, state.path)
+    end
+  end, 100)
 end
 
 --- Header of the changes view: what the keys do.

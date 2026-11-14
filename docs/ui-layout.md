@@ -108,6 +108,8 @@ If the file already exists it is opened, never overwritten. Press
   secondary side bar. It shows one view at a time: **Git graph**
   (`Space s g`), **changed files** (`Space s c`) or the **terminal**
   (`Space s t`). `:SidePanel graph left` does the same as a command.
+- The graph and the changed files update live: a commit, checkout or `rm`
+  in a shell, a file saved or deleted in the explorer shows up right away.
 - `Space s s` (VS Code preset: `Ctrl+Alt+B`) hides it and brings back the
   last view; `Space s m` moves it to the other side. Set the default side
   and width with `side_panel = { position = "left", width = 50 }` in `ui.lua`.

@@ -133,6 +133,9 @@ return {
     side_panel = {
       position = "right", -- right | left
       width = 60,
+      -- Update the Git graph and the changed files as soon as Git or the
+      -- files change (a commit or `rm` in a shell, a file saved, …).
+      watch = true,
     },
     terminal = {
       enabled = true,

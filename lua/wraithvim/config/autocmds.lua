@@ -42,6 +42,8 @@ function M.setup(cfg)
       if vim.o.buftype ~= "nofile" then
         vim.cmd.checktime()
       end
+      -- A shell may have deleted, created or renamed files.
+      require("wraithvim.features.panels").refresh_changes()
     end,
   })
 

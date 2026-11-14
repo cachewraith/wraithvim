@@ -184,6 +184,28 @@ function M.opts()
     mappings["<2-LeftMouse>"] = "none"
   end
 
+  local event_handlers = {
+    {
+      event = "neo_tree_window_after_open",
+      handler = function(args)
+        local win = args and args.winid
+        if ex.header and win and vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_config(win).relative == "" then
+          vim.wo[win].winbar = "%{%v:lua.require'wraithvim.features.files'.header()%}"
+        end
+      end,
+    },
+  }
+  -- Files deleted, created or renamed in the explorer (or on disk, seen by
+  -- its watcher) leave or join the side panel's changes view right away.
+  for _, event in ipairs({ "file_added", "file_deleted", "file_moved", "file_renamed", "fs_event" }) do
+    event_handlers[#event_handlers + 1] = {
+      event = event,
+      handler = function()
+        require("wraithvim.features.panels").refresh_changes()
+      end,
+    }
+  end
+
   return {
     close_if_last_window = true,
     popup_border_style = ui.border == "none" and "single" or ui.border,
@@ -203,22 +225,7 @@ function M.opts()
       },
       modified = { symbol = nerd and "●" or "[+]" },
     },
-    event_handlers = {
-      {
-        event = "neo_tree_window_after_open",
-        handler = function(args)
-          local win = args and args.winid
-          if
-            ex.header
-            and win
-            and vim.api.nvim_win_is_valid(win)
-            and vim.api.nvim_win_get_config(win).relative == ""
-          then
-            vim.wo[win].winbar = "%{%v:lua.require'wraithvim.features.files'.header()%}"
-          end
-        end,
-      },
-    },
+    event_handlers = event_handlers,
     window = {
       position = ex.position,
       width = ex.width,
