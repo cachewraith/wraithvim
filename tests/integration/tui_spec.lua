@@ -185,6 +185,38 @@ describe("TUI", function()
     assert.is_true(t:wait_for("require('blink.cmp').is_menu_visible()", 3000))
   end)
 
+  it("opens a file left with unsaved edits by a crashed session from the explorer", function()
+    -- A session that edited beta.lua without saving and was killed.
+    vim
+      .system({
+        "nvim",
+        "--headless",
+        "--clean",
+        "-c",
+        "e beta.lua",
+        "-c",
+        "normal! Ounsaved()",
+        "-c",
+        "preserve",
+        "-c",
+        "lua vim.uv.kill(vim.uv.os_getpid(), 9)",
+      }, { cwd = dir, env = env.env() })
+      :wait()
+    t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
+    assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))
+    t:sleep(500)
+    local win = tree_win(t)
+    local p = line_pos(t, win, tree_line(t, "beta.lua"))
+    t:click(p[1], p[2] + 6)
+    -- No "E325: ATTENTION" prompt or error: the edits are back, unsaved.
+    assert.is_true(t:wait_for("vim.fn.expand('%:t') == 'beta.lua' and vim.bo.modified", 3000))
+    assert.equals("unsaved()", t:lua("return vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]"))
+    assert.is_false(vim.rpcrequest(t.chan, "nvim_get_mode").blocking)
+    -- The old swap file is gone (this session's own is beta.lua.swo).
+    local swap = t:lua("return vim.fn.stdpath('state') .. '/swap/' .. vim.fn.expand('%:p'):gsub('/', '%%') .. '.swp'")
+    assert.is_nil(vim.uv.fs_stat(swap), swap)
+  end)
+
   it("renames a file from the right-click menu", function()
     t = tui.spawn({ cwd = dir, args = { "alpha.lua" } })
     assert.is_true(t:wait_for("package.loaded['neo-tree'] ~= nil", 8000))

@@ -47,6 +47,65 @@ function M.setup(cfg)
     end,
   })
 
+  -- Swap file left by a session that did not close (crash, closed terminal):
+  -- Neovim would stop and ask, and a file opened from the explorer fails with
+  -- "E325: ATTENTION" instead. Decide without asking, like VS Code.
+  -- Replaces Neovim's own handler, which only covers the first case below.
+  pcall(vim.api.nvim_del_augroup_by_name, "nvim.swapfile")
+  -- <abuf> is 0 in SwapExists: match the buffer by its full path.
+  local recover = {} ---@type table<string, string> file -> swap file
+  au("SwapExists", {
+    group = group,
+    desc = "Handle leftover swap files without asking",
+    callback = function(args)
+      local swap = vim.v.swapname
+      local info = vim.fn.swapinfo(swap)
+      if info.error or info.user ~= vim.uv.os_get_passwd().username or info.host ~= vim.uv.os_gethostname() then
+        return -- someone else's: let Neovim ask
+      end
+      if info.pid > 0 and vim.uv.kill(info.pid, 0) == 0 then
+        vim.v.swapchoice = "e" -- open in another Neovim right now: edit anyway
+        return
+      end
+      local file, saved = vim.uv.fs_stat(args.file), vim.uv.fs_stat(swap)
+      if info.dirty == 0 or (file and saved and file.mtime.sec > saved.mtime.sec) then
+        vim.v.swapchoice = "d" -- nothing unsaved, or the file was saved later
+        return
+      end
+      -- Unsaved edits: open the file, then bring them back (BufReadPost).
+      vim.v.swapchoice = "e"
+      recover[vim.fn.fnamemodify(args.file, ":p")] = swap
+    end,
+  })
+  au("BufReadPost", {
+    group = group,
+    desc = "Recover unsaved edits from a leftover swap file",
+    callback = function(args)
+      local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(args.buf), ":p")
+      local swap = recover[path]
+      if not swap then
+        return
+      end
+      recover[path] = nil
+      vim.schedule(function()
+        if not vim.api.nvim_buf_is_valid(args.buf) then
+          return
+        end
+        vim.api.nvim_buf_call(args.buf, function()
+          vim.cmd("silent! recover! " .. vim.fn.fnameescape(swap))
+        end)
+        vim.fn.delete(swap)
+        vim.notify(
+          ("Recovered unsaved changes to %s from a session that did not close.\nSave to keep them, or :e! to discard them."):format(
+            vim.fn.fnamemodify(args.file, ":t")
+          ),
+          vim.log.levels.WARN,
+          { title = "Files" }
+        )
+      end)
+    end,
+  })
+
   au("VimResized", {
     group = group,
     desc = "Keep splits balanced on resize",
