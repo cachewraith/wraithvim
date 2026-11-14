@@ -17,7 +17,7 @@ return function(cfg)
       appearance = { nerd_font_variant = "mono" },
       completion = {
         list = { selection = { preselect = false, auto_insert = false } },
-        menu = { border = border },
+        menu = { border = border, auto_show = cfg.options.completion.auto_show },
         documentation = { auto_show = true, auto_show_delay_ms = 300, window = { border = border } },
       },
       signature = { enabled = true, window = { border = border } },

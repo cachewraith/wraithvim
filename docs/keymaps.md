@@ -279,7 +279,8 @@ with `scroll = { wheel = 10 }` in `options.lua`.
 | Git graph | `a` / `u` / `?` / `q` | All branches on/off / refresh / every graph key / close |
 | Completion menu | `<Tab>` / `<S-Tab>` | Next / previous item (or snippet jump) |
 | Completion menu | `<CR>` | Accept the selected item |
-| Completion menu | `<C-space>`, `<C-e>` | Open menu or docs / close menu |
+| Insert mode | `<C-space>` | Show suggestions (they do not open by themselves; `completion.auto_show = true` in `options.lua` turns that on) |
+| Completion menu | `<C-space>`, `<C-e>` | Open docs / close menu |
 | `help`, quickfix, `man`, health | `q` | Close the window |
 
 `<C-s>` saves in normal, insert and visual mode. In insert mode this replaces

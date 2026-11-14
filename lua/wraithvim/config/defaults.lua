@@ -65,6 +65,11 @@ return {
       --   "never"  only show how to install them
       auto_install = "ask",
     },
+    completion = {
+      -- Open the suggestion list by itself while you type. Off: Ctrl+Space
+      -- opens it.
+      auto_show = false,
+    },
     -- Extra Neovim options applied after WraithVim's defaults, e.g. { relativenumber = true }.
     opt = {},
   },

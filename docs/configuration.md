@@ -73,6 +73,9 @@ return {
     enabled = true,                 -- install language tools with Mason (see languages.md)
     auto_install = "ask",           -- on opening a file with missing tools: "ask" | "always" | "never"
   },
+  completion = {
+    auto_show = false,              -- suggestions open while typing; off: Ctrl+Space opens them
+  },
   opt = {},                         -- any vim option, e.g. { relativenumber = true, wrap = true }
 }
 ```
