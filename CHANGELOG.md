@@ -6,6 +6,25 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-11-14
+
+### Added
+
+- The Git graph and the changed files (`Space s g`, `Space s c`) update live,
+  like VS Code: a commit, checkout, new branch or stash made in a shell shows
+  up in the graph right away, and files created, deleted or renamed anywhere
+  in the project (by Neovim, a shell or an AI CLI) join or leave the changed
+  files at once. No polling: WraithVim uses file system events while one of
+  these views is open, skips ignored folders such as `node_modules`, and stops
+  watching when the last view closes. Turn it off with
+  `side_panel = { watch = false }` in `~/.config/wraithvim/ui.lua`.
+
+### Fixed
+
+- A file you delete no longer stays listed in the changed files until the
+  next save. Deleting, creating or renaming files in the explorer, switching
+  back from a terminal and pressing `Space s c` again all refresh the list.
+
 ## [0.14.0] - 2026-11-13
 
 ### Added
@@ -371,7 +390,8 @@ First public release.
 - Plenary Busted test suite (unit, installer, headless and real-TUI
   integration), StyLua, Luacheck, ShellCheck, GitHub Actions, benchmark script.
 
-[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/cachewraith/wraithvim/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/cachewraith/wraithvim/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/cachewraith/wraithvim/compare/v0.13.2...v0.14.0
 [0.13.2]: https://github.com/cachewraith/wraithvim/compare/v0.13.1...v0.13.2
 [0.13.1]: https://github.com/cachewraith/wraithvim/compare/v0.13.0...v0.13.1
