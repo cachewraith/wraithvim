@@ -369,6 +369,40 @@ describe("features in a real session", function()
     assert.equals("42", res.value)
     assert.is_true(res.dir)
   end)
+
+  it("opens images as a picture, never as raw bytes", function()
+    local img = env.tmpdir("img")
+    -- 1x1 PNG
+    local png = vim.base64.decode(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    )
+    env.write(img .. "/logo.png", png)
+    env.write(img .. "/PHOTO.PNG", png)
+    local probe = [[
+      local function state(path)
+        if path then vim.cmd.edit(vim.fn.fnameescape(path)) end
+        vim.wait(3000, function() return vim.bo.filetype ~= "" end)
+        vim.wait(300)
+        return { ft = vim.bo.filetype, modified = vim.bo.modified,
+                 text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") }
+      end
+      return { state(), state("PHOTO.PNG") }
+    ]]
+    -- A terminal that can draw pictures (kitty, Ghostty, WezTerm).
+    local res = run(probe, { cwd = img, args = { "logo.png" }, env = { SNACKS_KITTY = "1" } })
+    for _, s in ipairs(res) do
+      assert.equals("image", s.ft)
+      assert.is_false(s.modified)
+      assert.is_nil(s.text:find("PNG", 1, true), s.text)
+    end
+    -- Any other terminal: a short note instead of binary.
+    res = run(probe, { cwd = img, args = { "logo.png" }, env = { SNACKS_KITTY = "0" } })
+    for _, s in ipairs(res) do
+      assert.is_false(s.modified)
+      assert.truthy(s.text:find("Image viewer", 1, true), s.text)
+    end
+    vim.fn.delete(img, "rf")
+  end)
 end)
 
 describe("language tooling", function()

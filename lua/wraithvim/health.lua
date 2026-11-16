@@ -110,6 +110,7 @@ local function check_tools()
     },
     { { "curl" }, "curl", "Treesitter parser downloads, blink.cmp binary", "curl" },
     { { "tar" }, "tar", "Treesitter parser downloads", "tar" },
+    { { "magick", "convert" }, "ImageMagick", "image preview of formats other than PNG", "imagemagick" },
   }
   for _, item in ipairs(optional) do
     local found

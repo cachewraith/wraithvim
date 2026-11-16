@@ -156,6 +156,7 @@ return {
     winbar = true,                   -- header with shell, folder and New/Hide/Kill buttons
   },
   dashboard = { enabled = true },
+  image = { enabled = true },        -- open images as pictures (kitty / Ghostty / WezTerm + ImageMagick)
   notifications = {
     enabled = true,                  -- false = Neovim's built-in message area
     timeout = 3000,                  -- ms (errors stay twice as long)

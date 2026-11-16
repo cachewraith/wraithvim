@@ -13,6 +13,7 @@ M.modules = {
   "wraithvim.plugins.ui.bufferline",
   "wraithvim.plugins.ui.neo_tree",
   "wraithvim.plugins.ui.which_key",
+  "wraithvim.plugins.ui.image",
   "wraithvim.plugins.editor.telescope",
   "wraithvim.plugins.editor.flash",
   "wraithvim.plugins.editor.pairs",

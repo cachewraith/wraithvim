@@ -24,6 +24,7 @@ the table in the [README](../README.md#requirements).
 ```bash
 sudo pacman -S --needed neovim git ripgrep fd make gcc curl wl-clipboard   # xclip on X11
 sudo pacman -S --needed tree-sitter-cli                                     # optional, parsers
+sudo pacman -S --needed imagemagick                                         # optional, image preview
 ```
 
 ### Ubuntu / Debian / Kali
@@ -33,6 +34,7 @@ release build instead (no root needed):
 
 ```bash
 sudo apt install git ripgrep fd-find make gcc curl xclip      # or wl-clipboard
+sudo apt install imagemagick                                  # optional, image preview
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 # ARM64: nvim-linux-arm64.tar.gz
 mkdir -p ~/.local/opt && tar -C ~/.local/opt -xzf nvim-linux-x86_64.tar.gz
@@ -45,6 +47,7 @@ ln -sf ~/.local/opt/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim   # ensure ~/.l
 
 ```bash
 sudo dnf install neovim git ripgrep fd-find make gcc curl wl-clipboard
+sudo dnf install ImageMagick                                  # optional, image preview
 nvim --version   # must report 0.12 or newer; otherwise use the release tarball above
 ```
 

@@ -155,6 +155,12 @@ return {
     dashboard = {
       enabled = true,
     },
+    -- Open images (png, jpg, gif, webp, svg, ico, …) as a picture instead of
+    -- raw bytes. Needs a terminal with the kitty graphics protocol (kitty,
+    -- Ghostty, WezTerm); ImageMagick shows every format other than PNG.
+    image = {
+      enabled = true,
+    },
     notifications = {
       enabled = true,
       timeout = 3000,

@@ -213,6 +213,7 @@ make - builds telescope-fzf-native|make|$(pkg_hint make make make)
 C compiler - fzf-native and Treesitter parsers|cc gcc clang|$(pkg_hint gcc gcc gcc)
 curl - downloads|curl|$(pkg_hint curl curl curl)
 tree-sitter CLI - parser installation|tree-sitter|$(pkg_hint tree-sitter-cli "tree-sitter-cli (or cargo install tree-sitter-cli)" tree-sitter-cli)
+ImageMagick - image preview (kitty, Ghostty, WezTerm)|magick convert|$(pkg_hint imagemagick imagemagick ImageMagick)
 clipboard provider|wl-copy xclip xsel|$(pkg_hint wl-clipboard wl-clipboard wl-clipboard) (Wayland) or xclip (X11)
 EOF
 

@@ -54,7 +54,7 @@ quiet when idle, and recognisably Neovim.
 |---|---|
 | Required | Neovim **0.12+** (LuaJIT build), Git, Linux (x86_64; ARM64 where plugin binaries exist) |
 | Recommended | ripgrep, fd, a C compiler + make (fzf-native), a Nerd Font, a clipboard tool (wl-clipboard / xclip) |
-| Optional | tree-sitter CLI ≥ 0.26.1 (syntax parsers); Node.js, Go, Python, … for the language tools that need them (installed on demand) |
+| Optional | tree-sitter CLI ≥ 0.26.1 (syntax parsers); ImageMagick and kitty / Ghostty / WezTerm (image preview); Node.js, Go, Python, … for the language tools that need them (installed on demand) |
 
 Supported and tested distributions: Arch Linux, EndeavourOS, Ubuntu, Debian,
 Fedora, Kali Linux. Nothing assumes a particular shell, terminal emulator,

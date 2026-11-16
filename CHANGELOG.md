@@ -6,6 +6,16 @@ All notable changes to WraithVim are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Image files open as a picture instead of a screen of binary characters:
+  PNG, JPEG, GIF, WebP, BMP, TIFF, SVG, ICO, ICNS, HEIC, AVIF, JPEG XL, TGA,
+  PSD and QOI (plus the first page of a PDF and a frame of a video). Click
+  one in the explorer or open it with `:e`. Needs a terminal that can draw
+  pictures (kitty, Ghostty or WezTerm) and ImageMagick for every format
+  other than PNG; other terminals show a short note instead. Turn it off
+  with `image = { enabled = false }` in `~/.config/wraithvim/ui.lua`.
+
 ## [0.16.1] - 2026-11-14
 
 ### Fixed
