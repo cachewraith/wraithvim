@@ -83,9 +83,11 @@ for i in $(seq "$RUNS"); do
 done | stats | sed 's/^/  /'
 
 echo "Slowest startup steps (self+sourced ms, last run with a file):"
+# sed -n, not head: head exits early, sort then dies of SIGPIPE and
+# pipefail fails the script.
 awk '/^[0-9]+\.[0-9]+ +[0-9]+\.[0-9]+ +[0-9]+\.[0-9]+: / {
   t = $2; sub(/:$/, "", $3); $1 = ""; $2 = ""; $3 = ""; sub(/^ +/, ""); printf "%8.3f  %s\n", t, $0
-}' "$TMP/file-$RUNS.log" | sort -rn | head -n 8 | sed 's/^/  /'
+}' "$TMP/file-$RUNS.log" | sort -rn | sed -n '1,8s/^/  /p'
 
 echo "Plugins at startup:"
 nvim_cmd --headless "+lua local s = require('lazy').stats(); io.stdout:write(('  %d of %d plugins loaded during startup\n'):format(s.loaded, s.count))" +qa 2>/dev/null || echo "  lazy.nvim unavailable"
